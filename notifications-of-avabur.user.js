@@ -26,7 +26,7 @@
 // @connect        githubusercontent.com
 // @connect        github.com
 // @connect        self
-// @require        https://cdn.rawgit.com/davidmcclelland/notifications-of-avabur/0.1/lib/toastmessage/javascript/jquery.toastmessage.js
+// @require        https://rawgit.com/davidmcclelland/notifications-of-avabur/master/lib/toastmessage/javascript/jquery.toastmessage.js
 // @require        https://cdnjs.cloudflare.com/ajax/libs/buzz/1.2.0/buzz.min.js
 // @license        LGPL-2.1
 // @noframes
@@ -81,7 +81,7 @@ if (typeof(window.sessionStorage) === "undefined") {
 
             // return "https://cdn.rawgit.com/" + author + "/" + repo + "/" +
             //     GM_info.script.version + "/" + path;
-            return "https://cdn.rawgit.com/" + author + "/" + repo + "/" +
+            return "https://rawgit.com/" + author + "/" + repo + "/" +
                 master + "/" + path;
         };
 

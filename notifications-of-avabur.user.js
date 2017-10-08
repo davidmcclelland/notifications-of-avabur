@@ -13,7 +13,8 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.1
+// @version        0.0.1
+// @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @updateURL      https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @run-at         document-end
@@ -246,6 +247,17 @@ if (typeof(window.sessionStorage) === "undefined") {
             }
         };
 
+        function checkRecordsVisible(records, notificationString) {
+            for (var i = 0; i < records.length; i++) {
+                const target = $(records[i].target);
+                var style = window.getComputedStyle(target.context);
+                if (style.display !== 'none') {
+                    fn.notification(notificationString);
+                    SFX.msg_ding.play();
+                }
+            }
+        }
+
         /** Collection of mutation observers the script uses */
         const OBSERVERS = {
             chat_whispers: new MutationObserver(
@@ -283,26 +295,12 @@ if (typeof(window.sessionStorage) === "undefined") {
             ),
             harvestron: new MutationObserver(
                 function(records) {
-                    for (var i = 0; i < records.length; i++) {
-                        const target = $(records[i].target);
-                        var style = window.getComputedStyle(target.context);
-                        if (style.display !== 'none') {
-                            fn.notification('Harvestron available!');
-                            SFX.msg_ding.play();
-                        }
-                    }
+                    checkRecordsVisible(records, "Harvestron available!");
                 }
             ),
             construction: new MutationObserver(
                 function(records) {
-                    for (var i = 0; i < records.length; i++) {
-                        const target = $(records[i].target);
-                        var style = window.getComputedStyle(target.context);
-                        if (style.display !== 'none') {
-                            fn.notification('Construction available!');
-                            SFX.msg_ding.play();
-                        }
-                    }
+                    checkRecordsVisible(records, "Construction available!");
                 }
             ),
             event: new MutationObserver(
@@ -320,6 +318,11 @@ if (typeof(window.sessionStorage) === "undefined") {
                             }
                         }
                     }
+                }
+            ),
+            questComplete: new MutationObserver(
+                function(records) {
+                    checkRecordsVisible(records, 'You have completed a quest!');
                 }
             )
         };
@@ -352,20 +355,24 @@ if (typeof(window.sessionStorage) === "undefined") {
                     }
                 },
                 "Starting harvestron monitor": function() {
-                    OBSERVERS.harvestron.observe(document.querySelector("#harvestronNotifier"), {
-                        attributes: true
-                    });
+                    OBSERVERS.harvestron.observe(document.querySelector("#harvestronNotifier"), {attributes: true});
                 },
                 "Starting construction monitor": function() {
-                    OBSERVERS.construction.observe(document.querySelector("#constructionNotifier"), {
-                        attributes: true
-                    });
+                    OBSERVERS.construction.observe(document.querySelector("#constructionNotifier"), {attributes: true});
                 },
                 "Starting event monitor": function() {
-                    OBSERVERS.event.observe(document.querySelector("#eventCountdown"), {
-                        childList: true
-                    });
+                    OBSERVERS.event.observe(document.querySelector("#eventCountdown"), {childList: true});
                 },
+                "Starting quest monitor": function() {
+                    // Observe battle quests
+                    OBSERVERS.event.observe(document.querySelector("#battleQuestComplete"), {attributes: true});
+
+                    // Observe tradeskill quests
+                    OBSERVERS.event.observe(document.querySelector("#tradeskillQuestComplete"), {attributes: true});
+
+                    // Observe profession quests
+                    OBSERVERS.event.observe(document.querySelector("#professionQuestComplete"), {attributes: true})
+                }
             };
 
             const keys = Object.keys(ON_LOAD);

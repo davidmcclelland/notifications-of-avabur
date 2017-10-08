@@ -88,7 +88,7 @@ if (typeof(window.sessionStorage) === "undefined") {
 
         const URLS = {
             sfx: {
-                message_ding: gh_url("res/sfx/message_ding.mp3")
+                message_ding: gh_url("res/sfx/message_ding.wav")
             },
             css: {
                 toast: gh_url("lib/toastmessage/resources/css/jquery.toastmessage.css")

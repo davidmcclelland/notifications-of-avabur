@@ -280,6 +280,47 @@ if (typeof(window.sessionStorage) === "undefined") {
                         }
                     }
                 }
+            ),
+            harvestron: new MutationObserver(
+                function(records) {
+                    for (var i = 0; i < records.length; i++) {
+                        const target = $(records[i].target);
+                        var style = window.getComputedStyle(target.context);
+                        if (style.display !== 'none') {
+                            fn.notification('Harvestron available!');
+                            SFX.msg_ding.play();
+                        }
+                    }
+                }
+            ),
+            construction: new MutationObserver(
+                function(records) {
+                    for (var i = 0; i < records.length; i++) {
+                        const target = $(records[i].target);
+                        var style = window.getComputedStyle(target.context);
+                        if (style.display !== 'none') {
+                            fn.notification('Construction available!');
+                            SFX.msg_ding.play();
+                        }
+                    }
+                }
+            ),
+            event: new MutationObserver(
+                function(records) {
+                    for (var i = 0; i < records.length; i++) {
+                        const addedNodes = records[i].addedNodes;
+                        if (addedNodes.length) {
+                            for (var j = 0; j < addedNodes.length; j++) {
+                                const text = $(addedNodes[j]).text();
+                                if (text === '05m00s') {
+                                    fn.notification('An event is starting in five minutes!');
+                                } else if(text === '01s') {
+                                    fn.notification('An event is beginning!');
+                                }
+                            }
+                        }
+                    }
+                }
             )
         };
 
@@ -309,7 +350,22 @@ if (typeof(window.sessionStorage) === "undefined") {
                             childList: true
                         });
                     }
-                }
+                },
+                "Starting harvestron monitor": function() {
+                    OBSERVERS.harvestron.observe(document.querySelector("#harvestronNotifier"), {
+                        attributes: true
+                    });
+                },
+                "Starting construction monitor": function() {
+                    OBSERVERS.construction.observe(document.querySelector("#constructionNotifier"), {
+                        attributes: true
+                    });
+                },
+                "Starting event monitor": function() {
+                    OBSERVERS.event.observe(document.querySelector("#eventCountdown"), {
+                        childList: true
+                    });
+                },
             };
 
             const keys = Object.keys(ON_LOAD);

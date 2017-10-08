@@ -316,6 +316,10 @@ if (typeof(window.sessionStorage) === "undefined") {
                                     console.log('Event countdown notification');
                                     fn.notification('An event is starting in five minutes!');
                                     SFX.msg_ding.play();
+                                } else if(text === '30s') {
+                                    console.log('Event beginning notification');
+                                    fn.notification('An even is starting in thirty seconds!');
+                                    SFX.msg_ding.play();
                                 } else if(text === '01s') {
                                     console.log('Event beginning notification');
                                     fn.notification('An event is beginning!');

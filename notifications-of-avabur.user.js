@@ -251,6 +251,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                 const target = $(records[i].target);
                 var style = window.getComputedStyle(target.context);
                 if (style.display !== 'none') {
+                    console.log('Notification: ', notificationString);
                     fn.notification(notificationString);
                     SFX.msg_ding.play();
                 }
@@ -268,6 +269,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
+                                    console.log('Whisper notification');
                                     fn.notification(text);
                                     SFX.msg_ding.play();
                                 }
@@ -284,6 +286,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text === '0') {
+                                    console.log('Fatigue notification')
                                     fn.notification('You are fatigued!');
                                     SFX.msg_ding.play();
                                 }
@@ -310,9 +313,11 @@ if (typeof(window.sessionStorage) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text === '04m59s') {
+                                    console.log('Event countdown notification');
                                     fn.notification('An event is starting in five minutes!');
                                     SFX.msg_ding.play()
                                 } else if(text === '01s') {
+                                    console.log('Event beginning notification');
                                     fn.notification('An event is beginning!');
                                     SFX.msg_ding.play()
                                 }

@@ -71,8 +71,8 @@ if (typeof(window.sessionStorage) === "undefined") {
         /**
          * Creates a GitHub CDN URL
          * @param {String} path Path to the file without leading slashes
-         * @param {String} [author] The author. Defaults to Alorel
-         * @param {String} [repo] The repository. Defaults to avabur-improved
+         * @param {String} [author] The author. Defaults to davidmcclelland
+         * @param {String} [repo] The repository. Defaults to notifications-of-avabur
          * @returns {String} The URL
          */
         const gh_url = function (path, author, repo) {
@@ -82,7 +82,7 @@ if (typeof(window.sessionStorage) === "undefined") {
             // return "https://cdn.rawgit.com/" + author + "/" + repo + "/" +
             //     GM_info.script.version + "/" + path;
             return "https://rawgit.com/" + author + "/" + repo + "/" +
-                master + "/" + path;
+                'master' + "/" + path;
         };
 
         const URLS = {
@@ -98,7 +98,7 @@ if (typeof(window.sessionStorage) === "undefined") {
          * The URL where we check for updates. This is different from @updateURL because we want it to come through
          * as a regular page load, not a request to the raw file
          */
-        const UPDATE_URL = "https://github.com/davidmcclelland/notifications-of-avabur/blob/master/avabur-improved.user.js";
+        const UPDATE_URL = "https://github.com/davidmcclelland/notifications-of-avabur/blob/master/notifications-of-avabur.user.js";
 
         /////////////////////////////////////////////////////
         // This is the script code. Don't change it unless //
@@ -300,7 +300,6 @@ if (typeof(window.sessionStorage) === "undefined") {
                             if (addedNodes.length) {
                                 for (var j = 0; j < addedNodes.length; j++) {
                                     const text = $(addedNodes[j]).text();
-                                    console.log('Received a whisper with text', text);
                                     if (text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
                                         if (gm_on) {
                                             fn.notification(text);

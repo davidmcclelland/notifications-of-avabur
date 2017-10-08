@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Notifications of Avabur
-// @namespace      com.example.todo
+// @namespace      https://github.com/davidmcclelland/
 // @author         Dave McClelland <davidmcclelland@gmail.com>
 // @homepage       https://github.com/davidmcclelland/notifications-of-avabur
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
@@ -93,7 +93,7 @@ if (typeof(window.sessionStorage) === "undefined") {
             css: {
                 toast: gh_url("lib/toastmessage/resources/css/jquery.toastmessage.css")
             },
-        };        
+        };
 
         /**
          * The URL where we check for updates. This is different from @updateURL because we want it to come through
@@ -165,7 +165,6 @@ if (typeof(window.sessionStorage) === "undefined") {
                     method: "GET",
                     url: UPDATE_URL,
                     onload: function (r) {
-                        console.log('checked for updates. response is', r);
                         const theirVersion = r.responseText.match(/\/\/\s+@version\s+([^\n<>]+)/)[1];
                         if (fn.versionCompare(GM_info.script.version, theirVersion) < 0) {
                             $().toastmessage('showToast', {
@@ -310,10 +309,12 @@ if (typeof(window.sessionStorage) === "undefined") {
                         if (addedNodes.length) {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
-                                if (text === '05m00s') {
+                                if (text === '04m59s') {
                                     fn.notification('An event is starting in five minutes!');
+                                    SFX.msg_ding.play()
                                 } else if(text === '01s') {
                                     fn.notification('An event is beginning!');
+                                    SFX.msg_ding.play()
                                 }
                             }
                         }
@@ -365,13 +366,13 @@ if (typeof(window.sessionStorage) === "undefined") {
                 },
                 "Starting quest monitor": function() {
                     // Observe battle quests
-                    OBSERVERS.event.observe(document.querySelector("#battleQuestComplete"), {attributes: true});
+                    OBSERVERS.questComplete.observe(document.querySelector("#battleQuestComplete"), {attributes: true});
 
                     // Observe tradeskill quests
-                    OBSERVERS.event.observe(document.querySelector("#tradeskillQuestComplete"), {attributes: true});
+                    OBSERVERS.questComplete.observe(document.querySelector("#tradeskillQuestComplete"), {attributes: true});
 
                     // Observe profession quests
-                    OBSERVERS.event.observe(document.querySelector("#professionQuestComplete"), {attributes: true})
+                    OBSERVERS.questComplete.observe(document.querySelector("#professionQuestComplete"), {attributes: true});
                 }
             };
 

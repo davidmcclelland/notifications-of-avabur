@@ -343,7 +343,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                         $head.append("<link type='text/css' rel='stylesheet' href='" + URLS.css[keys[i]] + "'/>");
                     }
                 },
-                "Staring whisper monitor": function () {
+                "Starting whisper monitor": function () {
                     OBSERVERS.chat_whispers.observe(document.querySelector("#chatMessageList"), {
                         childList: true
                     });

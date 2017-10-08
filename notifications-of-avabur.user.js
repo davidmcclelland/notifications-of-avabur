@@ -105,47 +105,6 @@ if (typeof(window.sessionStorage) === "undefined") {
         // you know what you're doing ;)                   //
         /////////////////////////////////////////////////////
 
-        const SettingsHandler = function () {
-            /** @type SettingsHandler.defaults */
-            this.settings = this.defaults;
-            this.load();
-        };
-
-        SettingsHandler.prototype = {
-            /** Default settings */
-            defaults: {
-                /**
-                 * Notification settings.
-                 * sound: [bool] Whether to play a sound
-                 * gm: [bool] Whether to show the Greasemonkey notification
-                 */
-                notifications: {
-                    /** Global overrides */
-                    all: {
-                        sound: false,
-                        gm: true
-                    },
-                    /** Whisper notifcations */
-                    whisper: {
-                        sound: true,
-                        gm: true
-                    },
-                    construction: {
-                        sound: true,
-                        gm: true
-                    }
-                }
-            },
-            save: function () {
-                GM_setValue("settings", JSON.stringify(this.settings));
-            },
-            load: function () {
-                this.settings = $.extend(true, this.defaults, JSON.parse(GM_getValue("settings") || "{}"));
-            }
-        };
-
-        const Settings = new SettingsHandler();
-
         /** Our persistent DOM stuff */
         const $DOM = {
             /** Game modals */
@@ -205,6 +164,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                     method: "GET",
                     url: UPDATE_URL,
                     onload: function (r) {
+                        console.log('checked for updates. response is', r);
                         const theirVersion = r.responseText.match(/\/\/\s+@version\s+([^\n<>]+)/)[1];
                         if (fn.versionCompare(GM_info.script.version, theirVersion) < 0) {
                             $().toastmessage('showToast', {
@@ -291,29 +251,36 @@ if (typeof(window.sessionStorage) === "undefined") {
             chat_whispers: new MutationObserver(
                 /** @param {MutationRecord[]} records */
                 function (records) {
-                    const sound_on = Settings.settings.notifications.all.sound && Settings.settings.notifications.whisper.sound;
-                    const gm_on = Settings.settings.notifications.all.gm && Settings.settings.notifications.whisper.gm;
-
-                    if (sound_on || gm_on) {
-                        for (var i = 0; i < records.length; i++) {
-                            const addedNodes = records[i].addedNodes;
-                            if (addedNodes.length) {
-                                for (var j = 0; j < addedNodes.length; j++) {
-                                    const text = $(addedNodes[j]).text();
-                                    if (text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
-                                        if (gm_on) {
-                                            fn.notification(text);
-                                        }
-                                        if (sound_on) {
-                                            SFX.msg_ding.play();
-                                        }
-                                    }
+                    for (var i = 0; i < records.length; i++) {
+                        const addedNodes = records[i].addedNodes;
+                        if (addedNodes.length) {
+                            for (var j = 0; j < addedNodes.length; j++) {
+                                const text = $(addedNodes[j]).text();
+                                if (text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
+                                    fn.notification(text);
+                                    SFX.msg_ding.play();
                                 }
                             }
                         }
                     }
                 }
             ),
+            fatigue: new MutationObserver(
+                function(records) {
+                    for (var i = 0; i < records.length; i++) {
+                        const addedNodes = records[i].addedNodes;
+                        if (addedNodes.length) {
+                            for (var j = 0; j < addedNodes.length; j++) {
+                                const text = $(addedNodes[j]).text();
+                                if (text === '0') {
+                                    fn.notification('You are fatigued!');
+                                    SFX.msg_ding.play();
+                                }
+                            }
+                        }
+                    }
+                }
+            )
         };
 
         (function() {
@@ -327,11 +294,22 @@ if (typeof(window.sessionStorage) === "undefined") {
                     }
                 },
                 "Staring whisper monitor": function () {
-                    console.log('starting whisper monitor');
                     OBSERVERS.chat_whispers.observe(document.querySelector("#chatMessageList"), {
                         childList: true
                     });
                 },
+                "Starting fatigue monitor": function () {
+                    const autosRemainingSpans = document.getElementsByClassName('autosRemaining');
+
+                    /* There is one of these spans in each of the main wrappers (battle, tradeskill, crafting, carving).
+                    It seems like all of them are currently updated with the same "autosRemaining" value each action,
+                    so there's no need to watch all of them. */
+                    if (autosRemainingSpans && autosRemainingSpans.length) {
+                        OBSERVERS.fatigue.observe(autosRemainingSpans[i], {
+                            childList: true
+                        });
+                    }
+                }
             };
 
             const keys = Object.keys(ON_LOAD);
@@ -339,8 +317,8 @@ if (typeof(window.sessionStorage) === "undefined") {
                 console.log('[' + GM_info.script.name + '] ' + keys[i]);
                 ON_LOAD[keys[i]]();
             }
-            fn.check_github_for_updates();
-            (new Interval("gh_update")).set(fn.check_github_for_updates, 60000);
+            // fn.check_github_for_updates();
+            // (new Interval("gh_update")).set(fn.check_github_for_updates, 60000);
         })();
 
     })(jQuery, window.sessionStorage, MutationObserver, buzz);

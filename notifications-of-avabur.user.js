@@ -286,7 +286,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text === '0') {
-                                    console.log('Fatigue notification')
+                                    console.log('Fatigue notification');
                                     fn.notification('You are fatigued!');
                                     SFX.msg_ding.play();
                                 }
@@ -315,11 +315,11 @@ if (typeof(window.sessionStorage) === "undefined") {
                                 if (text === '04m59s') {
                                     console.log('Event countdown notification');
                                     fn.notification('An event is starting in five minutes!');
-                                    SFX.msg_ding.play()
+                                    SFX.msg_ding.play();
                                 } else if(text === '01s') {
                                     console.log('Event beginning notification');
                                     fn.notification('An event is beginning!');
-                                    SFX.msg_ding.play()
+                                    SFX.msg_ding.play();
                                 }
                             }
                         }
@@ -328,7 +328,19 @@ if (typeof(window.sessionStorage) === "undefined") {
             ),
             questComplete: new MutationObserver(
                 function(records) {
-                    checkRecordsVisible(records, 'You have completed a quest!');
+                    for (var i = 0; i < records.length; i++) {
+                        const addedNodes = records[i].addedNodes;
+                        if (addedNodes.length) {
+                            for (var j = 0; j < addedNodes.length; j++) {
+                                const text = $(addedNodes[j]).text();
+                                if (text.startsWith('You have completed a quest!')) {
+                                    console.log('Quest complete notification');
+                                    fn.notification('Quest complete!');
+                                    SFX.msg_ding.play();
+                                }
+                            }
+                        }
+                    }
                 }
             )
         };
@@ -371,13 +383,13 @@ if (typeof(window.sessionStorage) === "undefined") {
                 },
                 "Starting quest monitor": function() {
                     // Observe battle quests
-                    OBSERVERS.questComplete.observe(document.querySelector("#battleQuestComplete"), {attributes: true});
+                    OBSERVERS.questComplete.observe(document.querySelector("#bq_info"), {childList: true});
 
                     // Observe tradeskill quests
-                    OBSERVERS.questComplete.observe(document.querySelector("#tradeskillQuestComplete"), {attributes: true});
+                    OBSERVERS.questComplete.observe(document.querySelector("#tq_info"), {childList: true});
 
                     // Observe profession quests
-                    OBSERVERS.questComplete.observe(document.querySelector("#professionQuestComplete"), {attributes: true});
+                    OBSERVERS.questComplete.observe(document.querySelector("#pq_info"), {childList: true});
                 }
             };
 

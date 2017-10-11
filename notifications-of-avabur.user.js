@@ -196,10 +196,6 @@ if (typeof(window.sessionStorage) === "undefined") {
             },
         };
 
-        $.when($.get(URLs.css.settings)).done(function(response) {
-            NOA_SETTINGS.css = response
-        });
-
         /** Our persistent DOM stuff */
         const $DOM = {
             /** Game modals */
@@ -373,15 +369,12 @@ if (typeof(window.sessionStorage) === "undefined") {
                                     var chatSearchValues = GM_config.get('chatSearchValues').split(/\r?\n/)
                                     for (var k = 0; k < chatSearchValues.length; k++) {
                                         if (chatSearchValues.length && text.match(chatSearchValues[k])) {
-                                            console.log(text, 'matched', chatSearchValues[k]);
                                            if (GM_config.get('chatSearchPopup')) {
                                                 fn.notification(text);
                                             }
                                             if (GM_config.get('chatSearchSound')) {
                                                 SFX.msg_ding.play();
                                             }
-                                        } else {
-                                            console.log(text, 'did not match', chatSearchValues[k]);
                                         }
                                     }
                                 }
@@ -565,7 +558,10 @@ if (typeof(window.sessionStorage) === "undefined") {
                     }
                 },
                 "Initializing settings": function() {
-                    GM_config.init(NOA_SETTINGS);
+                    $.when($.get(URLS.css.settings)).done(function(response) {
+                        NOA_SETTINGS.css = response;
+                        GM_config.init(NOA_SETTINGS);
+                    });
                 },
                 "Adding settings button": function() {
                     var settingsWrapper = $('#settingsLinksWrapper');

@@ -94,7 +94,7 @@ if (typeof(window.sessionStorage) === "undefined") {
             css: {
                 toast: gh_url("lib/toastmessage/resources/css/jquery.toastmessage.css"),
                 // TODO: use gh_url after this is merged to master
-                settings: "https://github.com/davidmcclelland/notifications-of-avabur/raw/settings-css-extraction/res/css/settings.css"
+                settings: "https://rawgit.com/davidmcclelland/notifications-of-avabur/settings-css-extraction/res/css/settings.css"
             },
         };
 

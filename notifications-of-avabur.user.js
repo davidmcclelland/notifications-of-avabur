@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.0.4
+// @version        0.0.5
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @updateURL      https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
@@ -176,8 +176,23 @@ if (typeof(window.sessionStorage) === "undefined") {
                     type: 'checkbox',
                     default: true
                 },
+                chatSearchPopup: {
+                    label: 'Chat search popup',
+                    type: 'checkbox',
+                    default: true
+                },
+                chatSearchSound: {
+                    label: 'Chat search sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                chatSearchValues: {
+                    label: 'Chat search values',
+                    type: 'textarea',
+                    default: ''
+                }
             },
-            css: 'body#NoAConfig {color: orange ;text-align: center;text-shadow: 3px 2px black;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;border: 1px solid #01B0AA;border-radius: 40px ;margin: 0px!important;width: 316px!important;height: 446px!important;overflow: hidden ;padding: 1px;!important}#NoAConfig .field_label {font-size:15px;text-shadow: 1px 1px black;font-weight: normal ;}#NoAConfig_resetLink {color: orange!important;text-shadow: none ;margin: 5pt ;}#NoAConfig_header {border-bottom: 1px solid #01B0AA ;}'
+            css: 'body#NoAConfig {color: orange ;text-align: center;text-shadow: 3px 2px black;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;border: 1px solid #01B0AA;border-radius: 40px ;margin: 0px!important;width: 316px!important;height: 446px!important;overflow: hidden;padding: 1px;!important}#NoAConfig .field_label {font-size:15px;text-shadow: 1px 1px black;font-weight: normal ;}#NoAConfig_resetLink {color: orange!important;text-shadow: none ;margin: 5pt ;}#NoAConfig_header {border-bottom: 1px solid #01B0AA ;}'
         };
 
         /** Our persistent DOM stuff */
@@ -333,7 +348,7 @@ if (typeof(window.sessionStorage) === "undefined") {
 
         /** Collection of mutation observers the script uses */
         const OBSERVERS = {
-            chat_whispers: new MutationObserver(
+            chat_search: new MutationObserver(
                 /** @param {MutationRecord[]} records */
                 function (records) {
                     for (var i = 0; i < records.length; i++) {
@@ -347,6 +362,22 @@ if (typeof(window.sessionStorage) === "undefined") {
                                     }
                                     if (GM_config.get('whisperSound')) {
                                         SFX.msg_ding.play();
+                                    }
+                                } else {
+                                    // Look for any values listed under chat_search
+                                    var chatSearchValues = GM_config.get('chatSearchValues').split(/\r?\n/)
+                                    for (var k = 0; k < chatSearchValues.length; k++) {
+                                        if (chatSearchValues.length && text.match(chatSearchValues[k])) {
+                                            console.log(text, 'matched', chatSearchValues[k]);
+                                           if (GM_config.get('chatSearchPopup')) {
+                                                fn.notification(text);
+                                            }
+                                            if (GM_config.get('chatSearchSound')) {
+                                                SFX.msg_ding.play();
+                                            }
+                                        } else {
+                                            console.log(text, 'did not match', chatSearchValues[k]);
+                                        }
                                     }
                                 }
                             }
@@ -463,7 +494,14 @@ if (typeof(window.sessionStorage) === "undefined") {
                         }
                     }
                 }
+            ),
+            // TODO: This is all kind of the same thing as 
+            chatSearch: new MutationObserver(
+                function(records) {
+
+                }
             )
+
         };
 
         (function() {
@@ -477,8 +515,8 @@ if (typeof(window.sessionStorage) === "undefined") {
                         $head.append("<style>iframe#NoAConfig {width: 320px!important;height: 450px!important;border:0px!important;border-radius: 40px ;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;}</style>"); 
                     }
                 },
-                "Starting whisper monitor": function () {
-                    OBSERVERS.chat_whispers.observe(document.querySelector("#chatMessageList"), {
+                "Starting chat monitor": function () {
+                    OBSERVERS.chat_search.observe(document.querySelector("#chatMessageList"), {
                         childList: true
                     });
                 },

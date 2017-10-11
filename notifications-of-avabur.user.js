@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.0.2
+// @version        0.0.3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @updateURL      https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
@@ -29,6 +29,7 @@
 // @connect        self
 // @require        https://rawgit.com/davidmcclelland/notifications-of-avabur/master/lib/toastmessage/javascript/jquery.toastmessage.js
 // @require        https://cdnjs.cloudflare.com/ajax/libs/buzz/1.2.0/buzz.min.js
+// @require        https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @license        LGPL-2.1
 // @noframes
 // ==/UserScript==
@@ -105,6 +106,78 @@ if (typeof(window.sessionStorage) === "undefined") {
         // This is the script code. Don't change it unless //
         // you know what you're doing ;)                   //
         /////////////////////////////////////////////////////
+
+        const NOA_SETTINGS = {
+            id: 'NoAConfig',
+            title: 'NoA Settings',
+            fields: {
+                popupsStealFocus: {
+                    label: 'Popups steal focus',
+                    type: 'checkbox',
+                    default: true
+                },
+                fatiguePopup: {
+                    label: 'Fatigue popup',
+                    type: 'checkbox',
+                    default: true
+                },
+                fatigueSound: {
+                    label: 'Fatigue sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                eventPopup: {
+                    label: 'Event popup',
+                    type: 'checkbox',
+                    default: true
+                },
+                eventSound: {
+                    label: 'Event sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                harvestronPopup: {
+                    label: 'Harvestron popup',
+                    type: 'checkbox',
+                    default: true
+                },
+                harvestronSound: {
+                    label: 'Harvestron sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                constructionPopup: {
+                    label: 'Construction popup',
+                    type: 'checkbox',
+                    default: true
+                },
+                constructionSound: {
+                    label: 'Construction sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                whisperPopup: {
+                    label: 'Whisper popup',
+                    type: 'checkbox',
+                    default: true
+                },
+                whisperSound: {
+                    label: 'Whisper sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                questCompletePopup: {
+                    label: 'Quest complete popup',
+                    type: 'checkbox',
+                    default: true
+                },
+                questCompleteSound: {
+                    label: 'Quest complete sound',
+                    type: 'checkbox',
+                    default: true
+                },
+            }
+        };
 
         /** Our persistent DOM stuff */
         const $DOM = {
@@ -187,7 +260,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                 GM_notification($.extend({
                     text: text,
                     title: GM_info.script.name,
-                    highlight: true,
+                    highlight: GM_config.get('popupsStealFocus'),
                     timeout: 5
                 }, options || {}));
             },
@@ -246,15 +319,15 @@ if (typeof(window.sessionStorage) === "undefined") {
             }
         };
 
-        function checkRecordsVisible(records, notificationString) {
+        function checkRecordsVisible(records) {
             for (var i = 0; i < records.length; i++) {
                 const target = $(records[i].target);
                 var style = window.getComputedStyle(target.context);
                 if (style.display !== 'none') {
-                    fn.notification(notificationString);
-                    SFX.msg_ding.play();
+                    return true;
                 }
             }
+            return false;
         }
 
         /** Collection of mutation observers the script uses */
@@ -268,8 +341,12 @@ if (typeof(window.sessionStorage) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
-                                    fn.notification(text);
-                                    SFX.msg_ding.play();
+                                    if (GM_config.get('whisperPopup')) {
+                                        fn.notification(text);
+                                    }
+                                    if (GM_config.get('whisperSound')) {
+                                        SFX.msg_ding.play();
+                                    }
                                 }
                             }
                         }
@@ -284,8 +361,12 @@ if (typeof(window.sessionStorage) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text === '0') {
-                                    fn.notification('You are fatigued!');
-                                    SFX.msg_ding.play();
+                                    if (GM_config.get('fatiguePopup')) {
+                                        fn.notification('You are fatigued!');
+                                    }
+                                    if (GM_config.get('fatigueSound')) {
+                                        SFX.msg_ding.play();
+                                    }
                                 }
                             }
                         }
@@ -294,12 +375,26 @@ if (typeof(window.sessionStorage) === "undefined") {
             ),
             harvestron: new MutationObserver(
                 function(records) {
-                    checkRecordsVisible(records, "Harvestron available!");
+                    if (checkRecordsVisible(records)) {
+                        if (GM_config.get('harvestronPopup')) {
+                            fn.notification("Harvestron available!");
+                        }
+                        if (GM_config.get('harvestronSound')) {
+                            SFX.msg_ding.play();
+                        }
+                    }
                 }
             ),
             construction: new MutationObserver(
                 function(records) {
-                    checkRecordsVisible(records, "Construction available!");
+                    if (checkRecordsVisible(records)) {
+                        if (GM_config.get('constructionPopup')) {
+                            fn.notification("Construction available!");
+                        }
+                        if (GM_config.get('constructionSound')) {
+                            SFX.msg_ding.play();
+                        }
+                    }
                 }
             ),
             event: new MutationObserver(
@@ -309,14 +404,27 @@ if (typeof(window.sessionStorage) === "undefined") {
                         if (addedNodes.length) {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
-                                if (text === '04m59s') {
-                                    fn.notification('An event is starting in five minutes!');
-                                    SFX.msg_ding.play();
+                                if (text === '04m55s') {
+                                    if (GM_config.get('eventPopup')) {
+                                        fn.notification('An event is starting in five minutes!');
+                                    }
+                                    if (GM_config.get('eventSound')) {
+                                        SFX.msg_ding.play();
+                                    }
                                 } else if(text === '30s') {
-                                    fn.notification('An event is starting in thirty seconds!');
-                                    SFX.msg_ding.play();
+                                    if (GM_config.get('eventPopup')) {
+                                        fn.notification('An event is starting in thirty seconds!');
+                                    }
+                                    if (GM_config.get('eventSound')) {
+                                        SFX.msg_ding.play();
+                                    }
                                 } else if(text === '01s') {
-                                    SFX.msg_ding.play();
+                                    if (GM_config.get('eventPopup')) {
+                                        fn.notification('An event is starting!');
+                                    }
+                                    if (GM_config.get('eventSound')) {
+                                        SFX.msg_ding.play();
+                                    }
                                 }
                             }
                         }
@@ -331,8 +439,12 @@ if (typeof(window.sessionStorage) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text.startsWith('You have completed your quest!')) {
-                                    fn.notification('Quest complete!');
-                                    SFX.msg_ding.play();
+                                    if (GM_config.get('questCompletePopup')) {
+                                        fn.notification('Quest complete!');
+                                    }
+                                    if (GM_config.get('questCompleteSound')) {
+                                        SFX.msg_ding.play();
+                                    }
                                 }
                             }
                         }
@@ -341,7 +453,14 @@ if (typeof(window.sessionStorage) === "undefined") {
             ),
             bossFailure: new MutationObserver(
                 function(records) {
-                    checkRecordsVisible(records, 'You were eliminated from the gauntlet!');
+                    if (checkRecordsVisible(records)) {
+                        if (GM_config.get('eventPopup')) {
+                            fn.notification('You were eliminated from the gauntlet!');
+                        }
+                        if (GM_config.get('eventSound')) {
+                            SFX.msg_ding.play();
+                        }
+                    }
                 }
             )
         };
@@ -399,6 +518,16 @@ if (typeof(window.sessionStorage) === "undefined") {
                     if (bossFailureNotifications && bossFailureNotifications.length) {
                         OBSERVERS.bossFailure.observe(bossFailureNotifications[0], {attributes: true});
                     }
+                },
+                "Initializing settings": function() {
+                    GM_config.init(NOA_SETTINGS);
+                },
+                "Adding settings button": function() {
+                    var settingsWrapper = $('#settingsLinksWrapper');
+                    settingsWrapper.append('<a id="noaPreferences"><button class="btn btn-primary">NoA Settings</button></a>');
+                    $('#noaPreferences').click(function() {
+                        GM_config.open();
+                    });
                 }
             };
 

@@ -177,7 +177,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                     default: true
                 },
             },
-            css: 'body#NoAConfig {color: orange ;text-align: center;text-shadow: 3px 2px black;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;border: 1px solid #01B0AA;border-radius: 40px ;margin: 0px!important;width: 316px!important;height: 446px!important;overflow: hidden ;padding: 1px;!important}#NoAConfig .field_label {font-size:15px;text-shadow: 1px 1px black;font-weight: normal ;}#NoAConfig_resetLink {color: orange ;text-shadow: none ;margin: 5pt ;}#NoAConfig_header {border-bottom: 1px solid #01B0AA ;}'
+            css: 'body#NoAConfig {color: orange ;text-align: center;text-shadow: 3px 2px black;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;border: 1px solid #01B0AA;border-radius: 40px ;margin: 0px!important;width: 316px!important;height: 446px!important;overflow: hidden ;padding: 1px;!important}#NoAConfig .field_label {font-size:15px;text-shadow: 1px 1px black;font-weight: normal ;}#NoAConfig_resetLink {color: orange!important;text-shadow: none ;margin: 5pt ;}#NoAConfig_header {border-bottom: 1px solid #01B0AA ;}'
         };
 
         /** Our persistent DOM stuff */

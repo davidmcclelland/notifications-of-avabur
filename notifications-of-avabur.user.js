@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.0.3
+// @version        0.0.4
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @updateURL      https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
@@ -176,7 +176,8 @@ if (typeof(window.sessionStorage) === "undefined") {
                     type: 'checkbox',
                     default: true
                 },
-            }
+            },
+            css: 'body#NoAConfig {color: orange ;text-align: center;text-shadow: 3px 2px black;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;border: 1px solid #01B0AA;border-radius: 40px ;margin: 0px!important;width: 316px!important;height: 446px!important;overflow: hidden ;padding: 1px;!important}#NoAConfig .field_label {font-size:15px;text-shadow: 1px 1px black;font-weight: normal ;}#NoAConfig_resetLink {color: orange!important;text-shadow: none ;margin: 5pt ;}#NoAConfig_header {border-bottom: 1px solid #01B0AA ;}'
         };
 
         /** Our persistent DOM stuff */
@@ -473,6 +474,7 @@ if (typeof(window.sessionStorage) === "undefined") {
 
                     for (var i = 0; i < keys.length; i++) {
                         $head.append("<link type='text/css' rel='stylesheet' href='" + URLS.css[keys[i]] + "'/>");
+                        $head.append("<style>iframe#NoAConfig {width: 320px!important;height: 450px!important;border:0px!important;border-radius: 40px ;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;}</style>"); 
                     }
                 },
                 "Starting whisper monitor": function () {

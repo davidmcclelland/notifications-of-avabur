@@ -338,6 +338,11 @@ if (typeof(window.sessionStorage) === "undefined") {
                         }
                     }
                 }
+            ),
+            bossFailure: new MutationObserver(
+                function(records) {
+                    checkRecordsVisible(records, 'You were eliminated from the gauntlet!');
+                }
             )
         };
 
@@ -386,6 +391,14 @@ if (typeof(window.sessionStorage) === "undefined") {
 
                     // Observe profession quests
                     OBSERVERS.questComplete.observe(document.querySelector("#pq_info"), {childList: true});
+                },
+                "Starting boss failure monitor": function() {
+                    const bossFailureNotifications = document.getElementsByClassName('boss_failure_notification');
+
+                    // There should be only one of these
+                    if (bossFailureNotifications && bossFailureNotifications.length) {
+                        OBSERVERS.bossFailure.observe(bossFailureNotifications[0], {attributes: true});
+                    }
                 }
             };
 

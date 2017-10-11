@@ -15,6 +15,15 @@ body#NoAConfig {
     font-weight: normal;
 }
 
+#NoAConfig textarea {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+    border: 1px solid #01b0aa;
+    background-color: #004542;
+    color: #FFF;
+}
+
 #NoAConfig_resetLink {
     color: orange!important;
     text-shadow: none;

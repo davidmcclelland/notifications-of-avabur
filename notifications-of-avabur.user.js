@@ -94,7 +94,7 @@ if (typeof(window.sessionStorage) === "undefined") {
             css: {
                 toast: gh_url("lib/toastmessage/resources/css/jquery.toastmessage.css"),
                 // TODO: use gh_url after this is merged to master
-                settings: "https://rawgit.com/davidmcclelland/notifications-of-avabur/settings-css-extraction/res/css/settings.css"
+                settings: "https://github.com/davidmcclelland/notifications-of-avabur/raw/settings-css-extraction/res/css/settings.css"
             },
         };
 
@@ -510,7 +510,7 @@ if (typeof(window.sessionStorage) === "undefined") {
 
                     for (var i = 0; i < keys.length; i++) {
                         $head.append("<link type='text/css' rel='stylesheet' href='" + URLS.css[keys[i]] + "'/>");
-                        $head.append("<style>iframe#NoAConfig {width: 320px!important;height: 450px!important;border:0px!important;border-radius: 40px ;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;}</style>"); 
+                        // $head.append("<style>iframe#NoAConfig {width: 320px!important;height: 450px!important;border:0px!important;border-radius: 40px ;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;}</style>"); 
                     }
                 },
                 "Starting chat monitor": function () {
@@ -561,6 +561,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                     $.when($.get(URLS.css.settings)).done(function(response) {
                         NOA_SETTINGS.css = response;
                         GM_config.init(NOA_SETTINGS);
+                        console.log("Settings CSS is", NOA_SETTINGS.css);
                     });
                 },
                 "Adding settings button": function() {

@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.0.6
+// @version        0.1.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @updateURL      https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
@@ -33,6 +33,14 @@
 // @license        LGPL-2.1
 // @noframes
 // ==/UserScript==
+
+var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+if (isFirefox)
+    Notification.requestPermission().then(function(result) {
+    console.log(result);
+});
+
 
 const Toast = { //Tampermonkey's scoping won't let this constant be globally visible
     error: function (msg) {
@@ -274,12 +282,17 @@ if (typeof(window.sessionStorage) === "undefined") {
              * @param {Object} [options] Overrides as shown here: https://tampermonkey.net/documentation.php#GM_notification
              */
             notification: function (text, options) {
-                GM_notification($.extend({
-                    text: text,
-                    title: GM_info.script.name,
-                    highlight: GM_config.get('popupsStealFocus'),
-                    timeout: 5
-                }, options || {}));
+                if (isChrome)
+                    GM_notification($.extend({
+                      text: text,
+                      title: GM_info.script.name,
+                      highlight: GM_config.get('popupsStealFocus'),
+                      timeout: 5
+                    }, options || {}));
+                if (isFirefox)
+                    var FFIco = {icon: 'https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png',body: text};
+                    var n = new Notification('Notifications of Avabur',FFIco);
+                    setTimeout(n.close.bind(n), 5000);
             },
             /**
              * @return

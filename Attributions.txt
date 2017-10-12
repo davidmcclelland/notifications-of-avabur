@@ -1,5 +1,0 @@
-Userscript heavily borrows from Avabur Improved by Alorel (https://github.com/Alorel)
-
-Sound effects from RSilveira and morrisjm on freesound.org
-
-Logo icon designed by Freepik from www.flaticon.com

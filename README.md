@@ -1,21 +1,21 @@
 # notifications-of-avabur
 Notifies users (with sounds and toasts) of events within Relics of Avabur.
 
-## Supported events
-* `Fatigued`
-* `Event countdown started`
-* `Event started`
-* `Harvestron available`
-* `Construction available`
-* `Whispers`
-* `Knocked out of gauntlet`
-* `Quest complete`
+## Features
+* `Notifications for:`
+  * `Fatigued`
+  * `Event countdown started`
+  * `Event started`
+  * `Harvestron available`
+  * `Construction available`
+  * `Whispers`
+  * `Knocked out of gauntlet`
+  * `Quest complete`
 
 ## Needs testing
 * `Settings`
   * `Popup for each event (independent)`
   * `Sound for each event (independent)`
-  * `Popups steal focus`
 * `Chat search`
   * `Be careful with this one - it watches your own chat messages too!`
   * `Regexes are supported, so go crazy!`
@@ -23,6 +23,7 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
 
 ## TODOs/Vague Ideas
 * `Effect changes (double->triple, rage->fury, etc)`
+* `Searching through crafting and drop output`
 * ~~`@mentions in chat`~~
 * `Debounce notifications to prevent being spammed`
 * ~~`Mentioned in event`~~
@@ -30,3 +31,12 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
 * `Come up with additional features`
 * `Settings`
   * `Debounce timer`
+
+## Special Thanks
+Userscript heavily borrows from Avabur Improved by Alorel (https://github.com/Alorel)
+
+Sound effects from RSilveira and morrisjm on freesound.org
+
+Logo icon designed by Freepik from www.flaticon.com
+
+Thanks to AshenSwift for assistance with styling and cross-browser support, along with everyone who helped me test early on.

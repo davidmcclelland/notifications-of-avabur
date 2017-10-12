@@ -4,7 +4,7 @@
 // @author         Dave McClelland <davidmcclelland@gmail.com>
 // @homepage       https://github.com/davidmcclelland/notifications-of-avabur
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
-// @description    Some welcome additions to Avabur's UI choices
+// @description    Never miss another gauntlet again!
 // @include        https://avabur.com/game.php
 // @include        http://avabur.com/game.php
 // @include        https://www.avabur.com/game.php
@@ -13,20 +13,13 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.1.0
+// @version        0.1.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
-// @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
-// @updateURL      https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @run-at         document-end
-// @grant          GM_getValue
-// @grant          GM_setValue
-// @grant          GM_deleteValue
-// @grant          GM_notification
-// @grant          GM_listValues
-// @grant          GM_xmlhttpRequest
 // @connect        githubusercontent.com
 // @connect        github.com
 // @connect        self
+// @grant          None
 // @require        https://rawgit.com/davidmcclelland/notifications-of-avabur/master/lib/toastmessage/javascript/jquery.toastmessage.js
 // @require        https://cdnjs.cloudflare.com/ajax/libs/buzz/1.2.0/buzz.min.js
 // @require        https://openuserjs.org/src/libs/sizzle/GM_config.js
@@ -34,30 +27,27 @@
 // @noframes
 // ==/UserScript==
 
-    Notification.requestPermission().then(function(result) {
-    console.log(result);});
-
 
 const Toast = { //Tampermonkey's scoping won't let this constant be globally visible
-    error: function (msg) {
+    error: function(msg) {
         console.error(msg);
         $().toastmessage('showErrorToast', msg);
     },
-    notice: function (msg) {
+    notice: function(msg) {
         $().toastmessage('showNoticeToast', msg);
     },
-    success: function (msg) {
+    success: function(msg) {
         $().toastmessage('showSuccessToast', msg);
     },
-    warn: function (msg) {
+    warn: function(msg) {
         console.warn(msg);
         $().toastmessage('showWarningToast', msg);
     },
-    incompatibility: function (what) {
+    incompatibility: function(what) {
         $().toastmessage('showToast', {
             text: "Your browser does not support " + what +
-            ". Please <a href='https://www.google.co.uk/chrome/browser/desktop/' target='_blank'>" +
-            "Download the latest version of Google Chrome</a>",
+                ". Please <a href='https://www.google.co.uk/chrome/browser/desktop/' target='_blank'>" +
+                "Download the latest version of Google Chrome</a>",
             sticky: true,
             position: 'top-center',
             type: 'error'
@@ -66,12 +56,10 @@ const Toast = { //Tampermonkey's scoping won't let this constant be globally vis
 };
 
 //Check if the user can even support the bot
-if (typeof(window.sessionStorage) === "undefined") {
-    Toast.incompatibility("Session storage");
-} else if (typeof(MutationObserver) === "undefined") {
-    Toast.incompatibility("MutationObserver");
+if (typeof(MutationObserver) === "undefined") {
+    log.error("Cannot support mutation observer!");
 } else {
-    (function ($, CACHE_STORAGE, MutationObserver, buzz) {
+    (function($, MutationObserver, buzz) {
         'use strict';
 
         /**
@@ -81,7 +69,7 @@ if (typeof(window.sessionStorage) === "undefined") {
          * @param {String} [repo] The repository. Defaults to notifications-of-avabur
          * @returns {String} The URL
          */
-        const gh_url = function (path, author, repo) {
+        const gh_url = function(path, author, repo) {
             author = author || "davidmcclelland";
             repo = repo || "notifications-of-avabur";
 
@@ -97,16 +85,12 @@ if (typeof(window.sessionStorage) === "undefined") {
             },
             css: {
                 toast: gh_url("lib/toastmessage/resources/css/jquery.toastmessage.css"),
-                // TODO: use gh_url after this is merged to master
-                settings: "https://rawgit.com/davidmcclelland/notifications-of-avabur/settings-css-extraction/res/css/settings.css"
+                settings: gh_url("res/css/settings.css")
             },
+            img: {
+                icon: gh_url("res/img/logo-32.png")
+            }
         };
-
-        /**
-         * The URL where we check for updates. This is different from @updateURL because we want it to come through
-         * as a regular page load, not a request to the raw file
-         */
-        const UPDATE_URL = "https://github.com/davidmcclelland/notifications-of-avabur/blob/master/notifications-of-avabur.user.js";
 
         /////////////////////////////////////////////////////
         // This is the script code. Don't change it unless //
@@ -195,163 +179,47 @@ if (typeof(window.sessionStorage) === "undefined") {
             },
         };
 
-        /** Our persistent DOM stuff */
-        const $DOM = {
-            /** Game modals */
-            modal: {
-                /** The outer wrapper */
-                modal_wrapper: $("#modalWrapper"),
-                /** The faded background for modals */
-                modal_background: $("#modalBackground"),
-                /** The title for modal windows */
-                modal_title: $("#modalTitle"),
-            },
-            /** Navigation items */
-            nav: {
-                market: $("#viewMarket")
-            },
-        };
-
         const SFX = {
             circ_saw: new buzz.sound(URLS.sfx.circ_saw),
             msg_ding: new buzz.sound(URLS.sfx.message_ding)
         };
 
-        /**
-         * Interval manager
-         * @param {String} name Interval name/ID
-         * @constructor
-         */
-        const Interval = function (name) {
-            this.name = name;
-        };
-
-        Interval.prototype = {
-            _intervals: {},
-            isRunning: function () {
-                return typeof(this._intervals[this.name]) !== "undefined";
-            },
-            clear: function () {
-                if (this.isRunning()) {
-                    clearInterval(this._intervals[this.name]);
-                    delete this._intervals[this.name];
-                    return true;
-                }
-
-                return false;
-            },
-            set: function (callback, frequency) {
-                this.clear();
-                this._intervals[this.name] = setInterval(callback, frequency);
-                return this._intervals[this.name];
-            }
-        };
-
         /** Misc function container */
         const fn = {
-            check_github_for_updates: function () {
-                GM_xmlhttpRequest({
-                    method: "GET",
-                    url: UPDATE_URL,
-                    onload: function (r) {
-                        const theirVersion = r.responseText.match(/\/\/\s+@version\s+([^\n<>]+)/)[1];
-                        if (fn.versionCompare(GM_info.script.version, theirVersion) < 0) {
-                            $().toastmessage('showToast', {
-                                text: 'A new version of ' + GM_info.script.name + ' is available! Click your ' +
-                                'Greasemonkey/Tampermonkey icon, select "Check for updates" and reload the page in a few seconds.',
-                                sticky: true,
-                                position: 'top-center',
-                                type: 'notice'
-                            });
-                        }
-                    }
-                });
-            },
             /**
              * Creates a floaty notification
              * @param {String} text Text to display
-             * @param {Object} [options] Overrides as shown here: https://tampermonkey.net/documentation.php#GM_notification
              */
-            notification: function (text, options) {
-                    var FFIco = {icon: 'https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png',body: text};
-                    var n = new Notification('Notifications of Avabur',FFIco);
+            notification: function(text) {
+                Notification.requestPermission().then(function() {
+                    var n = new Notification(GM_info.script.name,  {
+                        icon: URLS.img.icon, 
+                        body: text 
+                    });
                     setTimeout(n.close.bind(n), 5000);
-                n.addEventListener('click', function(e) {
-                    window.focus();
-                    e.target.close();
-                }, false);
+                    n.addEventListener('click', function(e) {
+                        window.focus();
+                        e.target.close();
+                    }, false);
+                });
             },
-            /**
-             * @return
-             * 0 if the versions are equal
-             * a negative integer iff v1 &lt; v2
-             * a positive integer iff v1 &gt; v2
-             * NaN if either version string is in the wrong format
-             */
-            versionCompare: function (v1, v2, options) {
-                var lexicographical = options && options.lexicographical,
-                    zeroExtend = options && options.zeroExtend,
-                    v1parts = v1.split('.'),
-                    v2parts = v2.split('.');
-
-                function isValidPart(x) {
-                    return (lexicographical ? /^\d+[A-Za-z]*$/ : /^\d+$/).test(x);
-                }
-
-                if (!v1parts.every(isValidPart) || !v2parts.every(isValidPart)) {
-                    return NaN;
-                }
-
-                if (zeroExtend) {
-                    while (v1parts.length < v2parts.length) v1parts.push("0");
-                    while (v2parts.length < v1parts.length) v2parts.push("0");
-                }
-
-                if (!lexicographical) {
-                    v1parts = v1parts.map(Number);
-                    v2parts = v2parts.map(Number);
-                }
-
-                for (var i = 0; i < v1parts.length; ++i) {
-                    if (v2parts.length == i) {
-                        return 1;
-                    }
-
-                    if (v1parts[i] == v2parts[i]) {
-
-                    }
-                    else if (v1parts[i] > v2parts[i]) {
-                        return 1;
-                    }
-                    else {
-                        return -1;
+            checkRecordsVisible: function(records) {
+                for (var i = 0; i < records.length; i++) {
+                    const target = $(records[i].target);
+                    var style = window.getComputedStyle(target.context);
+                    if (style.display !== 'none') {
+                        return true;
                     }
                 }
-
-                if (v1parts.length != v2parts.length) {
-                    return -1;
-                }
-
-                return 0;
+                return false;
             }
         };
-
-        function checkRecordsVisible(records) {
-            for (var i = 0; i < records.length; i++) {
-                const target = $(records[i].target);
-                var style = window.getComputedStyle(target.context);
-                if (style.display !== 'none') {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         /** Collection of mutation observers the script uses */
         const OBSERVERS = {
             chat_search: new MutationObserver(
                 /** @param {MutationRecord[]} records */
-                function (records) {
+                function(records) {
                     for (var i = 0; i < records.length; i++) {
                         const addedNodes = records[i].addedNodes;
                         if (addedNodes.length) {
@@ -368,8 +236,8 @@ if (typeof(window.sessionStorage) === "undefined") {
                                     // Look for any values listed under chat_search
                                     var chatSearchValues = GM_config.get('chatSearchValues').split(/\r?\n/);
                                     for (var k = 0; k < chatSearchValues.length; k++) {
-                                    if (chatSearchValues[k].length && text.match(new RegExp(chatSearchValues[k], 'i'))) {
-                                           if (GM_config.get('chatSearchPopup')) {
+                                        if (chatSearchValues[k].length && text.match(new RegExp(chatSearchValues[k], 'i'))) {
+                                            if (GM_config.get('chatSearchPopup')) {
                                                 fn.notification(text);
                                             }
                                             if (GM_config.get('chatSearchSound')) {
@@ -405,7 +273,7 @@ if (typeof(window.sessionStorage) === "undefined") {
             ),
             harvestron: new MutationObserver(
                 function(records) {
-                    if (checkRecordsVisible(records)) {
+                    if (fn.checkRecordsVisible(records)) {
                         if (GM_config.get('harvestronPopup')) {
                             fn.notification("Harvestron available!");
                         }
@@ -417,7 +285,7 @@ if (typeof(window.sessionStorage) === "undefined") {
             ),
             construction: new MutationObserver(
                 function(records) {
-                    if (checkRecordsVisible(records)) {
+                    if (fn.checkRecordsVisible(records)) {
                         if (GM_config.get('constructionPopup')) {
                             fn.notification("Construction available!");
                         }
@@ -441,14 +309,14 @@ if (typeof(window.sessionStorage) === "undefined") {
                                     if (GM_config.get('eventSound')) {
                                         SFX.msg_ding.play();
                                     }
-                                } else if(text === '30s') {
+                                } else if (text === '30s') {
                                     if (GM_config.get('eventPopup')) {
                                         fn.notification('An event is starting in thirty seconds!');
                                     }
                                     if (GM_config.get('eventSound')) {
                                         SFX.msg_ding.play();
                                     }
-                                } else if(text === '01s') {
+                                } else if (text === '01s') {
                                     if (GM_config.get('eventPopup')) {
                                         fn.notification('An event is starting!');
                                     }
@@ -483,7 +351,7 @@ if (typeof(window.sessionStorage) === "undefined") {
             ),
             bossFailure: new MutationObserver(
                 function(records) {
-                    if (checkRecordsVisible(records)) {
+                    if (fn.checkRecordsVisible(records)) {
                         if (GM_config.get('eventPopup')) {
                             fn.notification('You were eliminated from the gauntlet!');
                         }
@@ -493,18 +361,27 @@ if (typeof(window.sessionStorage) === "undefined") {
                     }
                 }
             ),
-            // TODO: This is all kind of the same thing as 
-            chatSearch: new MutationObserver(
-                function(records) {
-
-                }
-            )
 
         };
 
         (function() {
             const ON_LOAD = {
-                "Loading script CSS": function () {
+                "Initializing settings": function() {
+                    $.when($.get(URLS.css.settings)).done(function(response) {
+                        NOA_SETTINGS.css = response;
+                        GM_config.init(NOA_SETTINGS);
+                    });
+
+                    // GM_xmlhttpRequest({
+                    //     method: "GET",
+                    //     url: URLS.css.settings,
+                    //     onload: function(response) {
+                    //         NOA_SETTINGS.css = response;
+                    //         GM_config.init(NOA_SETTINGS);
+                    //     }
+                    // });
+                },
+                "Loading script CSS": function() {
                     const $head = $("head"),
                         keys = Object.keys(URLS.css);
 
@@ -512,12 +389,12 @@ if (typeof(window.sessionStorage) === "undefined") {
                         $head.append("<link type='text/css' rel='stylesheet' href='" + URLS.css[keys[i]] + "'/>");
                     }
                 },
-                "Starting chat monitor": function () {
+                "Starting chat monitor": function() {
                     OBSERVERS.chat_search.observe(document.querySelector("#chatMessageList"), {
                         childList: true
                     });
                 },
-                "Starting fatigue monitor": function () {
+                "Starting fatigue monitor": function() {
                     const autosRemainingSpans = document.getElementsByClassName('autosRemaining');
 
                     /* There is one of these spans in each of the main wrappers (battle, tradeskill, crafting, carving).
@@ -530,38 +407,31 @@ if (typeof(window.sessionStorage) === "undefined") {
                     }
                 },
                 "Starting harvestron monitor": function() {
-                    OBSERVERS.harvestron.observe(document.querySelector("#harvestronNotifier"), {attributes: true});
+                    OBSERVERS.harvestron.observe(document.querySelector("#harvestronNotifier"), { attributes: true });
                 },
                 "Starting construction monitor": function() {
-                    OBSERVERS.construction.observe(document.querySelector("#constructionNotifier"), {attributes: true});
+                    OBSERVERS.construction.observe(document.querySelector("#constructionNotifier"), { attributes: true });
                 },
                 "Starting event monitor": function() {
-                    OBSERVERS.event.observe(document.querySelector("#eventCountdown"), {childList: true});
+                    OBSERVERS.event.observe(document.querySelector("#eventCountdown"), { childList: true });
                 },
                 "Starting quest monitor": function() {
                     // Observe battle quests
-                    OBSERVERS.questComplete.observe(document.querySelector("#bq_info"), {childList: true});
+                    OBSERVERS.questComplete.observe(document.querySelector("#bq_info"), { childList: true });
 
                     // Observe tradeskill quests
-                    OBSERVERS.questComplete.observe(document.querySelector("#tq_info"), {childList: true});
+                    OBSERVERS.questComplete.observe(document.querySelector("#tq_info"), { childList: true });
 
                     // Observe profession quests
-                    OBSERVERS.questComplete.observe(document.querySelector("#pq_info"), {childList: true});
+                    OBSERVERS.questComplete.observe(document.querySelector("#pq_info"), { childList: true });
                 },
                 "Starting boss failure monitor": function() {
                     const bossFailureNotifications = document.getElementsByClassName('boss_failure_notification');
 
                     // There should be only one of these
                     if (bossFailureNotifications && bossFailureNotifications.length) {
-                        OBSERVERS.bossFailure.observe(bossFailureNotifications[0], {attributes: true});
+                        OBSERVERS.bossFailure.observe(bossFailureNotifications[0], { attributes: true });
                     }
-                },
-                "Initializing settings": function() {
-                    $.when($.get(URLS.css.settings)).done(function(response) {
-                        NOA_SETTINGS.css = response;
-                        GM_config.init(NOA_SETTINGS);
-                        console.log("Settings CSS is", NOA_SETTINGS.css);
-                    });
                 },
                 "Adding settings button": function() {
                     var settingsWrapper = $('#settingsLinksWrapper');
@@ -577,9 +447,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                 console.log('[' + GM_info.script.name + '] ' + keys[i]);
                 ON_LOAD[keys[i]]();
             }
-            // fn.check_github_for_updates();
-            // (new Interval("gh_update")).set(fn.check_github_for_updates, 60000);
         })();
 
-    })(jQuery, window.sessionStorage, MutationObserver, buzz);
+    })(jQuery, MutationObserver, buzz);
 }

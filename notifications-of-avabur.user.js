@@ -92,7 +92,9 @@ if (typeof(window.sessionStorage) === "undefined") {
                 message_ding: gh_url("res/sfx/message_ding.wav")
             },
             css: {
-                toast: gh_url("lib/toastmessage/resources/css/jquery.toastmessage.css")
+                toast: gh_url("lib/toastmessage/resources/css/jquery.toastmessage.css"),
+                // TODO: use gh_url after this is merged to master
+                settings: "https://rawgit.com/davidmcclelland/notifications-of-avabur/settings-css-extraction/res/css/settings.css"
             },
         };
 
@@ -107,7 +109,7 @@ if (typeof(window.sessionStorage) === "undefined") {
         // you know what you're doing ;)                   //
         /////////////////////////////////////////////////////
 
-        const NOA_SETTINGS = {
+        var NOA_SETTINGS = {
             id: 'NoAConfig',
             title: 'NoA Settings',
             fields: {
@@ -192,7 +194,6 @@ if (typeof(window.sessionStorage) === "undefined") {
                     default: ''
                 }
             },
-            css: 'body#NoAConfig {color: orange ;text-align: center;text-shadow: 3px 2px black;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;border: 1px solid #01B0AA;border-radius: 40px ;margin: 0px!important;width: 316px!important;height: 446px!important;overflow: hidden;padding: 1px;!important}#NoAConfig .field_label {font-size:15px;text-shadow: 1px 1px black;font-weight: normal ;}#NoAConfig_resetLink {color: orange!important;text-shadow: none ;margin: 5pt ;}#NoAConfig_header {border-bottom: 1px solid #01B0AA ;}'
         };
 
         /** Our persistent DOM stuff */
@@ -368,15 +369,12 @@ if (typeof(window.sessionStorage) === "undefined") {
                                     var chatSearchValues = GM_config.get('chatSearchValues').split(/\r?\n/)
                                     for (var k = 0; k < chatSearchValues.length; k++) {
                                         if (chatSearchValues.length && text.match(chatSearchValues[k])) {
-                                            console.log(text, 'matched', chatSearchValues[k]);
                                            if (GM_config.get('chatSearchPopup')) {
                                                 fn.notification(text);
                                             }
                                             if (GM_config.get('chatSearchSound')) {
                                                 SFX.msg_ding.play();
                                             }
-                                        } else {
-                                            console.log(text, 'did not match', chatSearchValues[k]);
                                         }
                                     }
                                 }
@@ -512,7 +510,6 @@ if (typeof(window.sessionStorage) === "undefined") {
 
                     for (var i = 0; i < keys.length; i++) {
                         $head.append("<link type='text/css' rel='stylesheet' href='" + URLS.css[keys[i]] + "'/>");
-                        $head.append("<style>iframe#NoAConfig {width: 320px!important;height: 450px!important;border:0px!important;border-radius: 40px ;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;}</style>"); 
                     }
                 },
                 "Starting chat monitor": function () {
@@ -560,7 +557,11 @@ if (typeof(window.sessionStorage) === "undefined") {
                     }
                 },
                 "Initializing settings": function() {
-                    GM_config.init(NOA_SETTINGS);
+                    $.when($.get(URLS.css.settings)).done(function(response) {
+                        NOA_SETTINGS.css = response;
+                        GM_config.init(NOA_SETTINGS);
+                        console.log("Settings CSS is", NOA_SETTINGS.css);
+                    });
                 },
                 "Adding settings button": function() {
                     var settingsWrapper = $('#settingsLinksWrapper');

@@ -510,7 +510,6 @@ if (typeof(window.sessionStorage) === "undefined") {
 
                     for (var i = 0; i < keys.length; i++) {
                         $head.append("<link type='text/css' rel='stylesheet' href='" + URLS.css[keys[i]] + "'/>");
-                        // $head.append("<style>iframe#NoAConfig {width: 320px!important;height: 450px!important;border:0px!important;border-radius: 40px ;background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%) ;}</style>"); 
                     }
                 },
                 "Starting chat monitor": function () {

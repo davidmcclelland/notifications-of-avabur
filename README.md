@@ -23,10 +23,10 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
 
 ## TODOs/Vague Ideas
 * `Effect changes (double->triple, rage->fury, etc)`
-* `~~@mentions in chat~~`
+* ~~`@mentions in chat`~~
 * `Debounce notifications to prevent being spammed`
-* `~~Mentioned in event~~`
+* ~~`Mentioned in event`~~
 * `Documentation`
 * `Come up with additional features`
 * `Settings`
-** `Debounce timer`
+  * `Debounce timer`

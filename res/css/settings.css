@@ -35,9 +35,9 @@ body#NoAConfig {
 }
 
 iframe#NoAConfig {
-    width: 320px;
-    height: 55px;
-    border: 0px;
+    width: 320px !important;
+    height: 550px !important;
+    border: none !important;
     border-radius: 40px;
     background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%);
 }

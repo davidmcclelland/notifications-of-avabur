@@ -34,12 +34,8 @@
 // @noframes
 // ==/UserScript==
 
-var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
-if (isFirefox)
     Notification.requestPermission().then(function(result) {
-    console.log(result);
-});
+    console.log(result);});
 
 
 const Toast = { //Tampermonkey's scoping won't let this constant be globally visible
@@ -121,11 +117,6 @@ if (typeof(window.sessionStorage) === "undefined") {
             id: 'NoAConfig',
             title: 'NoA Settings',
             fields: {
-                popupsStealFocus: {
-                    label: 'Popups steal focus',
-                    type: 'checkbox',
-                    default: true
-                },
                 fatiguePopup: {
                     label: 'Fatigue popup',
                     type: 'checkbox',
@@ -282,17 +273,13 @@ if (typeof(window.sessionStorage) === "undefined") {
              * @param {Object} [options] Overrides as shown here: https://tampermonkey.net/documentation.php#GM_notification
              */
             notification: function (text, options) {
-                if (isChrome)
-                    GM_notification($.extend({
-                      text: text,
-                      title: GM_info.script.name,
-                      highlight: GM_config.get('popupsStealFocus'),
-                      timeout: 5
-                    }, options || {}));
-                if (isFirefox)
                     var FFIco = {icon: 'https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png',body: text};
                     var n = new Notification('Notifications of Avabur',FFIco);
                     setTimeout(n.close.bind(n), 5000);
+                n.addEventListener('click', function(e) {
+                    window.focus();
+                    e.target.close();
+                }, false);
             },
             /**
              * @return

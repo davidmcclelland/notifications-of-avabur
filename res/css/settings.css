@@ -16,9 +16,9 @@ body#NoAConfig {
 }
 
 #NoAConfig textarea {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
     border: 1px solid #01b0aa;
     background-color: #004542;
     color: #FFF;
@@ -32,4 +32,12 @@ body#NoAConfig {
 
 #NoAConfig_header {
     border-bottom: 1px solid #01B0AA;
+}
+
+iframe#NoAConfig {
+    width: 320px!important;
+    height: 450px!important;
+    border: 0px!important;
+    border-radius: 40px;
+    background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%);
 }

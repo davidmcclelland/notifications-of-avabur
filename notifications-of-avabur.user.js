@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.0.5
+// @version        0.0.6
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @updateURL      https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
@@ -368,7 +368,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                                     // Look for any values listed under chat_search
                                     var chatSearchValues = GM_config.get('chatSearchValues').split(/\r?\n/)
                                     for (var k = 0; k < chatSearchValues.length; k++) {
-                                        if (chatSearchValues.length && text.match(new RegExp(chatSearchValues[k], 'i'))) {
+                                    if (chatSearchValues[k].length && text.match(new RegExp(chatSearchValues[k], 'i'))) {
                                            if (GM_config.get('chatSearchPopup')) {
                                                 fn.notification(text);
                                             }

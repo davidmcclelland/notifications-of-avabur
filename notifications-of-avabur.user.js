@@ -368,7 +368,7 @@ if (typeof(window.sessionStorage) === "undefined") {
                                     // Look for any values listed under chat_search
                                     var chatSearchValues = GM_config.get('chatSearchValues').split(/\r?\n/)
                                     for (var k = 0; k < chatSearchValues.length; k++) {
-                                        if (chatSearchValues.length && text.match(chatSearchValues[k])) {
+                                        if (chatSearchValues.length && text.match(new RegExp(chatSearchValues[k], 'i'))) {
                                            if (GM_config.get('chatSearchPopup')) {
                                                 fn.notification(text);
                                             }

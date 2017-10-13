@@ -6,7 +6,8 @@ body#NoAConfig {
     border: 1px solid #01B0AA;
     border-radius: 40px;
     margin: 0px!important;
-    !important
+
+    column-count: 2;
 }
 
 #NoAConfig .field_label {
@@ -31,7 +32,7 @@ body#NoAConfig {
 }
 
 #NoAConfig_header {
-    column-count: 2;
+    column-span: all;
     margin-bottom: 8px;
     border-bottom: 1px solid #01B0AA;
 }

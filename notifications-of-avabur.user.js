@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.1.3
+// @version        0.2.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -106,18 +106,8 @@ if (typeof(MutationObserver) === "undefined") {
                     type: 'checkbox',
                     default: true
                 },
-                fatigueSound: {
-                    label: 'Fatigue sound',
-                    type: 'checkbox',
-                    default: true
-                },
                 eventPopup: {
                     label: 'Event popup',
-                    type: 'checkbox',
-                    default: true
-                },
-                eventSound: {
-                    label: 'Event sound',
                     type: 'checkbox',
                     default: true
                 },
@@ -126,18 +116,8 @@ if (typeof(MutationObserver) === "undefined") {
                     type: 'checkbox',
                     default: true
                 },
-                harvestronSound: {
-                    label: 'Harvestron sound',
-                    type: 'checkbox',
-                    default: true
-                },
                 constructionPopup: {
                     label: 'Construction popup',
-                    type: 'checkbox',
-                    default: true
-                },
-                constructionSound: {
-                    label: 'Construction sound',
                     type: 'checkbox',
                     default: true
                 },
@@ -146,18 +126,8 @@ if (typeof(MutationObserver) === "undefined") {
                     type: 'checkbox',
                     default: true
                 },
-                whisperSound: {
-                    label: 'Whisper sound',
-                    type: 'checkbox',
-                    default: true
-                },
                 questCompletePopup: {
                     label: 'Quest complete popup',
-                    type: 'checkbox',
-                    default: true
-                },
-                questCompleteSound: {
-                    label: 'Quest complete sound',
                     type: 'checkbox',
                     default: true
                 },
@@ -166,18 +136,48 @@ if (typeof(MutationObserver) === "undefined") {
                     type: 'checkbox',
                     default: true
                 },
-                chatSearchSound: {
-                    label: 'Chat search sound',
+                lootSearchPopup: {
+                    label: 'Loot search popup',
                     type: 'checkbox',
                     default: true
                 },
-                chatSearchValues: {
-                    label: 'Chat search values',
-                    type: 'textarea',
-                    default: ''
+                craftingSearchPopup: {
+                    label: 'Crafting search popup',
+                    type: 'checkbox',
+                    default: true
                 },
-                lootSearchPopup: {
-                    label: 'Loot search popup',
+                fatigueSound: {
+                    label: 'Fatigue sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                eventSound: {
+                    label: 'Event sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                harvestronSound: {
+                    label: 'Harvestron sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                constructionSound: {
+                    label: 'Construction sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                whisperSound: {
+                    label: 'Whisper sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                questCompleteSound: {
+                    label: 'Quest complete sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                chatSearchSound: {
+                    label: 'Chat search sound',
                     type: 'checkbox',
                     default: true
                 },
@@ -186,20 +186,20 @@ if (typeof(MutationObserver) === "undefined") {
                     type: 'checkbox',
                     default: true
                 },
-                lootSearchValues: {
-                    label: 'Loot search values',
-                    type: 'textarea',
-                    default: ''
-                },
-                craftingSearchPopup: {
-                    label: 'Crafting search popup',
-                    type: 'checkbox',
-                    default: true
-                },
                 craftingSearchSound: {
                     label: 'Crafting search sound',
                     type: 'checkbox',
                     default: true
+                },
+                chatSearchValues: {
+                    label: 'Chat search values',
+                    type: 'textarea',
+                    default: ''
+                },
+                lootSearchValues: {
+                    label: 'Loot search values',
+                    type: 'textarea',
+                    default: ''
                 },
                 craftingSearchValues: {
                     label: 'Crafting search values',

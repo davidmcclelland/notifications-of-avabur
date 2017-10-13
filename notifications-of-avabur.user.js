@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.1.1
+// @version        0.1.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -175,7 +175,7 @@ if (typeof(MutationObserver) === "undefined") {
                     label: 'Chat search values',
                     type: 'textarea',
                     default: ''
-                }
+                },
             },
         };
 
@@ -243,6 +243,8 @@ if (typeof(MutationObserver) === "undefined") {
                                             if (GM_config.get('chatSearchSound')) {
                                                 SFX.msg_ding.play();
                                             }
+                                        } else {
+                                            console.log(chatSearchValues[k], 'does not equal', text);
                                         }
                                     }
                                 }
@@ -392,6 +394,14 @@ if (typeof(MutationObserver) === "undefined") {
                 "Starting chat monitor": function() {
                     OBSERVERS.chat_search.observe(document.querySelector("#chatMessageList"), {
                         childList: true
+                    });
+                    OBSERVERS.chat_search.observe(document.querySelector("#latestLoot"), {
+                        childList: true
+                    });
+
+                    OBSERVERS.chat_search.observe(document.querySelector('#craftingGainWrapper'), {
+                        childList: true,
+                        subtree: true
                     });
                 },
                 "Starting fatigue monitor": function() {

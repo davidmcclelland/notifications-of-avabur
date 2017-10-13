@@ -54,3 +54,17 @@ iframe#NoAConfig {
     height:15%;
     margin-top:8px!important;
 }
+
+#NoAConfig .saveclose_buttons {
+    border-radius: 3px;
+    padding: 0 4px;
+    color: #FFF;
+    background-color: #122D2D;
+    background-image: linear-gradient(to bottom,#235A5A 0,#092d29 100%);
+    background-repeat: repeat-x;
+    display: inline-block;
+    font: 12px "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+    border: 1px solid #01b0aa;
+    text-shadow: 1px 1px 1px rgba(0,0,0,.8);
+    padding: 5px;
+}

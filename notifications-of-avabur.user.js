@@ -1,4 +1,4 @@
-// ==UserScript==
+for // ==UserScript==
 // @name           Notifications of Avabur
 // @namespace      https://github.com/davidmcclelland/
 // @author         Dave McClelland <davidmcclelland@gmail.com>
@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.1.2
+// @version        0.1.2.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -243,8 +243,6 @@ if (typeof(MutationObserver) === "undefined") {
                                             if (GM_config.get('chatSearchSound')) {
                                                 SFX.msg_ding.play();
                                             }
-                                        } else {
-                                            console.log(chatSearchValues[k], 'does not equal', text);
                                         }
                                     }
                                 }

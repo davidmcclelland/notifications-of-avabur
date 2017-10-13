@@ -22,6 +22,7 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
   * `Items crossed out below should be supported with creative search requests`
 
 ## TODOs/Vague Ideas
+* `Sound volume`
 * `Effect changes (double->triple, rage->fury, etc)`
 * `Searching through crafting and drop output`
 * ~~`@mentions in chat`~~

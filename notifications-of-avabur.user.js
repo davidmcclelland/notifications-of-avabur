@@ -1,4 +1,4 @@
-for // ==UserScript==
+// ==UserScript==
 // @name           Notifications of Avabur
 // @namespace      https://github.com/davidmcclelland/
 // @author         Dave McClelland <davidmcclelland@gmail.com>
@@ -13,7 +13,7 @@ for // ==UserScript==
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.1.2.1
+// @version        0.1.3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -176,6 +176,36 @@ if (typeof(MutationObserver) === "undefined") {
                     type: 'textarea',
                     default: ''
                 },
+                lootSearchPopup: {
+                    label: 'Loot search popup',
+                    type: 'checkbox',
+                    default: true
+                },
+                lootSearchSound: {
+                    label: 'Loot search sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                lootSearchValues: {
+                    label: 'Loot search values',
+                    type: 'textarea',
+                    default: ''
+                },
+                craftingSearchPopup: {
+                    label: 'Crafting search popup',
+                    type: 'checkbox',
+                    default: true
+                },
+                craftingSearchSound: {
+                    label: 'Crafting search sound',
+                    type: 'checkbox',
+                    default: true
+                },
+                craftingSearchValues: {
+                    label: 'Crafting search values',
+                    type: 'textarea',
+                    default: ''
+                }
             },
         };
 
@@ -212,6 +242,24 @@ if (typeof(MutationObserver) === "undefined") {
                     }
                 }
                 return false;
+            },
+            findSearchValues: function(records, searchValuesKey) {
+                for (var i = 0; i < records.length; i++) {
+                    const addedNodes = records[i].addedNodes;
+                    if (addedNodes.length) {
+                        for (var j = 0; j < addedNodes.length; j++) {
+                            const text = $(addedNodes[j]).text();
+                            // Look for any values listed under the given key
+                            var searchValues = GM_config.get(searchValuesKey).split(/\r?\n/);
+                            for (var k = 0; k < searchValues.length; k++) {
+                                if (searchValues[k].length && text.match(new RegExp(searchValues[k], 'i'))) {
+                                    return text;
+                                }
+                            }
+                        }
+                    }
+                }
+                return false;
             }
         };
 
@@ -220,6 +268,17 @@ if (typeof(MutationObserver) === "undefined") {
             chat_search: new MutationObserver(
                 /** @param {MutationRecord[]} records */
                 function(records) {
+                    var text = fn.findSearchValues(records, 'chatSearchValues');
+                    if (text) {
+                        if (GM_config.get('chatSearchPopup')) {
+                            fn.notification(text);
+                        }
+                        if (GM_config.get('chatSearchSound')) {
+                            SFX.msg_ding.play();
+                        }
+                        return;
+                    }
+
                     for (var i = 0; i < records.length; i++) {
                         const addedNodes = records[i].addedNodes;
                         if (addedNodes.length) {
@@ -232,22 +291,39 @@ if (typeof(MutationObserver) === "undefined") {
                                     if (GM_config.get('whisperSound')) {
                                         SFX.msg_ding.play();
                                     }
-                                } else {
-                                    // Look for any values listed under chat_search
-                                    var chatSearchValues = GM_config.get('chatSearchValues').split(/\r?\n/);
-                                    for (var k = 0; k < chatSearchValues.length; k++) {
-                                        if (chatSearchValues[k].length && text.match(new RegExp(chatSearchValues[k], 'i'))) {
-                                            if (GM_config.get('chatSearchPopup')) {
-                                                fn.notification(text);
-                                            }
-                                            if (GM_config.get('chatSearchSound')) {
-                                                SFX.msg_ding.play();
-                                            }
-                                        }
-                                    }
                                 }
                             }
                         }
+                    }
+                }
+            ),
+            loot_search: new MutationObserver(
+                /** @param {MutationRecord[]} records */
+                function(records) {
+                    var text = fn.findSearchValues(records, 'lootSearchValues');
+                    if (text) {
+                        if (GM_config.get('lootSearchPopup')) {
+                            fn.notification(text);
+                        }
+                        if (GM_config.get('lootSearchSound')) {
+                            SFX.msg_ding.play();
+                        }
+                        return;
+                    }
+                }
+            ),
+            crafting_search: new MutationObserver(
+                /** @param {MutationRecord[]} records */
+                function(records) {
+                    var text = fn.findSearchValues(records, 'craftingSearchValues');
+                    if (text) {
+                        if (GM_config.get('craftingSearchPopup')) {
+                            fn.notification(text);
+                        }
+                        if (GM_config.get('craftingSearchSound')) {
+                            SFX.msg_ding.play();
+                        }
+                        return;
                     }
                 }
             ),
@@ -393,11 +469,14 @@ if (typeof(MutationObserver) === "undefined") {
                     OBSERVERS.chat_search.observe(document.querySelector("#chatMessageList"), {
                         childList: true
                     });
-                    OBSERVERS.chat_search.observe(document.querySelector("#latestLoot"), {
+                },
+                "Starting loot monitor": function() {
+                    OBSERVERS.loot_search.observe(document.querySelector("#latestLoot"), {
                         childList: true
                     });
-
-                    OBSERVERS.chat_search.observe(document.querySelector('#craftingGainWrapper'), {
+                },
+                "Starting crafting monitor": function() {
+                    OBSERVERS.crafting_search.observe(document.querySelector('#craftingGainWrapper'), {
                         childList: true,
                         subtree: true
                     });

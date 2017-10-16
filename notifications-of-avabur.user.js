@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.2.0
+// @version        0.2.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -488,7 +488,7 @@ if (typeof(MutationObserver) === "undefined") {
                     It seems like all of them are currently updated with the same "autosRemaining" value each action,
                     so there's no need to watch all of them. */
                     if (autosRemainingSpans && autosRemainingSpans.length) {
-                        OBSERVERS.fatigue.observe(autosRemainingSpans[i], {
+                        OBSERVERS.fatigue.observe(autosRemainingSpans[0], {
                             childList: true
                         });
                     }

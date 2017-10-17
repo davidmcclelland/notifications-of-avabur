@@ -1,4 +1,4 @@
-# notifications-of-avabur
+# Notifications of Avabur
 Notifies users (with sounds and toasts) of events within Relics of Avabur.
 
 ## Installation

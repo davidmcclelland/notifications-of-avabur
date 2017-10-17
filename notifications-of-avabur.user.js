@@ -447,15 +447,6 @@ if (typeof(MutationObserver) === "undefined") {
                         NOA_SETTINGS.css = response;
                         GM_config.init(NOA_SETTINGS);
                     });
-
-                    // GM_xmlhttpRequest({
-                    //     method: "GET",
-                    //     url: URLS.css.settings,
-                    //     onload: function(response) {
-                    //         NOA_SETTINGS.css = response;
-                    //         GM_config.init(NOA_SETTINGS);
-                    //     }
-                    // });
                 },
                 "Loading script CSS": function() {
                     const $head = $("head"),

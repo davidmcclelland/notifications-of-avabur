@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        0.2.1
+// @version        0.2.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -468,6 +468,11 @@ if (typeof(MutationObserver) === "undefined") {
                 },
                 "Starting crafting monitor": function() {
                     OBSERVERS.crafting_search.observe(document.querySelector('#craftingGainWrapper'), {
+                        childList: true,
+                        subtree: true
+                    });
+
+                    OBSERVERS.crafting_search.observe(document.querySelector('#craftingXPCount'), {
                         childList: true,
                         subtree: true
                     });

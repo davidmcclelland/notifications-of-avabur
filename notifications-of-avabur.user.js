@@ -336,7 +336,7 @@ if (typeof(MutationObserver) === "undefined") {
                                 const text = $(addedNodes[j]).text();
                                 if (text === '5') {
                                     if (GM_config.get('fatiguePopup')) {
-                                        fn.notification('Your stamina is low!!');
+                                        fn.notification('Your stamina is low!');
                                     }
                                     if (GM_config.get('fatigueSound')) {
                                         SFX.msg_ding.play();

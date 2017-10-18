@@ -10,7 +10,7 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
 
 ## Features
 * Notifications for:
-  * Fatigued
+  * Low stamina/fatigued
   * Event countdown started
   * Event started
   * Harvestron available
@@ -18,27 +18,26 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
   * Whispers
   * Knocked out of gauntlet
   * Quest complete
-
-## Needs testing
+  * Text search for chat, loot, and crafting
+    * Be careful with these - it watches your own chat messages too!
+    * Regexes are supported, so go crazy!
 * Settings
   * Popup for each event (independent)
   * Sound for each event (independent)
-* Chat search
-  * Be careful with this one - it watches your own chat messages too!
-  * Regexes are supported, so go crazy!
-  * Items crossed out below should be supported with creative search requests
 
 ## TODOs/Vague Ideas
 * Sound volume
 * Effect changes (double->triple, rage->fury, etc)
-* Searching through crafting and drop output
-* ~~@mentions in chat~~
-* Debounce notifications to prevent being spammed
-* ~~Mentioned in event~~
-* Documentation
+* Throttle notifications to prevent being spammed
 * Come up with additional features
 * Settings
-  * Debounce timer
+  * Throttle timer
+
+## Help
+If you need help, you should join the AvaNotifications channel on RoA.
+
+## Bugs/Suggestions
+If you have bugs to report or feature suggestions, file an issue on the github repository.
 
 ## Special Thanks
 Userscript heavily borrows from Avabur Improved by [Alorel](https://github.com/Alorel)

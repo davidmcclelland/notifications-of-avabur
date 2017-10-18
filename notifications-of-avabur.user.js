@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.0.0
+// @version        1.0.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -243,18 +243,23 @@ if (typeof(MutationObserver) === "undefined") {
                 }
                 return false;
             },
-            findSearchValues: function(records, searchValuesKey) {
+            findSearchValues: function(text, searchValuesKey) {
+                // Look for any values listed under the given key
+                var searchValues = GM_config.get(searchValuesKey).split(/\r?\n/);
+                for (var k = 0; k < searchValues.length; k++) {
+                    if (searchValues[k].length && text.match(new RegExp(searchValues[k], 'i'))) {
+                        return true;
+                    }
+                }
+            },
+            findSearchValuesInRecords: function(records, searchValuesKey) {
                 for (var i = 0; i < records.length; i++) {
                     const addedNodes = records[i].addedNodes;
                     if (addedNodes.length) {
                         for (var j = 0; j < addedNodes.length; j++) {
                             const text = $(addedNodes[j]).text();
-                            // Look for any values listed under the given key
-                            var searchValues = GM_config.get(searchValuesKey).split(/\r?\n/);
-                            for (var k = 0; k < searchValues.length; k++) {
-                                if (searchValues[k].length && text.match(new RegExp(searchValues[k], 'i'))) {
-                                    return text;
-                                }
+                            if (fn.findSearchValues(text, searchValuesKey)) {
+                                return text;
                             }
                         }
                     }
@@ -268,7 +273,7 @@ if (typeof(MutationObserver) === "undefined") {
             chat_search: new MutationObserver(
                 /** @param {MutationRecord[]} records */
                 function(records) {
-                    var text = fn.findSearchValues(records, 'chatSearchValues');
+                    var text = fn.findSearchValuesInRecords(records, 'chatSearchValues');
                     if (text) {
                         if (GM_config.get('chatSearchPopup')) {
                             fn.notification(text);
@@ -300,7 +305,7 @@ if (typeof(MutationObserver) === "undefined") {
             loot_search: new MutationObserver(
                 /** @param {MutationRecord[]} records */
                 function(records) {
-                    var text = fn.findSearchValues(records, 'lootSearchValues');
+                    var text = fn.findSearchValuesInRecords(records, 'lootSearchValues');
                     if (text) {
                         if (GM_config.get('lootSearchPopup')) {
                             fn.notification(text);
@@ -315,7 +320,14 @@ if (typeof(MutationObserver) === "undefined") {
             crafting_search: new MutationObserver(
                 /** @param {MutationRecord[]} records */
                 function(records) {
-                    var text = fn.findSearchValues(records, 'craftingSearchValues');
+                    var text = fn.findSearchValuesInRecords(records, 'craftingSearchValues');
+                    // Weird special case, because the crafting progress bar is full of different divs, but it's very useful to search
+                    if (!text) {
+                        const craftingXpCountText = $('#craftingXPCount').text();
+                        if (fn.findSearchValues(craftingXpCountText, 'craftingSearchValues')) {
+                            text = craftingXpCountText;
+                        }
+                    }
                     if (text) {
                         if (GM_config.get('craftingSearchPopup')) {
                             fn.notification(text);

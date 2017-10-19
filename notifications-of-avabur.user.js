@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.0.1
+// @version        1.0.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -26,7 +26,6 @@
 // @license        LGPL-2.1
 // @noframes
 // ==/UserScript==
-
 
 const Toast = { //Tampermonkey's scoping won't let this constant be globally visible
     error: function(msg) {
@@ -487,11 +486,6 @@ if (typeof(MutationObserver) === "undefined") {
                 },
                 "Starting crafting monitor": function() {
                     OBSERVERS.crafting_search.observe(document.querySelector('#craftingGainWrapper'), {
-                        childList: true,
-                        subtree: true
-                    });
-
-                    OBSERVERS.crafting_search.observe(document.querySelector('#craftingXPCount'), {
                         childList: true,
                         subtree: true
                     });

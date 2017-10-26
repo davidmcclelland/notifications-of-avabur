@@ -10,6 +10,14 @@ body#NoAConfig {
     column-count: 2;
 }
 
+iframe#NoAConfig {
+    width: 640px !important;
+    height: 85% !important;
+    border: none !important;
+    border-radius: 40px;
+    background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%);
+}
+
 #NoAConfig .field_label {
     font-size: 15px;
     text-shadow: 1px 1px black;
@@ -25,6 +33,14 @@ body#NoAConfig {
     color: #FFF;
 }
 
+#NoAConfig input {
+    border: 1px solid #01b0aa;
+    background-color: #004542;
+    color: #FFF;
+    width: 40px;
+    text-align: center;
+}
+
 #NoAConfig_resetLink {
     color: orange!important;
     text-shadow: none;
@@ -35,14 +51,6 @@ body#NoAConfig {
     column-span: all;
     margin-bottom: 8px;
     border-bottom: 1px solid #01B0AA;
-}
-
-iframe#NoAConfig {
-    width: 640px !important;
-    height: 80% !important;
-    border: none !important;
-    border-radius: 40px;
-    background: transparent linear-gradient(to bottom, rgba(01, 115, 109, 0.9) 0%, rgba(0, 0, 0, 0.5) 100%);
 }
 
 #NoAConfig_chatSearchValues_var, #NoAConfig_lootSearchValues_var, #NoAConfig_craftingSearchValues_var, #NoAConfig_buttons_holder {

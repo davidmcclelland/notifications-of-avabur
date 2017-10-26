@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.0.2
+// @version        1.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -100,6 +100,11 @@ if (typeof(MutationObserver) === "undefined") {
             id: 'NoAConfig',
             title: 'NoA Settings',
             fields: {
+                recurringNotifications: {
+                    label: 'Recurring notifictaions',
+                    type: 'checkbox',
+                    default: true
+                },
                 fatiguePopup: {
                     label: 'Fatigue popup',
                     type: 'checkbox',
@@ -144,6 +149,13 @@ if (typeof(MutationObserver) === "undefined") {
                     label: 'Crafting search popup',
                     type: 'checkbox',
                     default: true
+                },
+                notificationVolume: {
+                    label: 'Notification volume',
+                    type: 'int',
+                    min: 0,
+                    max: 100,
+                    default: 80
                 },
                 fatigueSound: {
                     label: 'Fatigue sound',
@@ -208,9 +220,10 @@ if (typeof(MutationObserver) === "undefined") {
             },
         };
 
-        const SFX = {
-            circ_saw: new buzz.sound(URLS.sfx.circ_saw),
-            msg_ding: new buzz.sound(URLS.sfx.message_ding)
+        var SFX;
+
+        var counters = {
+            lastHarvestronNotification: 0,
         };
 
         /** Misc function container */
@@ -231,6 +244,42 @@ if (typeof(MutationObserver) === "undefined") {
                         e.target.close();
                     }, false);
                 });
+            },
+            checkConstructionVisible: function() {
+                var div = document.getElementById('constructionNotifier');
+                if (div && (div.style.display !== 'none')) {
+                    /* If lastNotification is 0, then it just became visible so notify regardless of recurring settings.
+                     * Otherwise, if recurring is set up and it's been 20 seconds, notify again */
+                    if (counters.lastConstructionNotification === 0 || (GM_config.get('recurringNotifications') && counters.lastConstructionNotification % 20 === 0)) {
+                        if (GM_config.get('constructionPopup')) {
+                            fn.notification("Construction available!");
+                        }
+                        if (GM_config.get('constructionSound')) {
+                            SFX.msg_ding.play();
+                        }
+                    }
+                    counters.lastConstructionNotification++;
+                } else {
+                    counters.lastConstructionNotification = 0;
+                }
+            },
+            checkHarvestronVisible: function() {
+                var div = document.getElementById('harvestronNotifier');
+                if (div && (div.style.display !== 'none')) {
+                    /* If lastNotification is 0, then it just became visible so notify regardless of recurring settings.
+                     * Otherwise, if recurring is set up and it's been 20 seconds, notify again */
+                    if (counters.lastHarvestronNotification === 0 || (GM_config.get('recurringNotifications') && counters.lastHarvestronNotification % 20 === 0)) {
+                        if (GM_config.get('harvestronPopup')) {
+                            fn.notification("Harvestron available!");
+                        }
+                        if (GM_config.get('harvestronSound')) {
+                            SFX.msg_ding.play();
+                        }
+                    }
+                    counters.lastHarvestronNotification++;
+                } else {
+                    counters.lastHarvestronNotification = 0;
+                }
             },
             checkRecordsVisible: function(records) {
                 for (var i = 0; i < records.length; i++) {
@@ -464,6 +513,12 @@ if (typeof(MutationObserver) === "undefined") {
                     $.when($.get(URLS.css.settings)).done(function(response) {
                         NOA_SETTINGS.css = response;
                         GM_config.init(NOA_SETTINGS);
+
+                        SFX = {
+                            msg_ding: new buzz.sound(URLS.sfx.message_ding, {
+                                volume: GM_config.get('notificationVolume')
+                            })
+                        };
                     });
                 },
                 "Loading script CSS": function() {
@@ -503,10 +558,10 @@ if (typeof(MutationObserver) === "undefined") {
                     }
                 },
                 "Starting harvestron monitor": function() {
-                    OBSERVERS.harvestron.observe(document.querySelector("#harvestronNotifier"), { attributes: true });
+                    setInterval(fn.checkHarvestronVisible, 1000);
                 },
                 "Starting construction monitor": function() {
-                    OBSERVERS.construction.observe(document.querySelector("#constructionNotifier"), { attributes: true });
+                    setInterval(fn.checkConstructionVisible, 1000);
                 },
                 "Starting event monitor": function() {
                     OBSERVERS.event.observe(document.querySelector("#eventCountdown"), { childList: true });
@@ -535,7 +590,7 @@ if (typeof(MutationObserver) === "undefined") {
                     $('#noaPreferences').click(function() {
                         GM_config.open();
                     });
-                }
+                },
             };
 
             const keys = Object.keys(ON_LOAD);

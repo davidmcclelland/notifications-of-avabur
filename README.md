@@ -9,12 +9,13 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
 * Settings for NoA are found under `Account Management.`
 
 ## Features
-* Notifications for:
+* Recurring notifications for
+  * Harvestron available
+  * Construction available
+* One-time Notifications for:
   * Low stamina/fatigued
   * Event countdown started
   * Event started
-  * Harvestron available
-  * Construction available
   * Whispers
   * Knocked out of gauntlet
   * Quest complete
@@ -24,9 +25,12 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
 * Settings
   * Popup for each event (independent)
   * Sound for each event (independent)
+  * Sound volume
 
 ## TODOs/Vague Ideas
-* Sound volume
+* Recurring notifications for
+  * Quest complete
+  * Fatigue
 * Effect changes (double->triple, rage->fury, etc)
 * Throttle notifications to prevent being spammed
 * Come up with additional features

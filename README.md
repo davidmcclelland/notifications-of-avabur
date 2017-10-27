@@ -12,13 +12,13 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
 * Recurring notifications for
   * Harvestron available
   * Construction available
+  * Quest complete
 * One-time Notifications for:
   * Low stamina/fatigued
   * Event countdown started
   * Event started
   * Whispers
   * Knocked out of gauntlet
-  * Quest complete
   * Text search for chat, loot, and crafting
     * Be careful with these - it watches your own chat messages too!
     * Regexes are supported, so go crazy!
@@ -29,7 +29,6 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
 
 ## TODOs/Vague Ideas
 * Recurring notifications for
-  * Quest complete
   * Fatigue
 * Effect changes (double->triple, rage->fury, etc)
 * Throttle notifications to prevent being spammed

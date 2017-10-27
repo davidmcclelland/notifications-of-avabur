@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.1
+// @version        1.1.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -223,7 +223,9 @@ if (typeof(MutationObserver) === "undefined") {
         var SFX;
 
         var counters = {
+            lastConstructionNotification: 0,
             lastHarvestronNotification: 0,
+            lastQuestNotification: 0,
         };
 
         /** Misc function container */
@@ -279,6 +281,31 @@ if (typeof(MutationObserver) === "undefined") {
                     counters.lastHarvestronNotification++;
                 } else {
                     counters.lastHarvestronNotification = 0;
+                }
+            },
+            checkQuestComplete: function() {
+                var visibleQuestDivId;
+                const possibleQuestDivIds = ['bq_info', 'tq_info', 'pq_info'];
+                for (var i = 0; i < possibleQuestDivIds.length; i++) {
+                    var questDiv = document.getElementById(possibleQuestDivIds[i]);
+                    if (questDiv && (questDiv.style.display !== 'none')) {
+                        visibleQuestDivId = possibleQuestDivIds[i];
+                        break;
+                    }
+                }
+
+                if (visibleQuestDivId && ($('#' + visibleQuestDivId).text().startsWith('You have completed your quest!'))) {
+                    if (counters.lastQuestNotification === 0 || (GM_config.get('recurringNotifications') && counters.lastQuestNotification % 20 === 0)) {
+                        if (GM_config.get('questCompletePopup')) {
+                            fn.notification('Quest complete!');
+                        }
+                        if (GM_config.get('questCompleteSound')) {
+                            SFX.msg_ding.play();
+                        }
+                    }
+                    counters.lastQuestNotification++;
+                } else {
+                    counters.lastQuestNotification = 0;
                 }
             },
             checkRecordsVisible: function(records) {
@@ -414,30 +441,6 @@ if (typeof(MutationObserver) === "undefined") {
                     }
                 }
             ),
-            harvestron: new MutationObserver(
-                function(records) {
-                    if (fn.checkRecordsVisible(records)) {
-                        if (GM_config.get('harvestronPopup')) {
-                            fn.notification("Harvestron available!");
-                        }
-                        if (GM_config.get('harvestronSound')) {
-                            SFX.msg_ding.play();
-                        }
-                    }
-                }
-            ),
-            construction: new MutationObserver(
-                function(records) {
-                    if (fn.checkRecordsVisible(records)) {
-                        if (GM_config.get('constructionPopup')) {
-                            fn.notification("Construction available!");
-                        }
-                        if (GM_config.get('constructionSound')) {
-                            SFX.msg_ding.play();
-                        }
-                    }
-                }
-            ),
             event: new MutationObserver(
                 function(records) {
                     for (var i = 0; i < records.length; i++) {
@@ -464,26 +467,6 @@ if (typeof(MutationObserver) === "undefined") {
                                         fn.notification('An event is starting!');
                                     }
                                     if (GM_config.get('eventSound')) {
-                                        SFX.msg_ding.play();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            ),
-            questComplete: new MutationObserver(
-                function(records) {
-                    for (var i = 0; i < records.length; i++) {
-                        const addedNodes = records[i].addedNodes;
-                        if (addedNodes.length) {
-                            for (var j = 0; j < addedNodes.length; j++) {
-                                const text = $(addedNodes[j]).text();
-                                if (text.startsWith('You have completed your quest!')) {
-                                    if (GM_config.get('questCompletePopup')) {
-                                        fn.notification('Quest complete!');
-                                    }
-                                    if (GM_config.get('questCompleteSound')) {
                                         SFX.msg_ding.play();
                                     }
                                 }
@@ -563,18 +546,11 @@ if (typeof(MutationObserver) === "undefined") {
                 "Starting construction monitor": function() {
                     setInterval(fn.checkConstructionVisible, 1000);
                 },
+                "Starting quest monitor": function() {
+                    setInterval(fn.checkQuestComplete, 1000);
+                },
                 "Starting event monitor": function() {
                     OBSERVERS.event.observe(document.querySelector("#eventCountdown"), { childList: true });
-                },
-                "Starting quest monitor": function() {
-                    // Observe battle quests
-                    OBSERVERS.questComplete.observe(document.querySelector("#bq_info"), { childList: true });
-
-                    // Observe tradeskill quests
-                    OBSERVERS.questComplete.observe(document.querySelector("#tq_info"), { childList: true });
-
-                    // Observe profession quests
-                    OBSERVERS.questComplete.observe(document.querySelector("#pq_info"), { childList: true });
                 },
                 "Starting boss failure monitor": function() {
                     const bossFailureNotifications = document.getElementsByClassName('boss_failure_notification');

@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.1.1
+// @version        1.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -228,6 +228,9 @@ if (typeof(MutationObserver) === "undefined") {
             lastQuestNotification: 0,
         };
 
+
+        var notificationLogEntries = [];
+
         /** Misc function container */
         const fn = {
             /**
@@ -235,6 +238,12 @@ if (typeof(MutationObserver) === "undefined") {
              * @param {String} text Text to display
              */
             notification: function(text) {
+                // TODO: pop if we get too big
+                notificationLogEntries.push(text);
+                if (notificationLogEntries.length > 100) {
+                    notificationLogEntries.shift();
+                }
+
                 Notification.requestPermission().then(function() {
                     var n = new Notification(GM_info.script.name,  {
                         icon: URLS.img.icon, 
@@ -560,11 +569,54 @@ if (typeof(MutationObserver) === "undefined") {
                         OBSERVERS.bossFailure.observe(bossFailureNotifications[0], { attributes: true });
                     }
                 },
-                "Adding settings button": function() {
-                    var settingsWrapper = $('#settingsLinksWrapper');
-                    settingsWrapper.append('<a id="noaPreferences"><button class="btn btn-primary">NoA Settings</button></a>');
-                    $('#noaPreferences').click(function() {
-                        GM_config.open();
+                "Adding HTML elements": function() {
+                    var settingsLinksWrapper = $('#settingsLinksWrapper');
+                    var noaSettingsButton = $('<a id="noaPreferences"><button class="btn btn-primary">NoA Settings</button></a>');
+                    noaSettingsButton.click(function() {GM_config.open(); });
+                    settingsLinksWrapper.append(noaSettingsButton);
+
+                    const notificationLogButton = $('<a id="NoALogButton"><button class="btn btn-primary">NoA Log</button></a>');
+                    settingsLinksWrapper.append(notificationLogButton);
+
+                    const notificationLog = $('<div id="NoANotificationLog"><button class="btn btn-primary" id="notificationLogRefresh">Refresh</button><ul id="notificationLogItems"></ul></div>');
+                    const accountSettingsWrapper = $('#accountSettingsWrapper');
+                    accountSettingsWrapper.append(notificationLog);
+                    const notificationLogRefreshButton = $('#notificationLogRefresh');
+                    const notificationLogItems = $('#notificationLogItems');
+
+                    notificationLogRefreshButton.click(function() {
+                        notificationLogItems.empty();
+                        populateNotificationLog();
+                    });
+
+                    notificationLogButton.click(function() {
+                        // Remove the active class from all of the buttons in the settings link wrapper, then set the notification log button active
+                        settingsLinksWrapper.children('.active').removeClass('active');
+                        notificationLogButton.addClass('active');
+
+                        // Hide all the children of the settings wrapper, then display only the settings link wraper and the notification log
+                        accountSettingsWrapper.children().css('display', 'none');
+                        settingsLinksWrapper.css('display', 'block');
+                        notificationLog.css('display', 'block');
+
+                        populateNotificationLog();
+                    });
+
+                    // When hiding the notfication log (from clicking any other button), remove all the list items
+                    function hideNotificationLog() {
+                        notificationLogItems.empty();
+                        notificationLog.css('display', 'none');
+                    }
+
+                    function populateNotificationLog() {
+                        // iterate backwards - display newest first
+                        for (var notificationCounter = notificationLogEntries.length - 1; notificationCounter >= 0; notificationCounter--) {
+                            notificationLogItems.append('<li>' + notificationLogEntries[notificationCounter] + '</li>');
+                        }
+                    }
+
+                    notificationLogButton.siblings().each(function() {
+                        $(this).click(hideNotificationLog);
                     });
                 },
             };

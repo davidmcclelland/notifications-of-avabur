@@ -238,8 +238,9 @@ if (typeof(MutationObserver) === "undefined") {
              * @param {String} text Text to display
              */
             notification: function(text) {
-                // TODO: pop if we get too big
-                notificationLogEntries.push(text);
+                if (text !== notificationLogEntries[notificationLogEntries.length - 1]) {
+                    notificationLogEntries.push(text);
+                }
                 if (notificationLogEntries.length > 100) {
                     notificationLogEntries.shift();
                 }

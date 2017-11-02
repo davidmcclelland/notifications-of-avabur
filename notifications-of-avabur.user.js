@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.2
+// @version        1.2.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -584,10 +584,7 @@ if (typeof(MutationObserver) === "undefined") {
                     const notificationLogRefreshButton = $('#notificationLogRefresh');
                     const notificationLogItems = $('#notificationLogItems');
 
-                    notificationLogRefreshButton.click(function() {
-                        notificationLogItems.empty();
-                        populateNotificationLog();
-                    });
+                    notificationLogRefreshButton.click(populateNotificationLog);
 
                     notificationLogButton.click(function() {
                         // Remove the active class from all of the buttons in the settings link wrapper, then set the notification log button active
@@ -609,6 +606,7 @@ if (typeof(MutationObserver) === "undefined") {
                     }
 
                     function populateNotificationLog() {
+                        notificationLogItems.empty();
                         // iterate backwards - display newest first
                         for (var notificationCounter = notificationLogEntries.length - 1; notificationCounter >= 0; notificationCounter--) {
                             notificationLogItems.append('<li>' + notificationLogEntries[notificationCounter] + '</li>');

@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.2.2
+// @version        1.2.3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -237,8 +237,8 @@ if (typeof(MutationObserver) === "undefined") {
              * Creates a floaty notification
              * @param {String} text Text to display
              */
-            notification: function(text) {
-                if (!notificationLogEntries[notificationLogEntries.length - 1] || text !== notificationLogEntries[notificationLogEntries.length - 1].text) {
+            notification: function(text, addToLog) {
+                if (addToLog !== false) {
                     notificationLogEntries.push({
                         timestamp: new Date(),
                         text: text
@@ -267,7 +267,7 @@ if (typeof(MutationObserver) === "undefined") {
                      * Otherwise, if recurring is set up and it's been 20 seconds, notify again */
                     if (counters.lastConstructionNotification === 0 || (GM_config.get('recurringNotifications') && counters.lastConstructionNotification % 20 === 0)) {
                         if (GM_config.get('constructionPopup')) {
-                            fn.notification("Construction available!");
+                            fn.notification('Construction available!', counters.lastConstructionNotification === 0);
                         }
                         if (GM_config.get('constructionSound')) {
                             SFX.msg_ding.play();
@@ -285,7 +285,7 @@ if (typeof(MutationObserver) === "undefined") {
                      * Otherwise, if recurring is set up and it's been 20 seconds, notify again */
                     if (counters.lastHarvestronNotification === 0 || (GM_config.get('recurringNotifications') && counters.lastHarvestronNotification % 20 === 0)) {
                         if (GM_config.get('harvestronPopup')) {
-                            fn.notification("Harvestron available!");
+                            fn.notification('Harvestron available!', counters.lastHarvestronNotification === 0);
                         }
                         if (GM_config.get('harvestronSound')) {
                             SFX.msg_ding.play();
@@ -310,7 +310,7 @@ if (typeof(MutationObserver) === "undefined") {
                 if (visibleQuestDivId && ($('#' + visibleQuestDivId).text().startsWith('You have completed your quest!'))) {
                     if (counters.lastQuestNotification === 0 || (GM_config.get('recurringNotifications') && counters.lastQuestNotification % 20 === 0)) {
                         if (GM_config.get('questCompletePopup')) {
-                            fn.notification('Quest complete!');
+                            fn.notification('Quest complete!', counters.lastQuestNotification === 0);
                         }
                         if (GM_config.get('questCompleteSound')) {
                             SFX.msg_ding.play();

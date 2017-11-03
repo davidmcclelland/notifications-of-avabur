@@ -239,7 +239,10 @@ if (typeof(MutationObserver) === "undefined") {
              */
             notification: function(text) {
                 if (!notificationLogEntries[notificationLogEntries.length - 1] || text !== notificationLogEntries[notificationLogEntries.length - 1].text) {
-                    notificationLogEntries.push({timestamp: new Date(), text: text});
+                    notificationLogEntries.push({
+                        timestamp: new Date(),
+                        text: text
+                    });
                 }
                 if (notificationLogEntries.length > 100) {
                     notificationLogEntries.shift();
@@ -610,7 +613,28 @@ if (typeof(MutationObserver) === "undefined") {
                         notificationLogItems.empty();
                         // iterate backwards - display newest first
                         for (var notificationCounter = notificationLogEntries.length - 1; notificationCounter >= 0; notificationCounter--) {
-                            notificationLogItems.append('<li>' + notificationLogEntries[notificationCounter].timestamp.toLocaleString() + ' - ' + notificationLogEntries[notificationCounter].text + '</li>');
+                            notificationLogItems.append('<li>' + formatLogEntry(notificationLogEntries[notificationCounter]) + '</li>');
+                        }
+                    }
+
+                    function formatDoubleDigit(num) {
+                        return (num < 10) ? '0' + num : num;
+                    }
+
+                    function formatTimestamp(timestamp) {
+                        var ts = new Date(timestamp.toLocaleString(undefined, { timeZone: 'America/New_York' }));
+                        return '[' +
+                            formatDoubleDigit(ts.getHours()) + ':' +
+                            formatDoubleDigit(ts.getMinutes()) + ':' +
+                            formatDoubleDigit(ts.getSeconds()) +
+                            '] ';
+                    }
+
+                    function formatLogEntry(entry) {
+                        if (!!/^\[\d\d:\d\d:\d\d\]/.exec(entry.text)) {
+                            return entry.text;
+                        } else {
+                            return formatTimestamp(entry.timestamp) + entry.text;
                         }
                     }
 

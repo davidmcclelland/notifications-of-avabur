@@ -239,7 +239,7 @@ if (typeof(MutationObserver) === "undefined") {
              */
             notification: function(text) {
                 if (text !== notificationLogEntries[notificationLogEntries.length - 1]) {
-                    notificationLogEntries.push(text);
+                    notificationLogEntries.push(new Date().toLocaleString() + '\t' + text);
                 }
                 if (notificationLogEntries.length > 100) {
                     notificationLogEntries.shift();

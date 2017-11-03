@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.2.1
+// @version        1.2.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -238,8 +238,11 @@ if (typeof(MutationObserver) === "undefined") {
              * @param {String} text Text to display
              */
             notification: function(text) {
-                if (text !== notificationLogEntries[notificationLogEntries.length - 1]) {
-                    notificationLogEntries.push(text);
+                if (!notificationLogEntries[notificationLogEntries.length - 1] || text !== notificationLogEntries[notificationLogEntries.length - 1].text) {
+                    notificationLogEntries.push({
+                        timestamp: new Date(),
+                        text: text
+                    });
                 }
                 if (notificationLogEntries.length > 100) {
                     notificationLogEntries.shift();
@@ -248,7 +251,7 @@ if (typeof(MutationObserver) === "undefined") {
                 Notification.requestPermission().then(function() {
                     var n = new Notification(GM_info.script.name,  {
                         icon: URLS.img.icon, 
-                        body: text 
+                        body: text
                     });
                     setTimeout(n.close.bind(n), 5000);
                     n.addEventListener('click', function(e) {
@@ -610,7 +613,28 @@ if (typeof(MutationObserver) === "undefined") {
                         notificationLogItems.empty();
                         // iterate backwards - display newest first
                         for (var notificationCounter = notificationLogEntries.length - 1; notificationCounter >= 0; notificationCounter--) {
-                            notificationLogItems.append('<li>' + notificationLogEntries[notificationCounter] + '</li>');
+                            notificationLogItems.append('<li>' + formatLogEntry(notificationLogEntries[notificationCounter]) + '</li>');
+                        }
+                    }
+
+                    function formatDoubleDigit(num) {
+                        return (num < 10) ? '0' + num : num;
+                    }
+
+                    function formatTimestamp(timestamp) {
+                        var ts = new Date(timestamp.toLocaleString(undefined, { timeZone: 'America/New_York' }));
+                        return '[' +
+                            formatDoubleDigit(ts.getHours()) + ':' +
+                            formatDoubleDigit(ts.getMinutes()) + ':' +
+                            formatDoubleDigit(ts.getSeconds()) +
+                            '] ';
+                    }
+
+                    function formatLogEntry(entry) {
+                        if (!!/^\[\d\d:\d\d:\d\d\]/.exec(entry.text)) {
+                            return entry.text;
+                        } else {
+                            return formatTimestamp(entry.timestamp) + entry.text;
                         }
                     }
 

@@ -617,24 +617,14 @@ if (typeof(MutationObserver) === "undefined") {
                         }
                     }
 
-                    function formatDoubleDigit(num) {
-                        return (num < 10) ? '0' + num : num;
-                    }
-
-                    function formatTimestamp(timestamp) {
-                        var ts = new Date(timestamp.toLocaleString(undefined, { timeZone: 'America/New_York' }));
-                        return '[' +
-                            formatDoubleDigit(ts.getHours()) + ':' +
-                            formatDoubleDigit(ts.getMinutes()) + ':' +
-                            formatDoubleDigit(ts.getSeconds()) +
-                            '] ';
-                    }
-
                     function formatLogEntry(entry) {
                         if (!!/^\[\d\d:\d\d:\d\d\]/.exec(entry.text)) {
                             return entry.text;
                         } else {
-                            return formatTimestamp(entry.timestamp) + entry.text;
+                            return '[' +
+                                new Date(entry.timestamp).toLocaleTimeString(undefined,{timeZone: 'America/New_York', hour12: false}) +
+                                '] ' +
+                                entry.text;
                         }
                     }
 

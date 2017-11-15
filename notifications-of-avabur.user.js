@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.2.4
+// @version        1.2.4.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -301,9 +301,12 @@ if (typeof(MutationObserver) === "undefined") {
                 const possibleQuestDivIds = ['bq_info', 'tq_info', 'pq_info'];
                 for (var i = 0; i < possibleQuestDivIds.length; i++) {
                     var questDiv = document.getElementById(possibleQuestDivIds[i]);
-                    if (questDiv && (questDiv.style.display !== 'none')) {
-                        visibleQuestDivId = possibleQuestDivIds[i];
-                        break;
+                    if (questDiv) {
+                        var parentDiv = questDiv.parentElement;
+                        if (parentDiv && (parentDiv.style.display !== 'none')) {
+                            visibleQuestDivId = possibleQuestDivIds[i];
+                            break;
+                        }
                     }
                 }
 

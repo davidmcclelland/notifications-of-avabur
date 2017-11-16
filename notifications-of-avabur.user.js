@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.2.4.1
+// @version        1.2.4.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -22,7 +22,7 @@
 // @grant          None
 // @require        https://rawgit.com/davidmcclelland/notifications-of-avabur/master/lib/toastmessage/javascript/jquery.toastmessage.js
 // @require        https://cdnjs.cloudflare.com/ajax/libs/buzz/1.2.0/buzz.min.js
-// @require        https://openuserjs.org/src/libs/sizzle/GM_config.js
+// @require        https://rawgit.com/sizzlemctwizzle/GM_config/master/gm_config.js
 // @license        LGPL-2.1
 // @noframes
 // ==/UserScript==

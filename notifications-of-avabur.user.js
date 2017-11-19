@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.2.4.2
+// @version        1.2.5
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -90,6 +90,8 @@ if (typeof(MutationObserver) === "undefined") {
                 icon: gh_url("res/img/logo-32.png")
             }
         };
+
+        const EVENT_WILL_START_REGEX = /\[\d\d:\d\d:\d\d\] \[Event\] The Gauntlet will begin in 5 minutes!/g;
 
         /////////////////////////////////////////////////////
         // This is the script code. Don't change it unless //
@@ -356,6 +358,55 @@ if (typeof(MutationObserver) === "undefined") {
                     }
                 }
                 return false;
+            },
+            setupEventNotifications: function() {
+                // 5 minute warning
+                if (GM_config.get('eventPopup')) {
+                    fn.notification('An event is starting in five minutes!');
+                }
+                if (GM_config.get('eventSound')) {
+                    SFX.msg_ding.play();
+                }
+
+                // 30 second warning
+                setTimeout(function() {
+                    if (GM_config.get('eventPopup')) {
+                        fn.notification('An event is starting in thirty seconds!');
+                    }
+                    if (GM_config.get('eventSound')) {
+                        SFX.msg_ding.play();
+                    }
+                }, 270 * 1000);
+
+                // 1 second warning
+                setTimeout(function() {
+                    if (GM_config.get('eventPopup')) {
+                        fn.notification('An event is starting!');
+                    }
+                    if (GM_config.get('eventSound')) {
+                        SFX.msg_ding.play();
+                    }
+                }, 299 * 1000);
+
+                // 10 minutes remaining
+                setTimeout(function() {
+                    if (GM_config.get('eventPopup')) {
+                        fn.notification('Ten minutes remaining in the event!');
+                    }
+                    if (GM_config.get('eventSound')) {
+                        SFX.msg_ding.play();
+                    }
+                }, 600 * 1000);
+
+                // 5 minutes remaining
+                setTimeout(function() {
+                    if (GM_config.get('eventPopup')) {
+                        fn.notification('Five minutes remaining in the event!');
+                    }
+                    if (GM_config.get('eventSound')) {
+                        SFX.msg_ding.play();
+                    }
+                }, 900 * 1000);
             }
         };
 
@@ -387,6 +438,11 @@ if (typeof(MutationObserver) === "undefined") {
                                     if (GM_config.get('whisperSound')) {
                                         SFX.msg_ding.play();
                                     }
+                                }
+
+                                // Check for the "event will start" message
+                                if (text.match(EVENT_WILL_START_REGEX)) {
+                                    fn.setupEventNotifications();
                                 }
                             }
                         }
@@ -449,40 +505,6 @@ if (typeof(MutationObserver) === "undefined") {
                                         fn.notification('You are fatigued!');
                                     }
                                     if (GM_config.get('fatigueSound')) {
-                                        SFX.msg_ding.play();
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            ),
-            event: new MutationObserver(
-                function(records) {
-                    for (var i = 0; i < records.length; i++) {
-                        const addedNodes = records[i].addedNodes;
-                        if (addedNodes.length) {
-                            for (var j = 0; j < addedNodes.length; j++) {
-                                const text = $(addedNodes[j]).text();
-                                if (text === '04m55s') {
-                                    if (GM_config.get('eventPopup')) {
-                                        fn.notification('An event is starting in five minutes!');
-                                    }
-                                    if (GM_config.get('eventSound')) {
-                                        SFX.msg_ding.play();
-                                    }
-                                } else if (text === '30s') {
-                                    if (GM_config.get('eventPopup')) {
-                                        fn.notification('An event is starting in thirty seconds!');
-                                    }
-                                    if (GM_config.get('eventSound')) {
-                                        SFX.msg_ding.play();
-                                    }
-                                } else if (text === '01s') {
-                                    if (GM_config.get('eventPopup')) {
-                                        fn.notification('An event is starting!');
-                                    }
-                                    if (GM_config.get('eventSound')) {
                                         SFX.msg_ding.play();
                                     }
                                 }
@@ -564,9 +586,6 @@ if (typeof(MutationObserver) === "undefined") {
                 },
                 "Starting quest monitor": function() {
                     setInterval(fn.checkQuestComplete, 1000);
-                },
-                "Starting event monitor": function() {
-                    OBSERVERS.event.observe(document.querySelector("#eventCountdown"), { childList: true });
                 },
                 "Starting boss failure monitor": function() {
                     const bossFailureNotifications = document.getElementsByClassName('boss_failure_notification');

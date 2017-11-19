@@ -50,4 +50,4 @@ Sound effects from RSilveira and morrisjm on freesound.org
 
 Logo icon designed by Freepik from www.flaticon.com
 
-Thanks to AshenSwift for assistance with styling and cross-browser support, along with everyone who helped me test early on.
+Thanks to AshenSwift for assistance with styling and cross-browser support, @dang on ava for general help and awesomeness, along with everyone who helped me test early on.

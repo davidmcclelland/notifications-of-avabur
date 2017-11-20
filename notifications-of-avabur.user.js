@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.2.5
+// @version        1.2.6
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -252,7 +252,7 @@ if (typeof(MutationObserver) === "undefined") {
 
                 Notification.requestPermission().then(function() {
                     var n = new Notification(GM_info.script.name,  {
-                        icon: URLS.img.icon, 
+                        icon: URLS.img.icon,
                         body: text
                     });
                     setTimeout(n.close.bind(n), 5000);
@@ -359,6 +359,9 @@ if (typeof(MutationObserver) === "undefined") {
                 }
                 return false;
             },
+            checkEventParticipation: function() {
+                return document.querySelector('#bossWrapper').style.display !== 'none';
+            },
             setupEventNotifications: function() {
                 // 5 minute warning
                 if (GM_config.get('eventPopup')) {
@@ -390,21 +393,25 @@ if (typeof(MutationObserver) === "undefined") {
 
                 // 10 minutes remaining
                 setTimeout(function() {
-                    if (GM_config.get('eventPopup')) {
-                        fn.notification('Ten minutes remaining in the event!');
-                    }
-                    if (GM_config.get('eventSound')) {
-                        SFX.msg_ding.play();
+                    if (!fn.checkEventParticipation()) {
+                        if (GM_config.get('eventPopup')) {
+                            fn.notification('Ten minutes remaining in the event!');
+                        }
+                        if (GM_config.get('eventSound')) {
+                            SFX.msg_ding.play();
+                        }
                     }
                 }, 600 * 1000);
 
                 // 5 minutes remaining
                 setTimeout(function() {
-                    if (GM_config.get('eventPopup')) {
-                        fn.notification('Five minutes remaining in the event!');
-                    }
-                    if (GM_config.get('eventSound')) {
-                        SFX.msg_ding.play();
+                    if (!fn.checkEventParticipation()) {
+                        if (GM_config.get('eventPopup')) {
+                            fn.notification('Five minutes remaining in the event!');
+                        }
+                        if (GM_config.get('eventSound')) {
+                            SFX.msg_ding.play();
+                        }
                     }
                 }, 900 * 1000);
             }

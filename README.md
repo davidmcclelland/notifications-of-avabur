@@ -22,6 +22,7 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
   * Text search for chat, loot, and crafting
     * Be careful with these - it watches your own chat messages too!
     * Regexes are supported, so go crazy!
+* Discord publishing for events
 * Settings
   * Popup for each event (independent)
   * Sound for each event (independent)
@@ -50,4 +51,4 @@ Sound effects from RSilveira and morrisjm on freesound.org
 
 Logo icon designed by Freepik from www.flaticon.com
 
-Thanks to AshenSwift for assistance with styling and cross-browser support, @dang on ava for general help and awesomeness, along with everyone who helped me test early on.
+Thanks to AshenSwift for assistance with styling and cross-browser support, @dang on ava for some PRs and tons of regex help, along with everyone who helped me test early on.

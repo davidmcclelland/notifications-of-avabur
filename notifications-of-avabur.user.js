@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.3.1
+// @version        1.3.1.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -633,6 +633,7 @@ if (typeof(MutationObserver) === "undefined") {
                         if (addedNodes.length) {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 if (!isEventCountdownActive) {
+                                    const text = $(addedNodes[j]).text();
                                     fn.setupEventNotifications(text);
                                 }
                             }

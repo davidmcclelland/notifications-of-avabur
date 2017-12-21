@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.3.1.3
+// @version        1.3.1.4
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -471,7 +471,7 @@ if (typeof(MutationObserver) === "undefined") {
                     var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
 
                     if(userSettings.event.discordWebhook && userSettings.event.discordMessage) {
-                        $.post(userSettings.event.discordWebhook, {content: userSettings.event.discordMessage});
+                        //$.post(userSettings.event.discordWebhook, {content: userSettings.event.discordMessage});
                     }
                     if (userSettings.event.popup) {
                         fn.notification('An event is starting in five minutes!');
@@ -522,13 +522,12 @@ if (typeof(MutationObserver) === "undefined") {
                                 SFX.msg_ding.play();
                             }
                         }
-                    }, (secondsUntilEventStart + (60 * 10)) + 1000);
+                    }, (secondsUntilEventStart + (60 * 10)) * 1000);
 
                     // End of the event
                     setTimeout(function() {
-                        console.log('end of the event');
                         isEventCountdownActive = false;
-                    }, (secondsUntilEventStart + (60 * 15)) + 1000);
+                    }, (secondsUntilEventStart + (60 * 15)) * 1000);
                 }
             }
         };

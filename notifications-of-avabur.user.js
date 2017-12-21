@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.3.1.2
+// @version        1.3.1.3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -183,7 +183,7 @@ if (typeof(MutationObserver) === "undefined") {
         </div>
     </div><div class="row">
         <div class="col-xs-3">
-            <label>Event <a href="https://discordapp.com/developers/docs/resources/webhook#execute-webhook">Discord Webhook</a></label>
+            <label>Event <a href="https://discordapp.com/developers/docs/resources/webhook#execute-webhook" target="_blank">Discord Webhook</a></label>
         </div><div class="col-xs-9">
             <input id="eventDiscordWebhookEditor"           type="text" style="width: 80%;">
         </div>

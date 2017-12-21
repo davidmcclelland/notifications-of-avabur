@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.3.1.5
+// @version        1.3.1.6
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -460,11 +460,11 @@ if (typeof(MutationObserver) === "undefined") {
             },
             setupEventNotifications: function(countdownBadgeText) {
                 if (!isEventCountdownActive) {
-                    isEventCountdownActive = true;
-
                     if (countdownBadgeText === '!') {
                         return;
                     }
+
+                    isEventCountdownActive = true;
                     // First thing's first, figure out how long until the event (in seconds)
                     var minutesString = countdownBadgeText.slice(0, 2);
                     var secondsString = countdownBadgeText.slice(3, 5);

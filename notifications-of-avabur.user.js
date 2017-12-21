@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.3.1.1
+// @version        1.3.1.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -461,6 +461,10 @@ if (typeof(MutationObserver) === "undefined") {
             setupEventNotifications: function(countdownBadgeText) {
                 if (!isEventCountdownActive) {
                     isEventCountdownActive = true;
+
+                    if (countdownBadgeText === '!') {
+                        return;
+                    }
                     // First thing's first, figure out how long until the event (in seconds)
                     var minutesString = countdownBadgeText.slice(0, 2);
                     var secondsString = countdownBadgeText.slice(3, 5);
@@ -484,7 +488,7 @@ if (typeof(MutationObserver) === "undefined") {
                         if (userSettings.event.sound) {
                             SFX.msg_ding.play();
                         }
-                    }, secondsUntilEventStart - 30);
+                    }, (secondsUntilEventStart - 30) * 1000);
 
                     // 1 second warning
                     setTimeout(function() {
@@ -494,7 +498,7 @@ if (typeof(MutationObserver) === "undefined") {
                         if (userSettings.event.sound) {
                             SFX.msg_ding.play();
                         }
-                    }, secondsUntilEventStart - 1);
+                    }, (secondsUntilEventStart - 1) * 1000);
 
                     // 10 minutes remaining
                     setTimeout(function() {
@@ -506,7 +510,7 @@ if (typeof(MutationObserver) === "undefined") {
                                 SFX.msg_ding.play();
                             }
                         }
-                    }, secondsUntilEventStart + (60 * 5));
+                    }, (secondsUntilEventStart + (60 * 5)) * 1000);
 
                     // 5 minutes remaining
                     setTimeout(function() {
@@ -518,12 +522,13 @@ if (typeof(MutationObserver) === "undefined") {
                                 SFX.msg_ding.play();
                             }
                         }
-                    }, secondsUntilEventStart + (60 * 10));
+                    }, (secondsUntilEventStart + (60 * 10)) + 1000);
 
                     // End of the event
                     setTimeout(function() {
+                        console.log('end of the event');
                         isEventCountdownActive = false;
-                    }, secondsUntilEventStart + (60 * 15));
+                    }, (secondsUntilEventStart + (60 * 15)) + 1000);
                 }
             }
         };

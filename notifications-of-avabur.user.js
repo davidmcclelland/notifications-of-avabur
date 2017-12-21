@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.3.1.4
+// @version        1.3.1.5
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -471,7 +471,7 @@ if (typeof(MutationObserver) === "undefined") {
                     var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
 
                     if(userSettings.event.discordWebhook && userSettings.event.discordMessage) {
-                        //$.post(userSettings.event.discordWebhook, {content: userSettings.event.discordMessage});
+                        $.post(userSettings.event.discordWebhook, {content: userSettings.event.discordMessage});
                     }
                     if (userSettings.event.popup) {
                         fn.notification('An event is starting in five minutes!');

@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.3.0
+// @version        1.3.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -98,7 +98,7 @@ if (typeof(MutationObserver) === "undefined") {
             recurringNotifications: true,
             soundVolume: 80,
             fatigue: {popup: true, sound: true},
-            event: {popup: true, sound: true, discordWebhook: ''},
+            event: {popup: true, sound: true, discordWebhook: '', discordMessage: ''},
             harvestron: {popup: true, sound: true},
             construction: {popup: true, sound: true},
             whisper: {popup: true, sound: true},
@@ -106,7 +106,7 @@ if (typeof(MutationObserver) === "undefined") {
             chatSearch: {popup: true, sound: true, searchText: ''},
             lootSearch: {popup: true, sound: true, searchText: ''},
             craftingSearch: {popup: true, sound: true, searchText: ''}
-        }
+        };
 
         const SETTINGS_KEY = 'NoASettings';
 
@@ -128,84 +128,129 @@ if (typeof(MutationObserver) === "undefined") {
 #notificationLogItems {
     margin-top: 10px;
 }
-        `
+        `;
 
         const SETTINGS_DIALOG_HTML = `
-<div id="NoASettings" style="display: none; margin-top: 10px;">
+<div id="NoASettings" style="display: none; margin: 10px;">
     <div class="row">
         <div class="col-xs-12 text-center">
-            <h4 class="nobg">Notifications of Avabur Settings</h4>
-        </div><div class="col-xs-6">
+            <h4 class="nobg" style="margin-bottom: 5px;">Notifications of Avabur Settings</h4>
+        </div>
+    </div><div class="row">
+        <div class="col-xs-6">
             <label><input id="recurringNotificationsEditor" type="checkbox">Recurring Notifications</label>
         </div><div class="col-xs-6">
             <label>Sound Volume</label>
             <input id="soundVolumeEditor"                   type="number" min="1" max="100">
-        </div><div class="col-xs-6">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-6">
             <label><input id="fatiguePopupEditor"           type="checkbox">Fatigue Popup</label>
         </div><div class="col-xs-6">
             <label><input id="fatigueSoundEditor"           type="checkbox">Fatigue Sound</label>
-        </div><div class="col-xs-6">
-            <label><input id="eventPopupEditor"             type="checkbox">Event Popup</label>
-        </div><div class="col-xs-6">
-            <label><input id="eventSoundEditor"             type="checkbox">Event Sound</label>
-        </div><div class="col-xs-12">
-            <label>Event <a href="https://discordapp.com/developers/docs/resources/webhook#execute-webhook">Discord Webhook</a></label>
-            <input id="eventDiscordWebhookEditor"           type="text" style="width: 80%;">
-        </div><div class="col-xs-6">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-6">
             <label><input id="harvestronPopupEditor"        type="checkbox">Harvestron Popup</label>
         </div><div class="col-xs-6">
             <label><input id="harvestronSoundEditor"        type="checkbox">Harvestron Sound</label>
-        </div><div class="col-xs-6">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-6">
             <label><input id="constructionPopupEditor"      type="checkbox">Construction Popup</label>
         </div><div class="col-xs-6">
             <label><input id="constructionSoundEditor"      type="checkbox">Construction Sound</label>
-        </div><div class="col-xs-6">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-6">
             <label><input id="whisperPopupEditor"           type="checkbox">Whisper Popup</label>
         </div><div class="col-xs-6">
             <label><input id="whisperSoundEditor"           type="checkbox">Whisper Sound</label>
-        </div><div class="col-xs-6">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-6">
             <label><input id="questCompletePopupEditor"     type="checkbox">Quest Complete Popup</label>
         </div><div class="col-xs-6">
             <label><input id="questCompleteSoundEditor"     type="checkbox">Quest Complete Sound</label>
         </div>
-    </div><hr><div class="row">
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-6">
+            <label><input id="eventPopupEditor"             type="checkbox">Event Popup</label>
+        </div><div class="col-xs-6">
+            <label><input id="eventSoundEditor"             type="checkbox">Event Sound</label>
+        </div>
+    </div><div class="row">
+        <div class="col-xs-3">
+            <label>Event <a href="https://discordapp.com/developers/docs/resources/webhook#execute-webhook">Discord Webhook</a></label>
+        </div><div class="col-xs-9">
+            <input id="eventDiscordWebhookEditor"           type="text" style="width: 80%;">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-3">
+            <label>Event Discord Message</label>
+        </div><div class="col-xs-9">
+            <input id="eventDiscordMessageEditor"                 type="text" style="width: 80%;">
+        </div>
+    </div>
+    <hr>
+    <div class="row">
         <div class="col-xs-6">
             <label><input id="chatSearchPopupEditor"        type="checkbox">Chat Search Popup</label>
         </div><div class="col-xs-6">
             <label><input id="chatSearchSoundEditor"        type="checkbox">Chat Search Sound</label>
-        </div><div class="col-xs-12">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-12">
             <label>Chat search text</label>
         </div><div class="col-xs-12">
             <textarea id="chatSearchTextEditor"></textarea>
         </div>
-    </div><hr><div class="row">
+    </div>
+    <hr>
+    <div class="row">
         <div class="col-xs-6">
             <label><input id="lootSearchPopupEditor"        type="checkbox">Loot Search Popup</label>
         </div><div class="col-xs-6">
             <label><input id="lootSearchSoundEditor"        type="checkbox">Loot Search Sound</label>
-        </div><div class="col-xs-12">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-12">
             <label>Loot search text</label>
-        </div><div class="col-xs-12">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-12">
             <textarea id="lootSearchTextEditor"></textarea>
         </div>
-    </div><hr><div class="row">
+    </div>
+    <hr>
+    <div class="row">
         <div class="col-xs-6">
             <label><input id="craftingSearchPopupEditor"    type="checkbox">Crafting Search Popup</label>
         </div><div class="col-xs-6">
             <label><input id="craftingSearchSoundEditor"    type="checkbox">Crafting Search Sound</label>
-        </div><div class="col-xs-12">
-            <label>Crafting search text search text</label>
-        </div><div class="col-xs-12">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-12">
+            <label>Crafting search text search text</label>
+        </div>
+    </div><div class="row">
+        <div class="col-xs-12">
             <textarea id="craftingSearchTextEditor"></textarea>
-        </div><div class="col-xs-12">
+        </div>
+    </div><div class="row">
+        <div class="col-xs-12">
             <button id="saveNoASettingsButton" class="btn btn-primary">Save Changes</button>
         </div>
     </div>
 </div>
         `;
 
-        var SFX = null;;
+        var SFX = null;
         var userSettings = null;
+
+        var isEventCountdownActive = false;
 
         var counters = {
             lastConstructionNotification: 0,
@@ -235,7 +280,7 @@ if (typeof(MutationObserver) === "undefined") {
 
                 Notification.requestPermission().then(function() {
                     var n = new Notification(GM_info.script.name,  {
-                        icon: URLS.img.icon, 
+                        icon: URLS.img.icon,
                         body: text
                     });
                     setTimeout(n.close.bind(n), 5000);
@@ -246,8 +291,6 @@ if (typeof(MutationObserver) === "undefined") {
                 });
             },
             loadUserSettings: function() {
-                var loadedSettings;
-
                 var loadedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
                 console.log('loaded settings', loadedSettings);
                 userSettings = _.defaultsDeep(loadedSettings, DEFAULT_USER_SETTINGS);
@@ -267,6 +310,7 @@ if (typeof(MutationObserver) === "undefined") {
                 $('#eventPopupEditor')[0].checked = userSettings.event.popup;
                 $('#eventSoundEditor')[0].checked = userSettings.event.sound;
                 $('#eventDiscordWebhookEditor').val(userSettings.event.discordWebhook);
+                $('#eventDiscordMessageEditor').val(userSettings.event.discordMessage);
                 $('#harvestronPopupEditor')[0].checked = userSettings.harvestron.popup;
                 $('#harvestronSoundEditor')[0].checked = userSettings.harvestron.sound;
                 $('#constructionPopupEditor')[0].checked = userSettings.construction.popup;
@@ -293,6 +337,7 @@ if (typeof(MutationObserver) === "undefined") {
                 userSettings.event.popup = $('#eventPopupEditor')[0].checked;
                 userSettings.event.sound = $('#eventSoundEditor')[0].checked;
                 userSettings.event.discordWebhook = $('#eventDiscordWebhookEditor').val();
+                userSettings.event.discordMessage = $('#eventDiscordMessageEditor').val();
                 userSettings.harvestron.popup = $('#harvestronPopupEditor')[0].checked;
                 userSettings.harvestron.sound = $('#harvestronSoundEditor')[0].checked;
                 userSettings.construction.popup = $('#constructionPopupEditor')[0].checked;
@@ -410,6 +455,77 @@ if (typeof(MutationObserver) === "undefined") {
                 }
                 return false;
             },
+            checkEventParticipation: function() {
+                return document.querySelector('#bossWrapper').style.display !== 'none';
+            },
+            setupEventNotifications: function(countdownBadgeText) {
+                if (!isEventCountdownActive) {
+                    isEventCountdownActive = true;
+                    // First thing's first, figure out how long until the event (in seconds)
+                    var minutesString = countdownBadgeText.slice(0, 2);
+                    var secondsString = countdownBadgeText.slice(3, 5);
+                    var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
+
+                    if(userSettings.event.discordWebhook && userSettings.event.discordMessage) {
+                        $.post(userSettings.event.discordWebhook, {content: userSettings.event.discordMessage});
+                    }
+                    if (userSettings.event.popup) {
+                        fn.notification('An event is starting in five minutes!');
+                    }
+                    if (userSettings.event.sound) {
+                        SFX.msg_ding.play();
+                    }
+
+                    // 30 second warning
+                    setTimeout(function() {
+                        if (userSettings.event.popup) {
+                            fn.notification('An event is starting in thirty seconds!');
+                        }
+                        if (userSettings.event.sound) {
+                            SFX.msg_ding.play();
+                        }
+                    }, secondsUntilEventStart - 30);
+
+                    // 1 second warning
+                    setTimeout(function() {
+                        if (userSettings.event.popup) {
+                            fn.notification('An event is starting!');
+                        }
+                        if (userSettings.event.sound) {
+                            SFX.msg_ding.play();
+                        }
+                    }, secondsUntilEventStart - 1);
+
+                    // 10 minutes remaining
+                    setTimeout(function() {
+                        if (!fn.checkEventParticipation()) {
+                            if (userSettings.event.popup) {
+                                fn.notification('Ten minutes remaining in the event!');
+                            }
+                            if (userSettings.event.sound) {
+                                SFX.msg_ding.play();
+                            }
+                        }
+                    }, secondsUntilEventStart + (60 * 5));
+
+                    // 5 minutes remaining
+                    setTimeout(function() {
+                        if (!fn.checkEventParticipation()) {
+                            if (userSettings.event.popup) {
+                                fn.notification('Five minutes remaining in the event!');
+                            }
+                            if (userSettings.event.sound) {
+                                SFX.msg_ding.play();
+                            }
+                        }
+                    }, secondsUntilEventStart + (60 * 10));
+
+                    // End of the event
+                    setTimeout(function() {
+                        isEventCountdownActive = false;
+                    }, secondsUntilEventStart + (60 * 15));
+                }
+            }
         };
 
         /** Collection of mutation observers the script uses */
@@ -516,32 +632,8 @@ if (typeof(MutationObserver) === "undefined") {
                         const addedNodes = records[i].addedNodes;
                         if (addedNodes.length) {
                             for (var j = 0; j < addedNodes.length; j++) {
-                                const text = $(addedNodes[j]).text();
-                                if (text === '04m55s') {
-                                    if(userSettings.event.discordWebhook) {
-                                        $.post(userSettings.event.discordWebhook, {content: '@everyone An event is starting in five minutes!'});
-                                    }
-
-                                    if (userSettings.event.popup) {
-                                        fn.notification('An event is starting in five minutes!');
-                                    }
-                                    if (userSettings.event.sound) {
-                                        SFX.msg_ding.play();
-                                    }
-                                } else if (text === '30s') {
-                                    if (userSettings.event.popup) {
-                                        fn.notification('An event is starting in thirty seconds!');
-                                    }
-                                    if (userSettings.event.sound) {
-                                        SFX.msg_ding.play();
-                                    }
-                                } else if (text === '01s') {
-                                    if (userSettings.event.popup) {
-                                        fn.notification('An event is starting!');
-                                    }
-                                    if (userSettings.event.sound) {
-                                        SFX.msg_ding.play();
-                                    }
+                                if (!isEventCountdownActive) {
+                                    fn.setupEventNotifications(text);
                                 }
                             }
                         }
@@ -566,6 +658,8 @@ if (typeof(MutationObserver) === "undefined") {
         (function() {
             const ON_LOAD = {
                 "Initializing settings": function() {
+                    GM_addStyle(NOA_STYLES);
+
                     fn.loadUserSettings();
                     SFX = {
                         msg_ding: new buzz.sound(URLS.sfx.message_ding, {
@@ -658,7 +752,7 @@ if (typeof(MutationObserver) === "undefined") {
                     });
 
                     const notificationLog = $('<div id="NoANotificationLog"><button class="btn btn-primary" id="notificationLogRefresh">Refresh</button><ul id="notificationLogItems"></ul></div>');
-                    
+
                     accountSettingsWrapper.append(notificationLog);
                     const notificationLogRefreshButton = $('#notificationLogRefresh');
                     const notificationLogItems = $('#notificationLogItems');

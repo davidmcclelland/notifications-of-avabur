@@ -13,7 +13,7 @@
 // @include        http://beta.avabur.com/game
 // @include        https://www.beta.avabur.com/game
 // @include        http://www.beta.avabur.com/game
-// @version        1.3.1.6
+// @version        1.3.1.7
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -203,7 +203,7 @@ if (typeof(MutationObserver) === "undefined") {
         </div>
     </div><div class="row">
         <div class="col-xs-12">
-            <label>Chat search text</label>
+            <label>Chat search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Chat-search" target="_blank">Help</a>)</label>
         </div><div class="col-xs-12">
             <textarea id="chatSearchTextEditor"></textarea>
         </div>
@@ -217,7 +217,7 @@ if (typeof(MutationObserver) === "undefined") {
         </div>
     </div><div class="row">
         <div class="col-xs-12">
-            <label>Loot search text</label>
+            <label>Loot search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Loot-search" target="_blank">Help</a>)</label>
         </div>
     </div><div class="row">
         <div class="col-xs-12">
@@ -233,7 +233,7 @@ if (typeof(MutationObserver) === "undefined") {
         </div>
     </div><div class="row">
         <div class="col-xs-12">
-            <label>Crafting search text search text</label>
+            <label>Crafting search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Crafting-search" target="_blank">Help</a>)</label>
         </div>
     </div><div class="row">
         <div class="col-xs-12">

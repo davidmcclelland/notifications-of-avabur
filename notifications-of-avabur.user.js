@@ -253,11 +253,13 @@ if (typeof(MutationObserver) === "undefined") {
                 <label><input id="chatSearchSoundEditor"        type="checkbox">Sound</label>
             </div><div class="col-xs-4">
                 <label><input id="chatSearchLogEditor"          type="checkbox">Log</label>
-            </div
+            </div>
         </div><div class="row">
             <div class="col-xs-12">
                 <label>Chat search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Chat-search" target="_blank">Help</a>)</label>
-            </div><div class="col-xs-12">
+            </div>
+        </div><div class="row">
+            <div class="col-xs-12">
                 <textarea id="chatSearchTextEditor"></textarea>
             </div>
         </div>

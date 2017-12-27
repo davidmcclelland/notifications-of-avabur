@@ -5,15 +5,8 @@
 // @homepage       https://github.com/davidmcclelland/notifications-of-avabur
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
-// @include        https://avabur.com/game.php
-// @include        http://avabur.com/game.php
-// @include        https://www.avabur.com/game.php
-// @include        http://www.avabur.com/game.php
-// @include        https://beta.avabur.com/game
-// @include        http://beta.avabur.com/game
-// @include        https://www.beta.avabur.com/game
-// @include        http://www.beta.avabur.com/game
-// @version        1.3.1.7
+// @match          https://*.avabur.com/game*
+// @version        1.4.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -96,16 +89,17 @@ if (typeof(MutationObserver) === "undefined") {
 
         const DEFAULT_USER_SETTINGS = {
             recurringNotifications: true,
+            recurringNotificationsTimeout: 20,
             soundVolume: 80,
-            fatigue: {popup: true, sound: true},
-            event: {popup: true, sound: true, discordWebhook: '', discordMessage: ''},
-            harvestron: {popup: true, sound: true},
-            construction: {popup: true, sound: true},
-            whisper: {popup: true, sound: true},
-            questComplete: {popup: true, sound: true},
-            chatSearch: {popup: true, sound: true, searchText: ''},
-            lootSearch: {popup: true, sound: true, searchText: ''},
-            craftingSearch: {popup: true, sound: true, searchText: ''}
+            fatigue: {popup: true, sound: true, log: false},
+            event: {popup: true, sound: true, log: true, discordWebhook: '', discordMessage: ''},
+            harvestron: {popup: true, sound: true, log: true},
+            construction: {popup: true, sound: true, log: true},
+            whisper: {popup: true, sound: true, log: true},
+            questComplete: {popup: true, sound: true, log: true},
+            chatSearch: {popup: true, sound: true, log: true, searchText: ''},
+            lootSearch: {popup: true, sound: true, log: true, searchText: ''},
+            craftingSearch: {popup: true, sound: true, log: true, searchText: ''}
         };
 
         const SETTINGS_KEY = 'NoASettings';
@@ -141,9 +135,12 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">General</h4>
         </div><div class="row">
-            <div class="col-xs-6">
+            <div class="col-xs-4">
                 <label><input id="recurringNotificationsEditor" type="checkbox">Recurring Notifications</label>
-            </div><div class="col-xs-6">
+            </div><div class="col-xs-4">
+                <label>Recurrence Time (sec)</label>
+                <input id="recurringNotificationsTimeoutEditor" type="number" min="1" max="100">
+            </div><div class="col-xs-4">
                 <label>Sound Volume</label>
                 <input id="soundVolumeEditor"                   type="number" min="1" max="100">
             </div>
@@ -154,10 +151,12 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">Fatigue</h4>
         </div><div class="row">
-            <div class="col-xs-6">
-                <label><input id="fatiguePopupEditor"           type="checkbox">Fatigue Popup</label>
-            </div><div class="col-xs-6">
-                <label><input id="fatigueSoundEditor"           type="checkbox">Fatigue Sound</label>
+            <div class="col-xs-4">
+                <label><input id="fatiguePopupEditor"           type="checkbox">Popup</label>
+            </div><div class="col-xs-4">
+                <label><input id="fatigueSoundEditor"           type="checkbox">Sound</label>
+            </div><div class="col-xs-4">
+                <label><input id="fatigueLogEditor"             type="checkbox">Log</label>
             </div>
         </div>
     </div>
@@ -166,10 +165,12 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">Harvestron</h4>
         </div><div class="row">
-            <div class="col-xs-6">
-                <label><input id="harvestronPopupEditor"        type="checkbox">Harvestron Popup</label>
-            </div><div class="col-xs-6">
-                <label><input id="harvestronSoundEditor"        type="checkbox">Harvestron Sound</label>
+            <div class="col-xs-4">
+                <label><input id="harvestronPopupEditor"        type="checkbox">Popup</label>
+            </div><div class="col-xs-4">
+                <label><input id="harvestronSoundEditor"        type="checkbox">Sound</label>
+            </div><div class="col-xs-4">
+                <label><input id="harvestronLogEditor"          type="checkbox">Log</label>
             </div>
         </div>
     </div>
@@ -178,10 +179,12 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">Construction</h4>
         </div><div class="row">
-            <div class="col-xs-6">
-                <label><input id="constructionPopupEditor"      type="checkbox">Construction Popup</label>
-            </div><div class="col-xs-6">
-                <label><input id="constructionSoundEditor"      type="checkbox">Construction Sound</label>
+            <div class="col-xs-4">
+                <label><input id="constructionPopupEditor"      type="checkbox">Popup</label>
+            </div><div class="col-xs-4">
+                <label><input id="constructionSoundEditor"      type="checkbox">Sound</label>
+            </div><div class="col-xs-4">
+                <label><input id="constructionLogEditor"        type="checkbox">Log</label>
             </div>
         </div>
     </div>
@@ -190,10 +193,12 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">Whisper</h4>
         </div><div class="row">
-            <div class="col-xs-6">
-                <label><input id="whisperPopupEditor"           type="checkbox">Whisper Popup</label>
-            </div><div class="col-xs-6">
-                <label><input id="whisperSoundEditor"           type="checkbox">Whisper Sound</label>
+            <div class="col-xs-4">
+                <label><input id="whisperPopupEditor"           type="checkbox">Popup</label>
+            </div><div class="col-xs-4">
+                <label><input id="whisperSoundEditor"           type="checkbox">Sound</label>
+            </div><div class="col-xs-4">
+                <label><input id="whisperLogEditor"             type="checkbox">Log</label>
             </div>
         </div>
     </div>
@@ -202,10 +207,12 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">Quest Complete</h4>
         </div><div class="row">
-            <div class="col-xs-6">
-                <label><input id="questCompletePopupEditor"     type="checkbox">Quest Complete Popup</label>
-            </div><div class="col-xs-6">
-                <label><input id="questCompleteSoundEditor"     type="checkbox">Quest Complete Sound</label>
+            <div class="col-xs-4">
+                <label><input id="questCompletePopupEditor"     type="checkbox">Popup</label>
+            </div><div class="col-xs-4">
+                <label><input id="questCompleteSoundEditor"     type="checkbox">Sound</label>
+            </div><div class="col-xs-4">
+                <label><input id="questCompleteLogEditor"       type="checkbox">Log</label>
             </div>
         </div>
     </div>
@@ -214,10 +221,12 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">Events</h4>
         </div><div class="row">
-            <div class="col-xs-6">
-                <label><input id="eventPopupEditor"             type="checkbox">Event Popup</label>
-            </div><div class="col-xs-6">
-                <label><input id="eventSoundEditor"             type="checkbox">Event Sound</label>
+            <div class="col-xs-4">
+                <label><input id="eventPopupEditor"             type="checkbox">Popup</label>
+            </div><div class="col-xs-4">
+                <label><input id="eventSoundEditor"             type="checkbox">Sound</label>
+            </div><div class="col-xs-4">
+                <label><input id="eventLogEditor"               type="checkbox">Log</label>
             </div>
         </div><div class="row">
             <div class="col-xs-3">
@@ -229,7 +238,7 @@ if (typeof(MutationObserver) === "undefined") {
             <div class="col-xs-3">
                 <label>Event Discord Message</label>
             </div><div class="col-xs-9">
-                <input id="eventDiscordMessageEditor"                 type="text" style="width: 80%;">
+                <input id="eventDiscordMessageEditor"           type="text" style="width: 80%;">
             </div>
         </div>
     </div>
@@ -238,11 +247,13 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">Chat Search</h4>
         </div><div class="row">
-            <div class="col-xs-6">
-                <label><input id="chatSearchPopupEditor"        type="checkbox">Chat Search Popup</label>
-            </div><div class="col-xs-6">
-                <label><input id="chatSearchSoundEditor"        type="checkbox">Chat Search Sound</label>
-            </div>
+            <div class="col-xs-4">
+                <label><input id="chatSearchPopupEditor"        type="checkbox">Popup</label>
+            </div><div class="col-xs-4">
+                <label><input id="chatSearchSoundEditor"        type="checkbox">Sound</label>
+            </div><div class="col-xs-4">
+                <label><input id="chatSearchLogEditor"          type="checkbox">Log</label>
+            </div
         </div><div class="row">
             <div class="col-xs-12">
                 <label>Chat search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Chat-search" target="_blank">Help</a>)</label>
@@ -256,10 +267,12 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">Loot Search</h4>
         </div><div class="row">
-            <div class="col-xs-6">
-                <label><input id="lootSearchPopupEditor"        type="checkbox">Loot Search Popup</label>
-            </div><div class="col-xs-6">
-                <label><input id="lootSearchSoundEditor"        type="checkbox">Loot Search Sound</label>
+            <div class="col-xs-4">
+                <label><input id="lootSearchPopupEditor"        type="checkbox">Popup</label>
+            </div><div class="col-xs-4">
+                <label><input id="lootSearchSoundEditor"        type="checkbox">Sound</label>
+            </div><div class="col-xs-4">
+                <label><input id="lootSearchLogEditor"          type="checkbox">Log</label>
             </div>
         </div><div class="row">
             <div class="col-xs-12">
@@ -276,10 +289,12 @@ if (typeof(MutationObserver) === "undefined") {
         <div class="row">
             <h4 class="col-xs-12 nobg">Crafting Search</h4>
         </div><div class="row">
-            <div class="col-xs-6">
-                <label><input id="craftingSearchPopupEditor"    type="checkbox">Crafting Search Popup</label>
-            </div><div class="col-xs-6">
-                <label><input id="craftingSearchSoundEditor"    type="checkbox">Crafting Search Sound</label>
+            <div class="col-xs-4">
+                <label><input id="craftingSearchPopupEditor"    type="checkbox">Popup</label>
+            </div><div class="col-xs-4">
+                <label><input id="craftingSearchSoundEditor"    type="checkbox">Sound</label>
+            </div><div class="col-xs-4">
+                <label><input id="craftingSearchLogEditor"      type="checkbox">Log</label>
             </div>
         </div><div class="row">
             <div class="col-xs-12">
@@ -316,31 +331,51 @@ if (typeof(MutationObserver) === "undefined") {
         /** Misc function container */
         const fn = {
             /**
-             * Creates a floaty notification
+             * Creates a floaty notification and plays a sound, based on preferences
              * @param {String} text Text to display
+             * @param {object} settings Settings for this type of notification
+             * @param {number} recurrenceCounter The number of seconds this event has recurred for. Optional, defaults to zero
              */
-            notification: function(text, addToLog) {
-                if (addToLog !== false) {
+            notification: function(text, settings, recurrenceCounter) {
+                recurrenceCounter = _.defaultTo(recurrenceCounter, 0);
+                // It's a good recurrence if it is the first one, or if recurring notifications are on
+                // and it's been long enough since the previous
+                var isGoodRecurrence = (recurrenceCounter === 0) ||
+                    (userSettings.recurringNotifications && (recurrenceCounter % userSettings.recurringNotificationsTimeout === 0));
+
+                // Only ever log the first instance of a recurrence, even if it's a good recurrence
+                const doLog = settings.log && (recurrenceCounter === 0);
+                const doPopup = settings.popup && isGoodRecurrence;
+                const doSound = settings.sound && isGoodRecurrence;
+
+                if (doLog) { 
                     notificationLogEntries.push({
                         timestamp: new Date(),
                         text: text
                     });
                 }
+
                 if (notificationLogEntries.length > 100) {
                     notificationLogEntries.shift();
                 }
 
-                Notification.requestPermission().then(function() {
-                    var n = new Notification(GM_info.script.name,  {
-                        icon: URLS.img.icon,
-                        body: text
+                if (doPopup) {
+                    Notification.requestPermission().then(function() {
+                        var n = new Notification(GM_info.script.name,  {
+                            icon: URLS.img.icon,
+                            body: text
+                        });
+                        setTimeout(n.close.bind(n), 5000);
+                        n.addEventListener('click', function(e) {
+                            window.focus();
+                            e.target.close();
+                        }, false);
                     });
-                    setTimeout(n.close.bind(n), 5000);
-                    n.addEventListener('click', function(e) {
-                        window.focus();
-                        e.target.close();
-                    }, false);
-                });
+                }
+
+                if (doSound) {
+                    SFX.msg_ding.play();
+                }
             },
             loadUserSettings: function() {
                 var loadedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
@@ -356,56 +391,76 @@ if (typeof(MutationObserver) === "undefined") {
             },
             populateSettingsEditor: function() {
                 $('#recurringNotificationsEditor')[0].checked = userSettings.recurringNotifications;
+                $('#recurringNotificationsTimeoutEditor').val(userSettings.recurringNotificationsTimeout)
                 $('#soundVolumeEditor').val(userSettings.soundVolume);
                 $('#fatiguePopupEditor')[0].checked = userSettings.fatigue.popup;
                 $('#fatigueSoundEditor')[0].checked = userSettings.fatigue.sound;
+                $('#fatigueLogEditor')[0].checked = userSettings.fatigue.log;
                 $('#eventPopupEditor')[0].checked = userSettings.event.popup;
                 $('#eventSoundEditor')[0].checked = userSettings.event.sound;
+                $('#eventLogEditor')[0].checked = userSettings.event.log;
                 $('#eventDiscordWebhookEditor').val(userSettings.event.discordWebhook);
                 $('#eventDiscordMessageEditor').val(userSettings.event.discordMessage);
                 $('#harvestronPopupEditor')[0].checked = userSettings.harvestron.popup;
                 $('#harvestronSoundEditor')[0].checked = userSettings.harvestron.sound;
+                $('#harvestronLogEditor')[0].checked = userSettings.harvestron.log;
                 $('#constructionPopupEditor')[0].checked = userSettings.construction.popup;
                 $('#constructionSoundEditor')[0].checked = userSettings.construction.sound;
+                $('#constructionLogEditor')[0].checked = userSettings.construction.log;
                 $('#whisperPopupEditor')[0].checked = userSettings.whisper.popup;
                 $('#whisperSoundEditor')[0].checked = userSettings.whisper.sound;
+                $('#whisperLogEditor')[0].checked = userSettings.whisper.log;
                 $('#questCompletePopupEditor')[0].checked = userSettings.questComplete.popup;
                 $('#questCompleteSoundEditor')[0].checked = userSettings.questComplete.sound;
+                $('#questCompleteLogEditor')[0].checked = userSettings.questComplete.log;
                 $('#chatSearchPopupEditor')[0].checked = userSettings.chatSearch.popup;
                 $('#chatSearchSoundEditor')[0].checked = userSettings.chatSearch.sound;
+                $('#chatSearchLogEditor')[0].checked = userSettings.chatSearch.log;
                 $('#chatSearchTextEditor').val(userSettings.chatSearch.searchText);
                 $('#lootSearchPopupEditor')[0].checked = userSettings.lootSearch.popup;
                 $('#lootSearchSoundEditor')[0].checked = userSettings.lootSearch.sound;
+                $('#lootSearchLogEditor')[0].checked = userSettings.lootSearch.log;
                 $('#lootSearchTextEditor').val(userSettings.lootSearch.searchText);
                 $('#craftingSearchPopupEditor')[0].checked = userSettings.craftingSearch.popup;
                 $('#craftingSearchSoundEditor')[0].checked = userSettings.craftingSearch.sound;
+                $('#craftingSearchLogEditor')[0].checked = userSettings.craftingSearch.log;
                 $('#craftingSearchTextEditor').val(userSettings.craftingSearch.searchText);
             },
             saveSettingsEditor: function() {
                 userSettings.recurringNotifications = $('#recurringNotificationsEditor')[0].checked;
+                userSettings.recurringNotificationsTimeout = parseInt($('#recurringNotificationsTimeoutEditor').val(), 10);
                 userSettings.soundVolume = parseInt($('#soundVolumeEditor').val(), 10);
                 userSettings.fatigue.popup = $('#fatiguePopupEditor')[0].checked;
                 userSettings.fatigue.sound = $('#fatigueSoundEditor')[0].checked;
+                userSettings.fatigue.log = $('#fatigueLogEditor')[0].checked;
                 userSettings.event.popup = $('#eventPopupEditor')[0].checked;
                 userSettings.event.sound = $('#eventSoundEditor')[0].checked;
+                userSettings.event.log = $('#eventLogEditor')[0].checked;
                 userSettings.event.discordWebhook = $('#eventDiscordWebhookEditor').val();
                 userSettings.event.discordMessage = $('#eventDiscordMessageEditor').val();
                 userSettings.harvestron.popup = $('#harvestronPopupEditor')[0].checked;
                 userSettings.harvestron.sound = $('#harvestronSoundEditor')[0].checked;
+                userSettings.harvestron.log = $('#harvestronLogEditor')[0].checked;
                 userSettings.construction.popup = $('#constructionPopupEditor')[0].checked;
                 userSettings.construction.sound = $('#constructionSoundEditor')[0].checked;
+                userSettings.construction.log = $('#constructionLogEditor')[0].checked;
                 userSettings.whisper.popup = $('#whisperPopupEditor')[0].checked;
                 userSettings.whisper.sound = $('#whisperSoundEditor')[0].checked;
+                userSettings.whisper.log = $('#whisperLogEditor')[0].checked;
                 userSettings.questComplete.popup = $('#questCompletePopupEditor')[0].checked;
                 userSettings.questComplete.sound = $('#questCompleteSoundEditor')[0].checked;
+                userSettings.questComplete.log = $('#questCompleteLogEditor')[0].checked;
                 userSettings.chatSearch.popup = $('#chatSearchPopupEditor')[0].checked;
                 userSettings.chatSearch.sound = $('#chatSearchSoundEditor')[0].checked;
+                userSettings.chatSearch.log = $('#chatSearchLogEditor')[0].checked;
                 userSettings.chatSearch.searchText = $('#chatSearchTextEditor').val();
                 userSettings.lootSearch.popup = $('#lootSearchPopupEditor')[0].checked;
                 userSettings.lootSearch.sound = $('#lootSearchSoundEditor')[0].checked;
+                userSettings.lootSearch.log = $('#lootSearchLogEditor')[0].checked;
                 userSettings.lootSearch.searchText = $('#lootSearchTextEditor').val();
                 userSettings.craftingSearch.popup = $('#craftingSearchPopupEditor')[0].checked;
                 userSettings.craftingSearch.sound = $('#craftingSearchSoundEditor')[0].checked;
+                userSettings.craftingSearch.log = $('#craftingSearchLogEditor')[0].checked;
                 userSettings.craftingSearch.searchText = $('#craftingSearchTextEditor').val();
 
                 fn.storeUserSettings();
@@ -413,16 +468,7 @@ if (typeof(MutationObserver) === "undefined") {
             checkConstructionVisible: function() {
                 var div = document.getElementById('constructionNotifier');
                 if (div && (div.style.display !== 'none')) {
-                    /* If lastNotification is 0, then it just became visible so notify regardless of recurring settings.
-                     * Otherwise, if recurring is set up and it's been 20 seconds, notify again */
-                    if (counters.lastConstructionNotification === 0 || (userSettings.recurringNotifications && counters.lastConstructionNotification % 20 === 0)) {
-                        if (userSettings.construction.popup) {
-                            fn.notification('Construction available!', counters.lastConstructionNotification === 0);
-                        }
-                        if (userSettings.construction.sound) {
-                            SFX.msg_ding.play();
-                        }
-                    }
+                    fn.notification('Construction available!', userSettings.construction, counters.lastConstructionNotification);
                     counters.lastConstructionNotification++;
                 } else {
                     counters.lastConstructionNotification = 0;
@@ -431,16 +477,7 @@ if (typeof(MutationObserver) === "undefined") {
             checkHarvestronVisible: function() {
                 var div = document.getElementById('harvestronNotifier');
                 if (div && (div.style.display !== 'none')) {
-                    /* If lastNotification is 0, then it just became visible so notify regardless of recurring settings.
-                     * Otherwise, if recurring is set up and it's been 20 seconds, notify again */
-                    if (counters.lastHarvestronNotification === 0 || (userSettings.recurringNotifications && counters.lastHarvestronNotification % 20 === 0)) {
-                        if (userSettings.harvestron.popup) {
-                            fn.notification('Harvestron available!', counters.lastHarvestronNotification === 0);
-                        }
-                        if (userSettings.harvestron.sound) {
-                            SFX.msg_ding.play();
-                        }
-                    }
+                    fn.notification('Harvestron available!', userSettings.harvestron, counters.lastHarvestronNotification);
                     counters.lastHarvestronNotification++;
                 } else {
                     counters.lastHarvestronNotification = 0;
@@ -461,14 +498,7 @@ if (typeof(MutationObserver) === "undefined") {
                 }
 
                 if (visibleQuestDivId && ($('#' + visibleQuestDivId).text().startsWith('You have completed your quest!'))) {
-                    if (counters.lastQuestNotification === 0 || (userSettings.recurringNotifications && counters.lastQuestNotification % 20 === 0)) {
-                        if (userSettings.questComplete.popup) {
-                            fn.notification('Quest complete!', counters.lastQuestNotification === 0);
-                        }
-                        if (userSettings.questComplete.sound) {
-                            SFX.msg_ding.play();
-                        }
-                    }
+                    fn.notification('Quest complete!', userSettings.questComplete, counters.lastQuestNotification);
                     counters.lastQuestNotification++;
                 } else {
                     counters.lastQuestNotification = 0;
@@ -525,54 +555,29 @@ if (typeof(MutationObserver) === "undefined") {
                     if(userSettings.event.discordWebhook && userSettings.event.discordMessage) {
                         $.post(userSettings.event.discordWebhook, {content: userSettings.event.discordMessage});
                     }
-                    if (userSettings.event.popup) {
-                        fn.notification('An event is starting in five minutes!');
-                    }
-                    if (userSettings.event.sound) {
-                        SFX.msg_ding.play();
-                    }
+                    fn.notification('An event is starting in five minutes!', userSettings.event);
 
                     // 30 second warning
                     setTimeout(function() {
-                        if (userSettings.event.popup) {
-                            fn.notification('An event is starting in thirty seconds!');
-                        }
-                        if (userSettings.event.sound) {
-                            SFX.msg_ding.play();
-                        }
+                        fn.notification('An event is starting in thirty seconds!', userSettings.event);
                     }, (secondsUntilEventStart - 30) * 1000);
 
                     // 1 second warning
                     setTimeout(function() {
-                        if (userSettings.event.popup) {
-                            fn.notification('An event is starting!');
-                        }
-                        if (userSettings.event.sound) {
-                            SFX.msg_ding.play();
-                        }
+                        fn.notification('An event is starting!', userSettings.event);
                     }, (secondsUntilEventStart - 1) * 1000);
 
                     // 10 minutes remaining
                     setTimeout(function() {
                         if (!fn.checkEventParticipation()) {
-                            if (userSettings.event.popup) {
-                                fn.notification('Ten minutes remaining in the event!');
-                            }
-                            if (userSettings.event.sound) {
-                                SFX.msg_ding.play();
-                            }
+                            fn.notification('Ten minutes remaining in the event!', userSettings.event);
                         }
                     }, (secondsUntilEventStart + (60 * 5)) * 1000);
 
                     // 5 minutes remaining
                     setTimeout(function() {
                         if (!fn.checkEventParticipation()) {
-                            if (userSettings.event.popup) {
-                                fn.notification('Five minutes remaining in the event!');
-                            }
-                            if (userSettings.event.sound) {
-                                SFX.msg_ding.play();
-                            }
+                            fn.notification('Five minutes remaining in the event!', userSettings.event);
                         }
                     }, (secondsUntilEventStart + (60 * 10)) * 1000);
 
@@ -591,12 +596,7 @@ if (typeof(MutationObserver) === "undefined") {
                 function(records) {
                     var text = fn.findSearchValuesInRecords(records, userSettings.chatSearch.searchText);
                     if (text) {
-                        if (userSettings.chatSearch.popup) {
-                            fn.notification(text);
-                        }
-                        if (userSettings.chatSearch.sound) {
-                            SFX.msg_ding.play();
-                        }
+                        fn.notification(text, userSettings.chatSearch);
                         return;
                     }
 
@@ -606,12 +606,8 @@ if (typeof(MutationObserver) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
-                                    if (userSettings.whisper.popup) {
-                                        fn.notification(text);
-                                    }
-                                    if (userSettings.whisper.sound) {
-                                        SFX.msg_ding.play();
-                                    }
+                                    fn.notification(text, userSettings.whisper);
+                                    return;
                                 }
                             }
                         }
@@ -623,12 +619,7 @@ if (typeof(MutationObserver) === "undefined") {
                 function(records) {
                     var text = fn.findSearchValuesInRecords(records, userSettings.lootSearch.searchText);
                     if (text) {
-                        if (userSettings.lootSearch.popup) {
-                            fn.notification(text);
-                        }
-                        if (userSettings.lootSearch.sound) {
-                            SFX.msg_ding.play();
-                        }
+                        fn.notification(text, userSettings.lootSearch);
                         return;
                     }
                 }
@@ -645,13 +636,7 @@ if (typeof(MutationObserver) === "undefined") {
                         }
                     }
                     if (text) {
-                        if (userSettings.craftingSearch.popup) {
-                            fn.notification(text);
-                        }
-                        if (userSettings.craftingSearch.sound) {
-                            SFX.msg_ding.play();
-                        }
-                        return;
+                        fn.notification(text, userSettings.craftingSearch);
                     }
                 }
             ),
@@ -663,19 +648,9 @@ if (typeof(MutationObserver) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text === '5') {
-                                    if (userSettings.fatigue.popup) {
-                                        fn.notification('Your stamina is low!');
-                                    }
-                                    if (userSettings.fatigue.sound) {
-                                        SFX.msg_ding.play();
-                                    }
+                                    fn.notification('Your stamina is low!', userSettings.fatigue);
                                 } else if (text === '0') {
-                                    if (userSettings.fatigue.popup) {
-                                        fn.notification('You are fatigued!');
-                                    }
-                                    if (userSettings.fatigue.sound) {
-                                        SFX.msg_ding.play();
-                                    }
+                                    fn.notification('You are fatigued!', userSettings.fatigue);
                                 }
                             }
                         }
@@ -700,12 +675,7 @@ if (typeof(MutationObserver) === "undefined") {
             bossFailure: new MutationObserver(
                 function(records) {
                     if (fn.checkRecordsVisible(records)) {
-                        if (userSettings.event.popup) {
-                            fn.notification('You were eliminated from the gauntlet!');
-                        }
-                        if (userSettings.event.sound) {
-                            SFX.msg_ding.play();
-                        }
+                        fn.notification('You were eliminated from the gauntlet!', userSettings.event);
                     }
                 }
             ),

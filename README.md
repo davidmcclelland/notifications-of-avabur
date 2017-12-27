@@ -27,7 +27,7 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
   * Popup for each event (independent)
   * Sound for each event (independent)
   * Sound volume
-* Log for the last 100 popup notifications displayed
+* Log for the last 100 notifications displayed
 
 ## TODOs/Vague Ideas
 * Recurring notifications for

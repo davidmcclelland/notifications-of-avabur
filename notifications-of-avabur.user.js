@@ -6,7 +6,7 @@
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.4.0
+// @version        1.4.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -309,9 +309,9 @@ if (typeof(MutationObserver) === "undefined") {
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
-            <button id="saveNoASettingsButton" class="btn btn-primary">Save Changes</button>
-        </div>
+        <strong class="col-xs-12" style="display: none;" id="noaSettingsSavedLabel">
+            Settings have been saved
+        </strong>
     </div>
 </div>
         `;
@@ -379,21 +379,30 @@ if (typeof(MutationObserver) === "undefined") {
                     SFX.msg_ding.play();
                 }
             },
+            displaySettingsSavedLabel: function() {
+                const label = document.getElementById('noaSettingsSavedLabel');
+                label && (label.style.display = 'block');
+            },
+            debouncedHideSettingsSavedLabel: _.debounce(function() {
+                const label = document.getElementById('noaSettingsSavedLabel');
+                label && (label.style.display = 'none');
+            }, 3000),
             loadUserSettings: function() {
                 var loadedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
-                console.log('loaded settings', loadedSettings);
                 userSettings = _.defaultsDeep(loadedSettings, DEFAULT_USER_SETTINGS);
 
                 // Save settings to store any defaulted settings
                 fn.storeUserSettings();
             },
             storeUserSettings: function() {
-                console.log('storing user settings', userSettings);
                 localStorage.setItem(SETTINGS_KEY, JSON.stringify(userSettings));
+
+                fn.displaySettingsSavedLabel();
+                fn.debouncedHideSettingsSavedLabel();
             },
             populateSettingsEditor: function() {
                 $('#recurringNotificationsEditor')[0].checked = userSettings.recurringNotifications;
-                $('#recurringNotificationsTimeoutEditor').val(userSettings.recurringNotificationsTimeout)
+                $('#recurringNotificationsTimeoutEditor').val(userSettings.recurringNotificationsTimeout);
                 $('#soundVolumeEditor').val(userSettings.soundVolume);
                 $('#fatiguePopupEditor')[0].checked = userSettings.fatigue.popup;
                 $('#fatigueSoundEditor')[0].checked = userSettings.fatigue.sound;
@@ -588,7 +597,7 @@ if (typeof(MutationObserver) === "undefined") {
                         isEventCountdownActive = false;
                     }, (secondsUntilEventStart + (60 * 15)) * 1000);
                 }
-            }
+            },            
         };
 
         /** Collection of mutation observers the script uses */
@@ -751,8 +760,8 @@ if (typeof(MutationObserver) === "undefined") {
                     var noaSettingsButton = $('<a id="noaPreferences"><button class="btn btn-primary">NoA Settings</button></a>');
                     var noaSettingsPage = $(SETTINGS_DIALOG_HTML);
                     accountSettingsWrapper.append(noaSettingsPage);
-                    var saveNoaSettingsButton = $('#saveNoASettingsButton');
-                    saveNoaSettingsButton.click(fn.saveSettingsEditor);
+                    $('#NoASettings input').change(fn.saveSettingsEditor);
+                    $('#NoASettings textarea').change(fn.saveSettingsEditor);
                     noaSettingsButton.click(function() {
                         // Remove teh active class from all of the buttons in the settings link wrapper, then set the settings button active
                         settingsLinksWrapper.children('.active').removeClass('active');

@@ -131,185 +131,143 @@ if (typeof(MutationObserver) === "undefined") {
 
         const SETTINGS_DIALOG_HTML = `
 <div id="NoASettings" style="display: none; margin: 10px;">
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">General</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="recurringNotificationsEditor" type="checkbox">Recurring Notifications</label>
-            </div><div class="col-xs-4">
-                <label>Recurrence Time (sec)</label>
-                <input id="recurringNotificationsTimeoutEditor" type="number" min="1" max="100">
-            </div><div class="col-xs-4">
-                <label>Sound Volume</label>
-                <input id="soundVolumeEditor"                   type="number" min="1" max="100">
+    <div id="NoASettingsButtonWrapper" class="center">
+        <a id="NoANotificationSettingsButton">
+            <button class="btn btn-primary">Notifications</button>
+        </a>
+        <a id="NoAAdvancedSettingsButton">
+            <button class="btn btn-primary">Advanced</button>
+        </a>
+    </div>
+    <div id="NoASettingsContentWrapper">
+        <div id="NoANotificationSettingsWrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <th scope="col">Popup</th>
+                        <th scope="col">Sound</th>
+                        <th scope="col">Log</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Fatigue</th>
+                        <td><input id="fatiguePopupEditor" type="checkbox"></td>
+                        <td><input id="fatigueSoundEditor" type="checkbox"></td>
+                        <td><input id="fatigueLogEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Harvestron</th>
+                        <td><input id="harvestronPopupEditor" type="checkbox"></td>
+                        <td><input id="harvestronSoundEditor" type="checkbox"></td>
+                        <td><input id="harvestronLogEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Construction</th>
+                        <td><input id="constructionPopupEditor" type="checkbox"></td>
+                        <td><input id="constructionSoundEditor" type="checkbox"></td>
+                        <td><input id="constructionLogEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Whisper</th>
+                        <td><input id="whisperPopupEditor" type="checkbox"></td>
+                        <td><input id="whisperSoundEditor" type="checkbox"></td>
+                        <td><input id="whisperLogEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Quest Complete</th>
+                        <td><input id="questCompletePopupEditor" type="checkbox"></td>
+                        <td><input id="questCompleteSoundEditor" type="checkbox"></td>
+                        <td><input id="questCompleteLogEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Chat Search</th>
+                        <td><input id="chatSearchPopupEditor" type="checkbox"></td>
+                        <td><input id="chatSearchSoundEditor" type="checkbox"></td>
+                        <td><input id="chatSearchLogEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Loot Search</th>
+                        <td><input id="lootSearchPopupEditor" type="checkbox"></td>
+                        <td><input id="lootSearchSoundEditor" type="checkbox"></td>
+                        <td><input id="lootSearchLogEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Crafting Search</th>
+                        <td><input id="craftingSearchPopupEditor" type="checkbox"></td>
+                        <td><input id="craftingSearchSoundEditor" type="checkbox"></td>
+                        <td><input id="craftingSearchLogEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Event</th>
+                        <td><input id="eventPopupEditor" type="checkbox"></td>
+                        <td><input id="eventSoundEditor" type="checkbox"></td>
+                        <td><input id="eventLogEditor" type="checkbox"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="NoAAdvancedSettingsWrapper">
+            <div>
+                <h4 class="nobg">General</h4>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <label><input id="recurringNotificationsEditor" type="checkbox">Recurring Notifications</label>
+                    </div><div class="col-xs-4">
+                        <label>Recurrence Time (sec)</label>
+                        <input id="recurringNotificationsTimeoutEditor" type="number" min="1" max="100">
+                    </div><div class="col-xs-4">
+                        <label>Sound Volume</label>
+                        <input id="soundVolumeEditor"                   type="number" min="1" max="100">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Events</h4>
+                <div class="row">
+                    <label class="col-xs-3">Event <a href="https://discordapp.com/developers/docs/resources/webhook#execute-webhook" target="_blank">Discord Webhook</a></label>
+                    <div class="col-xs-9">
+                        <input id="eventDiscordWebhookEditor"           type="text" style="width: 80%;">
+                    </div>
+                </div><div class="row">
+                    <label class="col-xs-3">Event Discord Message</label>
+                    <div class="col-xs-9">
+                        <input id="eventDiscordMessageEditor"           type="text" style="width: 80%;">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Chat Search Text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Chat-search" target="_blank">Help</a>)</h4>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <textarea id="chatSearchTextEditor"></textarea>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Loot Search Text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Loot-search" target="_blank">Help</a>)</h4>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <textarea id="lootSearchTextEditor"></textarea>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Crafting Search Text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Crafting-search" target="_blank">Help</a>)</h4>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <textarea id="craftingSearchTextEditor"></textarea>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Fatigue</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="fatiguePopupEditor"           type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="fatigueSoundEditor"           type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="fatigueLogEditor"             type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Harvestron</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="harvestronPopupEditor"        type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="harvestronSoundEditor"        type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="harvestronLogEditor"          type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Construction</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="constructionPopupEditor"      type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="constructionSoundEditor"      type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="constructionLogEditor"        type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Whisper</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="whisperPopupEditor"           type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="whisperSoundEditor"           type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="whisperLogEditor"             type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Quest Complete</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="questCompletePopupEditor"     type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="questCompleteSoundEditor"     type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="questCompleteLogEditor"       type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Events</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="eventPopupEditor"             type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="eventSoundEditor"             type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="eventLogEditor"               type="checkbox">Log</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-3">
-                <label>Event <a href="https://discordapp.com/developers/docs/resources/webhook#execute-webhook" target="_blank">Discord Webhook</a></label>
-            </div><div class="col-xs-9">
-                <input id="eventDiscordWebhookEditor"           type="text" style="width: 80%;">
-            </div>
-        </div><div class="row">
-            <div class="col-xs-3">
-                <label>Event Discord Message</label>
-            </div><div class="col-xs-9">
-                <input id="eventDiscordMessageEditor"           type="text" style="width: 80%;">
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Chat Search</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="chatSearchPopupEditor"        type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="chatSearchSoundEditor"        type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="chatSearchLogEditor"          type="checkbox">Log</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <label>Chat search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Chat-search" target="_blank">Help</a>)</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <textarea id="chatSearchTextEditor"></textarea>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Loot Search</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="lootSearchPopupEditor"        type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="lootSearchSoundEditor"        type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="lootSearchLogEditor"          type="checkbox">Log</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <label>Loot search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Loot-search" target="_blank">Help</a>)</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <textarea id="lootSearchTextEditor"></textarea>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Crafting Search</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="craftingSearchPopupEditor"    type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="craftingSearchSoundEditor"    type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="craftingSearchLogEditor"      type="checkbox">Log</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <label>Crafting search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Crafting-search" target="_blank">Help</a>)</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <textarea id="craftingSearchTextEditor"></textarea>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <strong class="col-xs-12" style="display: none;" id="noaSettingsSavedLabel">
+    <div class="row" style="display: none;" id="NoaSettingsSavedLabel">
+        <strong class="col-xs-12">
             Settings have been saved
         </strong>
     </div>
@@ -380,11 +338,11 @@ if (typeof(MutationObserver) === "undefined") {
                 }
             },
             displaySettingsSavedLabel: function() {
-                const label = document.getElementById('noaSettingsSavedLabel');
+                const label = document.getElementById('NoaSettingsSavedLabel');
                 label && (label.style.display = 'block');
             },
             debouncedHideSettingsSavedLabel: _.debounce(function() {
-                const label = document.getElementById('noaSettingsSavedLabel');
+                const label = document.getElementById('NoaSettingsSavedLabel');
                 label && (label.style.display = 'none');
             }, 3000),
             loadUserSettings: function() {
@@ -760,12 +718,23 @@ if (typeof(MutationObserver) === "undefined") {
                     var noaSettingsButton = $('<a id="noaPreferences"><button class="btn btn-primary">NoA Settings</button></a>');
                     var noaSettingsPage = $(SETTINGS_DIALOG_HTML);
                     accountSettingsWrapper.append(noaSettingsPage);
+                    $('#NoANotificationSettingsButton').click(function() {
+                        $('#NoANotificationSettingsButton').addClass('active').siblings().removeClass('active');
+                        $('#NoANotificationSettingsWrapper').css('display', 'block').siblings().css('display', 'none');
+                    });
+
+                    $('#NoAAdvancedSettingsButton').click(function() {
+                        $('#NoAAdvancedSettingsButton').addClass('active').siblings().removeClass('active');
+                        $('#NoAAdvancedSettingsWrapper').css('display', 'block').siblings().css('display', 'none');
+                    });
+
+                    $('#NoANotificationSettingsButton').click();
+
                     $('#NoASettings input').change(fn.saveSettingsEditor);
                     $('#NoASettings textarea').change(fn.saveSettingsEditor);
                     noaSettingsButton.click(function() {
-                        // Remove teh active class from all of the buttons in the settings link wrapper, then set the settings button active
-                        settingsLinksWrapper.children('.active').removeClass('active');
-                        noaSettingsButton.addClass('active');
+                        // Remove the active class from all of the buttons in the settings link wrapper, then set the settings button active
+                        noaSettingsButton.addClass('active').siblings().removeClass('active');
 
                         // Hide all the children of the settings wrapper, then display only the settings link wrapper and the NoA settings page
                         accountSettingsWrapper.children().css('display', 'none');
@@ -774,7 +743,6 @@ if (typeof(MutationObserver) === "undefined") {
 
                         // Load current settings into the dialog
                         fn.populateSettingsEditor();
-
                     });
                     settingsLinksWrapper.append(noaSettingsButton);
 

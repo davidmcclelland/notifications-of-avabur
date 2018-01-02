@@ -22,7 +22,7 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
   * Text search for chat, loot, and crafting
     * Be careful with these - it watches your own chat messages too!
     * Regexes are supported, so go crazy!
-* Discord publishing for events
+* Discord publishing for all notifications
 * Settings
   * Popup for each event (independent)
   * Sound for each event (independent)

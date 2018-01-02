@@ -6,7 +6,7 @@
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.4.1
+// @version        1.5.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -92,7 +92,12 @@ if (typeof(MutationObserver) === "undefined") {
             recurringNotificationsTimeout: 20,
             soundVolume: 80,
             fatigue: {popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false},
-            event: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventFiveMinuteCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventThirtySecondCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventStarting: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventTenMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventFiveMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventElimination: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             harvestron: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             construction: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             whisper: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
@@ -219,12 +224,52 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="craftingSearchPersonalDiscordEditor" type="checkbox"></td>
                     </tr>
                     <tr>
-                        <th scope="row">Event</th>
-                        <td><input id="eventPopupEditor" type="checkbox"></td>
-                        <td><input id="eventSoundEditor" type="checkbox"></td>
-                        <td><input id="eventLogEditor" type="checkbox"></td>
-                        <td><input id="eventClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="eventPersonalDiscordEditor" type="checkbox"></td>
+                        <th>Event 5 Minute Countdown</th>
+                        <td><input id="eventFiveMinuteCountdownPopupEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinuteCountdownSoundEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinuteCountdownLogEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinuteCountdownClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinuteCountdownPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event 30 Second Countdown</th>
+                        <td><input id="eventThirtySecondCountdownPopupEditor" type="checkbox"></td>
+                        <td><input id="eventThirtySecondCountdownSoundEditor" type="checkbox"></td>
+                        <td><input id="eventThirtySecondCountdownLogEditor" type="checkbox"></td>
+                        <td><input id="eventThirtySecondCountdownClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventThirtySecondCountdownPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event Starting</th>
+                        <td><input id="eventStartingPopupEditor" type="checkbox"></td>
+                        <td><input id="eventStartingSoundEditor" type="checkbox"></td>
+                        <td><input id="eventStartingLogEditor" type="checkbox"></td>
+                        <td><input id="eventStartingClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventStartingPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event 10 Minutes Remaining</th>
+                        <td><input id="eventTenMinutesRemainingPopupEditor" type="checkbox"></td>
+                        <td><input id="eventTenMinutesRemainingSoundEditor" type="checkbox"></td>
+                        <td><input id="eventTenMinutesRemainingLogEditor" type="checkbox"></td>
+                        <td><input id="eventTenMinutesRemainingClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventTenMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event 5 Minutes Remaining</th>
+                        <td><input id="eventFiveMinutesRemainingPopupEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinutesRemainingSoundEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinutesRemainingLogEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinutesRemainingClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event Elimination</th>
+                        <td><input id="eventEliminationPopupEditor" type="checkbox"></td>
+                        <td><input id="eventEliminationSoundEditor" type="checkbox"></td>
+                        <td><input id="eventEliminationLogEditor" type="checkbox"></td>
+                        <td><input id="eventEliminationClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventEliminationPersonalDiscordEditor" type="checkbox"></td>
                     </tr>
                 </tbody>
             </table>
@@ -438,8 +483,12 @@ if (typeof(MutationObserver) === "undefined") {
                 $('#craftingSearchTextEditor').val(userSettings.craftingSearch.searchText);
 
                 fn.populateSingleNotificationEditor('fatigue', userSettings.fatigue);
-                fn.populateSingleNotificationEditor('event', userSettings.event);
-                fn.populateSingleNotificationEditor('harvestron', userSettings.harvestron);
+                fn.populateSingleNotificationEditor('eventFiveMinuteCountdown', userSettings.eventFiveMinuteCountdown);
+                fn.populateSingleNotificationEditor('eventThirtySecondCountdown', userSettings.eventThirtySecondCountdown);
+                fn.populateSingleNotificationEditor('eventStarting', userSettings.eventStarting);
+                fn.populateSingleNotificationEditor('eventTenMinutesRemaining', userSettings.eventTenMinutesRemaining);
+                fn.populateSingleNotificationEditor('eventFiveMinutesRemaining', userSettings.eventFiveMinutesRemaining);
+                fn.populateSingleNotificationEditor('eventElimination', userSettings.eventElimination);
                 fn.populateSingleNotificationEditor('construction', userSettings.construction);
                 fn.populateSingleNotificationEditor('whisper', userSettings.whisper);
                 fn.populateSingleNotificationEditor('questComplete', userSettings.questComplete);
@@ -467,7 +516,12 @@ if (typeof(MutationObserver) === "undefined") {
                 userSettings.craftingSearch.searchText = $('#craftingSearchTextEditor').val();
 
                 fn.saveSingleNotificationEditor('fatigue', userSettings.fatigue);
-                fn.saveSingleNotificationEditor('event', userSettings.event);
+                fn.saveSingleNotificationEditor('eventFiveMinuteCountdown', userSettings.eventFiveMinuteCountdown);
+                fn.saveSingleNotificationEditor('eventThirtySecondCountdown', userSettings.eventThirtySecondCountdown);
+                fn.saveSingleNotificationEditor('eventStarting', userSettings.eventStarting);
+                fn.saveSingleNotificationEditor('eventTenMinutesRemaining', userSettings.eventTenMinutesRemaining);
+                fn.saveSingleNotificationEditor('eventFiveMinutesRemaining', userSettings.eventFiveMinutesRemaining);
+                fn.saveSingleNotificationEditor('eventElimination', userSettings.eventElimination);
                 fn.saveSingleNotificationEditor('harvestron', userSettings.harvestron);
                 fn.saveSingleNotificationEditor('construction', userSettings.construction);
                 fn.saveSingleNotificationEditor('whisper', userSettings.whisper);
@@ -565,29 +619,29 @@ if (typeof(MutationObserver) === "undefined") {
                     var secondsString = countdownBadgeText.slice(3, 5);
                     var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
 
-                    fn.notification('An event is starting in five minutes!', userSettings.event);
+                    fn.notification('An event is starting in five minutes!', userSettings.eventFiveMinuteCountdown);
 
                     // 30 second warning
                     setTimeout(function() {
-                        fn.notification('An event is starting in thirty seconds!', userSettings.event);
+                        fn.notification('An event is starting in thirty seconds!', userSettings.eventThirtySecondCountdown);
                     }, (secondsUntilEventStart - 30) * 1000);
 
                     // 1 second warning
                     setTimeout(function() {
-                        fn.notification('An event is starting!', userSettings.event);
+                        fn.notification('An event is starting!', userSettings.eventStarting);
                     }, (secondsUntilEventStart - 1) * 1000);
 
                     // 10 minutes remaining
                     setTimeout(function() {
                         if (!fn.checkEventParticipation()) {
-                            fn.notification('Ten minutes remaining in the event!', userSettings.event);
+                            fn.notification('Ten minutes remaining in the event!', userSettings.eventTenMinutesRemaining);
                         }
                     }, (secondsUntilEventStart + (60 * 5)) * 1000);
 
                     // 5 minutes remaining
                     setTimeout(function() {
                         if (!fn.checkEventParticipation()) {
-                            fn.notification('Five minutes remaining in the event!', userSettings.event);
+                            fn.notification('Five minutes remaining in the event!', userSettings.eventFiveMinutesRemaining);
                         }
                     }, (secondsUntilEventStart + (60 * 10)) * 1000);
 
@@ -685,7 +739,7 @@ if (typeof(MutationObserver) === "undefined") {
             bossFailure: new MutationObserver(
                 function(records) {
                     if (fn.checkRecordsVisible(records)) {
-                        fn.notification('You were eliminated from the gauntlet!', userSettings.event);
+                        fn.notification('You were eliminated from the gauntlet!', userSettings.eliminatedFromEvent);
                     }
                 }
             ),

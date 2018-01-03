@@ -610,6 +610,7 @@ if (typeof(MutationObserver) === "undefined") {
             setupEventNotifications: function(countdownBadgeText) {
                 if (!isEventCountdownActive) {
                     if (countdownBadgeText === '!') {
+                        console.log('An event is in progress');
                         return;
                     }
 
@@ -619,6 +620,7 @@ if (typeof(MutationObserver) === "undefined") {
                     var secondsString = countdownBadgeText.slice(3, 5);
                     var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
 
+                    console.log('Seconds until start', secondsUntilEventStart, countdownBadgeText);
                     fn.notification('An event is starting in five minutes!', userSettings.eventFiveMinuteCountdown);
 
                     // 30 second warning

@@ -610,17 +610,24 @@ if (typeof(MutationObserver) === "undefined") {
             setupEventNotifications: function(countdownBadgeText) {
                 if (!isEventCountdownActive) {
                     if (countdownBadgeText === '!') {
-                        console.log('An event is in progress');
                         return;
                     }
 
                     isEventCountdownActive = true;
                     // First thing's first, figure out how long until the event (in seconds)
-                    var minutesString = countdownBadgeText.slice(0, 2);
-                    var secondsString = countdownBadgeText.slice(3, 5);
+                    /* We handle this a bit odd - if the countdown string doesn't list 'm', then it is displaying
+                    only seconds. This currently only happens on beta when testing events, but NoA shouldn't break on beta.
+                    This could be slightly more elegantly solved with indexof, but I already wrote it this way and it works. */
+                    var minutesString = '0';
+                    var secondsString = '0';
+                    if (countdownBadgeText.includes('m')) {
+                        minutesString = countdownBadgeText.slice(0, 2);
+                        secondsString = countdownBadgeText.slice(3, 5);
+                    } else {
+                        secondsString = countdownBadgeText.slice(0, 2);
+                    }
                     var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
 
-                    console.log('Seconds until start', secondsUntilEventStart, countdownBadgeText);
                     fn.notification('An event is starting in five minutes!', userSettings.eventFiveMinuteCountdown);
 
                     // 30 second warning

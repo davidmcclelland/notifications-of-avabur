@@ -728,7 +728,7 @@ if (typeof(MutationObserver) === "undefined") {
                                 const text = $(addedNodes[j]).text();
                                 if (text === '0') {
                                     fn.notification('You are fatigued!', userSettings.fatigue);
-                                } else (text === userSettings.lowStaminaThreshold.toString()) {
+                                } else if (text === userSettings.lowStaminaThreshold.toString()) {
                                     fn.notification('Your stamina is low!', userSettings.fatigue);
                                 }
                             }

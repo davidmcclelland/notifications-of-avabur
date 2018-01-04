@@ -6,7 +6,7 @@
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.5.0
+// @version        1.5.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -91,6 +91,7 @@ if (typeof(MutationObserver) === "undefined") {
             recurringNotifications: true,
             recurringNotificationsTimeout: 20,
             soundVolume: 80,
+            lowStaminaThreshold: 5,
             fatigue: {popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false},
             eventFiveMinuteCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventThirtySecondCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
@@ -116,21 +117,17 @@ if (typeof(MutationObserver) === "undefined") {
     display: inline-block;
     float: none;
 }
-
 #NoASettings input {
     margin-right: 10px;
 }
-
 #NoASettings textarea {
     width: 50%;
     height: 80px;
 }
-
 #NoASettings hr {
     margin-top: 10px;
     margin-bottom: 10px;
 }
-
 #notificationLogItems {
     margin-top: 10px;
 }
@@ -278,14 +275,17 @@ if (typeof(MutationObserver) === "undefined") {
             <div>
                 <h4 class="nobg">General</h4>
                 <div class="row">
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         <label><input id="recurringNotificationsEditor" type="checkbox">Recurring Notifications</label>
-                    </div><div class="col-xs-4">
+                    </div><div class="col-xs-3">
                         <label>Recurrence Time (sec)</label>
                         <input id="recurringNotificationsTimeoutEditor" type="number" min="1" max="100">
-                    </div><div class="col-xs-4">
+                    </div><div class="col-xs-3">
                         <label>Sound Volume</label>
                         <input id="soundVolumeEditor"                   type="number" min="1" max="100">
+                    </div><div class="col-xs-3">
+                        <label>Low Stamina Threshold</label>
+                        <input id="lowStaminaThresholdEditor"           type="number" min="0" max="9999">
                     </div>
                 </div>
             </div>
@@ -474,6 +474,7 @@ if (typeof(MutationObserver) === "undefined") {
                 $('#recurringNotificationsEditor')[0].checked = userSettings.recurringNotifications;
                 $('#recurringNotificationsTimeoutEditor').val(userSettings.recurringNotificationsTimeout);
                 $('#soundVolumeEditor').val(userSettings.soundVolume);
+                $('#lowStaminaThresholdEditor').val(userSettings.lowStaminaThreshold);
                 $('#clanDiscordWebhookEditor').val(userSettings.clanDiscord.webhook);
                 $('#clanDiscordTargetEditor').val(userSettings.clanDiscord.target);
                 $('#personalDiscordWebhookEditor').val(userSettings.personalDiscord.webhook);
@@ -507,6 +508,7 @@ if (typeof(MutationObserver) === "undefined") {
                 userSettings.recurringNotifications = $('#recurringNotificationsEditor')[0].checked;
                 userSettings.recurringNotificationsTimeout = parseInt($('#recurringNotificationsTimeoutEditor').val(), 10);
                 userSettings.soundVolume = parseInt($('#soundVolumeEditor').val(), 10);
+                userSettings.lowStaminaThreshold = parseInt($('#lowStaminaThresholdEditor').val(), 10);
                 userSettings.clanDiscord.webhook = $('#clanDiscordWebhookEditor').val();
                 userSettings.clanDiscord.target = $('#clanDiscordTargetEditor').val();
                 userSettings.personalDiscord.webhook = $('#personalDiscordWebhookEditor').val();
@@ -720,10 +722,10 @@ if (typeof(MutationObserver) === "undefined") {
                         if (addedNodes.length) {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
-                                if (text === '5') {
-                                    fn.notification('Your stamina is low!', userSettings.fatigue);
-                                } else if (text === '0') {
+                                if (text === '0') {
                                     fn.notification('You are fatigued!', userSettings.fatigue);
+                                } else if (text === userSettings.lowStaminaThreshold.toString()) {
+                                    fn.notification('Your stamina is low!', userSettings.fatigue);
                                 }
                             }
                         }

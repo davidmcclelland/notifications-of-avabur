@@ -22,12 +22,21 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
   * Text search for chat, loot, and crafting
     * Be careful with these - it watches your own chat messages too!
     * Regexes are supported, so go crazy!
-* Discord publishing for events
+* Discord publishing for all notifications
 * Settings
   * Popup for each event (independent)
   * Sound for each event (independent)
   * Sound volume
 * Log for the last 100 notifications displayed
+
+## Discord Notifications
+Discord notifications are toggled on and off like every other type, but also require some additional configuration.
+
+### Webhook creation
+On a discord server on which you are an admin: right click a text channel, select webhooks, create webhook, set name/icon as you wish, then copy the webhook url. Enter this as either the personal or clan discord webhook fields.
+
+### User/Group
+Direct user mentions and group mentions are both accepted. `@everyone` and `@here` work great. If you would like to notify individual users, you must use the format `<@UserId>` where UserId is the ID of the desired user (not username). Information on getting user IDs can be found [here](https://www.reddit.com/r/discordapp/comments/61n0sj/pinging_rolesusers_linking_text_channels_through/dffsiuk/). Multiple user names can be specified, eg `<@FirstUserId> <@SecondUserId>`.
 
 ## TODOs/Vague Ideas
 * Recurring notifications for

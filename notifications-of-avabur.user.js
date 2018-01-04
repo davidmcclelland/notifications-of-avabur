@@ -6,7 +6,7 @@
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.4.1
+// @version        1.5.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -91,15 +91,22 @@ if (typeof(MutationObserver) === "undefined") {
             recurringNotifications: true,
             recurringNotificationsTimeout: 20,
             soundVolume: 80,
-            fatigue: {popup: true, sound: true, log: false},
-            event: {popup: true, sound: true, log: true, discordWebhook: '', discordMessage: ''},
-            harvestron: {popup: true, sound: true, log: true},
-            construction: {popup: true, sound: true, log: true},
-            whisper: {popup: true, sound: true, log: true},
-            questComplete: {popup: true, sound: true, log: true},
-            chatSearch: {popup: true, sound: true, log: true, searchText: ''},
-            lootSearch: {popup: true, sound: true, log: true, searchText: ''},
-            craftingSearch: {popup: true, sound: true, log: true, searchText: ''}
+            fatigue: {popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false},
+            eventFiveMinuteCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventThirtySecondCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventStarting: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventTenMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventFiveMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventElimination: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            harvestron: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            construction: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            whisper: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            questComplete: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            chatSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: ''},
+            lootSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: ''},
+            craftingSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: ''},
+            clanDiscord: {webhook: '', target: ''},
+            personalDiscord: {webhook: '', target: ''}
         };
 
         const SETTINGS_KEY = 'NoASettings';
@@ -131,185 +138,220 @@ if (typeof(MutationObserver) === "undefined") {
 
         const SETTINGS_DIALOG_HTML = `
 <div id="NoASettings" style="display: none; margin: 10px;">
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">General</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="recurringNotificationsEditor" type="checkbox">Recurring Notifications</label>
-            </div><div class="col-xs-4">
-                <label>Recurrence Time (sec)</label>
-                <input id="recurringNotificationsTimeoutEditor" type="number" min="1" max="100">
-            </div><div class="col-xs-4">
-                <label>Sound Volume</label>
-                <input id="soundVolumeEditor"                   type="number" min="1" max="100">
+    <div id="NoASettingsButtonWrapper" class="center">
+        <a id="NoANotificationSettingsButton">
+            <button class="btn btn-primary">Notifications</button>
+        </a>
+        <a id="NoAAdvancedSettingsButton">
+            <button class="btn btn-primary">Advanced</button>
+        </a>
+    </div>
+    <div id="NoASettingsContentWrapper">
+        <div id="NoANotificationSettingsWrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <th scope="col">Popup</th>
+                        <th scope="col">Sound</th>
+                        <th scope="col">Log</th>
+                        <th scope="col">Clan</th>
+                        <th scope="col">Personal</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">Fatigue</th>
+                        <td><input id="fatiguePopupEditor" type="checkbox"></td>
+                        <td><input id="fatigueSoundEditor" type="checkbox"></td>
+                        <td><input id="fatigueLogEditor" type="checkbox"></td>
+                        <td><input id="fatigueClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="fatiguePersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Harvestron</th>
+                        <td><input id="harvestronPopupEditor" type="checkbox"></td>
+                        <td><input id="harvestronSoundEditor" type="checkbox"></td>
+                        <td><input id="harvestronLogEditor" type="checkbox"></td>
+                        <td><input id="harvestronClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="harvestronPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Construction</th>
+                        <td><input id="constructionPopupEditor" type="checkbox"></td>
+                        <td><input id="constructionSoundEditor" type="checkbox"></td>
+                        <td><input id="constructionLogEditor" type="checkbox"></td>
+                        <td><input id="constructionClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="constructionPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Whisper</th>
+                        <td><input id="whisperPopupEditor" type="checkbox"></td>
+                        <td><input id="whisperSoundEditor" type="checkbox"></td>
+                        <td><input id="whisperLogEditor" type="checkbox"></td>
+                        <td><input id="whisperClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="whisperPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Quest Complete</th>
+                        <td><input id="questCompletePopupEditor" type="checkbox"></td>
+                        <td><input id="questCompleteSoundEditor" type="checkbox"></td>
+                        <td><input id="questCompleteLogEditor" type="checkbox"></td>
+                        <td><input id="questCompleteClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="questCompletePersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Chat Search</th>
+                        <td><input id="chatSearchPopupEditor" type="checkbox"></td>
+                        <td><input id="chatSearchSoundEditor" type="checkbox"></td>
+                        <td><input id="chatSearchLogEditor" type="checkbox"></td>
+                        <td><input id="chatSearchClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="chatSearchPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Loot Search</th>
+                        <td><input id="lootSearchPopupEditor" type="checkbox"></td>
+                        <td><input id="lootSearchSoundEditor" type="checkbox"></td>
+                        <td><input id="lootSearchLogEditor" type="checkbox"></td>
+                        <td><input id="lootSearchClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="lootSearchPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Crafting Search</th>
+                        <td><input id="craftingSearchPopupEditor" type="checkbox"></td>
+                        <td><input id="craftingSearchSoundEditor" type="checkbox"></td>
+                        <td><input id="craftingSearchLogEditor" type="checkbox"></td>
+                        <td><input id="craftingSearchClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="craftingSearchPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event 5 Minute Countdown</th>
+                        <td><input id="eventFiveMinuteCountdownPopupEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinuteCountdownSoundEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinuteCountdownLogEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinuteCountdownClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinuteCountdownPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event 30 Second Countdown</th>
+                        <td><input id="eventThirtySecondCountdownPopupEditor" type="checkbox"></td>
+                        <td><input id="eventThirtySecondCountdownSoundEditor" type="checkbox"></td>
+                        <td><input id="eventThirtySecondCountdownLogEditor" type="checkbox"></td>
+                        <td><input id="eventThirtySecondCountdownClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventThirtySecondCountdownPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event Starting</th>
+                        <td><input id="eventStartingPopupEditor" type="checkbox"></td>
+                        <td><input id="eventStartingSoundEditor" type="checkbox"></td>
+                        <td><input id="eventStartingLogEditor" type="checkbox"></td>
+                        <td><input id="eventStartingClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventStartingPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event 10 Minutes Remaining</th>
+                        <td><input id="eventTenMinutesRemainingPopupEditor" type="checkbox"></td>
+                        <td><input id="eventTenMinutesRemainingSoundEditor" type="checkbox"></td>
+                        <td><input id="eventTenMinutesRemainingLogEditor" type="checkbox"></td>
+                        <td><input id="eventTenMinutesRemainingClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventTenMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event 5 Minutes Remaining</th>
+                        <td><input id="eventFiveMinutesRemainingPopupEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinutesRemainingSoundEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinutesRemainingLogEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinutesRemainingClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventFiveMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th>Event Elimination</th>
+                        <td><input id="eventEliminationPopupEditor" type="checkbox"></td>
+                        <td><input id="eventEliminationSoundEditor" type="checkbox"></td>
+                        <td><input id="eventEliminationLogEditor" type="checkbox"></td>
+                        <td><input id="eventEliminationClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="eventEliminationPersonalDiscordEditor" type="checkbox"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="NoAAdvancedSettingsWrapper">
+            <div>
+                <h4 class="nobg">General</h4>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <label><input id="recurringNotificationsEditor" type="checkbox">Recurring Notifications</label>
+                    </div><div class="col-xs-4">
+                        <label>Recurrence Time (sec)</label>
+                        <input id="recurringNotificationsTimeoutEditor" type="number" min="1" max="100">
+                    </div><div class="col-xs-4">
+                        <label>Sound Volume</label>
+                        <input id="soundVolumeEditor"                   type="number" min="1" max="100">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Clan Discord</h4>
+                <div class="row">
+                    <label class="col-xs-3"><a href="https://discordapp.com/developers/docs/resources/webhook#execute-webhook" target="_blank">Webhook</a></label>
+                    <div class="col-xs-9">
+                        <input id="clanDiscordWebhookEditor" type="text" style="width: 80%;">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-xs-3">User/Group</label>
+                    <div class="col-xs-9">
+                        <input id="clanDiscordTargetEditor" type="text" style="width: 80%;">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Personal Discord</h4>
+                <div class="row">
+                    <label class="col-xs-3"><a href="https://discordapp.com/developers/docs/resources/webhook#execute-webhook" target="_blank">Webhook</a></label>
+                    <div class="col-xs-9">
+                        <input id="personalDiscordWebhookEditor" type="text" style="width: 80%;">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-xs-3">User/Group</label>
+                    <div class="col-xs-9">
+                        <input id="personalDiscordTargetEditor" type="text" style="width: 80%;">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Chat Search Text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Chat-search" target="_blank">Help</a>)</h4>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <textarea id="chatSearchTextEditor"></textarea>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Loot Search Text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Loot-search" target="_blank">Help</a>)</h4>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <textarea id="lootSearchTextEditor"></textarea>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Crafting Search Text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Crafting-search" target="_blank">Help</a>)</h4>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <textarea id="craftingSearchTextEditor"></textarea>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Fatigue</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="fatiguePopupEditor"           type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="fatigueSoundEditor"           type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="fatigueLogEditor"             type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Harvestron</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="harvestronPopupEditor"        type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="harvestronSoundEditor"        type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="harvestronLogEditor"          type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Construction</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="constructionPopupEditor"      type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="constructionSoundEditor"      type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="constructionLogEditor"        type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Whisper</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="whisperPopupEditor"           type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="whisperSoundEditor"           type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="whisperLogEditor"             type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Quest Complete</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="questCompletePopupEditor"     type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="questCompleteSoundEditor"     type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="questCompleteLogEditor"       type="checkbox">Log</label>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Events</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="eventPopupEditor"             type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="eventSoundEditor"             type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="eventLogEditor"               type="checkbox">Log</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-3">
-                <label>Event <a href="https://discordapp.com/developers/docs/resources/webhook#execute-webhook" target="_blank">Discord Webhook</a></label>
-            </div><div class="col-xs-9">
-                <input id="eventDiscordWebhookEditor"           type="text" style="width: 80%;">
-            </div>
-        </div><div class="row">
-            <div class="col-xs-3">
-                <label>Event Discord Message</label>
-            </div><div class="col-xs-9">
-                <input id="eventDiscordMessageEditor"           type="text" style="width: 80%;">
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Chat Search</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="chatSearchPopupEditor"        type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="chatSearchSoundEditor"        type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="chatSearchLogEditor"          type="checkbox">Log</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <label>Chat search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Chat-search" target="_blank">Help</a>)</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <textarea id="chatSearchTextEditor"></textarea>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Loot Search</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="lootSearchPopupEditor"        type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="lootSearchSoundEditor"        type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="lootSearchLogEditor"          type="checkbox">Log</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <label>Loot search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Loot-search" target="_blank">Help</a>)</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <textarea id="lootSearchTextEditor"></textarea>
-            </div>
-        </div>
-    </div>
-    <hr>
-    <div>
-        <div class="row">
-            <h4 class="col-xs-12 nobg">Crafting Search</h4>
-        </div><div class="row">
-            <div class="col-xs-4">
-                <label><input id="craftingSearchPopupEditor"    type="checkbox">Popup</label>
-            </div><div class="col-xs-4">
-                <label><input id="craftingSearchSoundEditor"    type="checkbox">Sound</label>
-            </div><div class="col-xs-4">
-                <label><input id="craftingSearchLogEditor"      type="checkbox">Log</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <label>Crafting search text (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Crafting-search" target="_blank">Help</a>)</label>
-            </div>
-        </div><div class="row">
-            <div class="col-xs-12">
-                <textarea id="craftingSearchTextEditor"></textarea>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <strong class="col-xs-12" style="display: none;" id="noaSettingsSavedLabel">
+    <div class="row" style="display: none;" id="NoaSettingsSavedLabel">
+        <strong class="col-xs-12">
             Settings have been saved
         </strong>
     </div>
@@ -332,6 +374,12 @@ if (typeof(MutationObserver) === "undefined") {
 
         /** Misc function container */
         const fn = {
+            sendDiscordMessage: function(webhook, target, text) {
+                if (webhook && target && text) {
+                    const messageContent = target + ' ' + text;
+                    $.post(webhook, {content: messageContent});
+                }
+            },
             /**
              * Creates a floaty notification and plays a sound, based on preferences
              * @param {String} text Text to display
@@ -340,13 +388,20 @@ if (typeof(MutationObserver) === "undefined") {
              */
             notification: function(text, settings, recurrenceCounter) {
                 recurrenceCounter = _.defaultTo(recurrenceCounter, 0);
+
+                const isFirstRecurrence = (recurrenceCounter === 0);
                 // It's a good recurrence if it is the first one, or if recurring notifications are on
                 // and it's been long enough since the previous
-                var isGoodRecurrence = (recurrenceCounter === 0) ||
+                var isGoodRecurrence = isFirstRecurrence ||
                     (userSettings.recurringNotifications && (recurrenceCounter % userSettings.recurringNotificationsTimeout === 0));
 
-                // Only ever log the first instance of a recurrence, even if it's a good recurrence
-                const doLog = settings.log && (recurrenceCounter === 0);
+                // Only ever send to discord and log the first instance of a recurrence,
+                // even if it's a good recurrence
+                const doLog = settings.log && isFirstRecurrence;
+                const doClanDiscord = settings.clanDiscord && isFirstRecurrence;
+                const doPersonalDiscord = settings.personalDiscord && isFirstRecurrence;
+
+                // Recur popup and sound notifications
                 const doPopup = settings.popup && isGoodRecurrence;
                 const doSound = settings.sound && isGoodRecurrence;
 
@@ -378,13 +433,21 @@ if (typeof(MutationObserver) === "undefined") {
                 if (doSound) {
                     SFX.msg_ding.play();
                 }
+
+                if (doClanDiscord) {
+                    fn.sendDiscordMessage(userSettings.clanDiscord.webhook, userSettings.clanDiscord.target, text);
+                }
+
+                if (doPersonalDiscord) {
+                    fn.sendDiscordMessage(userSettings.personalDiscord.webhook, userSettings.personalDiscord.target, text);
+                }
             },
             displaySettingsSavedLabel: function() {
-                const label = document.getElementById('noaSettingsSavedLabel');
+                const label = document.getElementById('NoaSettingsSavedLabel');
                 label && (label.style.display = 'block');
             },
             debouncedHideSettingsSavedLabel: _.debounce(function() {
-                const label = document.getElementById('noaSettingsSavedLabel');
+                const label = document.getElementById('NoaSettingsSavedLabel');
                 label && (label.style.display = 'none');
             }, 3000),
             loadUserSettings: function() {
@@ -400,79 +463,72 @@ if (typeof(MutationObserver) === "undefined") {
                 fn.displaySettingsSavedLabel();
                 fn.debouncedHideSettingsSavedLabel();
             },
+            populateSingleNotificationEditor: function(editorPrefix, notificationSettings) {
+                $('#' + editorPrefix + 'PopupEditor')[0].checked = notificationSettings.popup;
+                $('#' + editorPrefix + 'SoundEditor')[0].checked = notificationSettings.sound;
+                $('#' + editorPrefix + 'LogEditor')[0].checked = notificationSettings.log;
+                $('#' + editorPrefix + 'ClanDiscordEditor')[0].checked = notificationSettings.clanDiscord;
+                $('#' + editorPrefix + 'PersonalDiscordEditor')[0].checked = notificationSettings.personalDiscord;
+            },
             populateSettingsEditor: function() {
                 $('#recurringNotificationsEditor')[0].checked = userSettings.recurringNotifications;
                 $('#recurringNotificationsTimeoutEditor').val(userSettings.recurringNotificationsTimeout);
                 $('#soundVolumeEditor').val(userSettings.soundVolume);
-                $('#fatiguePopupEditor')[0].checked = userSettings.fatigue.popup;
-                $('#fatigueSoundEditor')[0].checked = userSettings.fatigue.sound;
-                $('#fatigueLogEditor')[0].checked = userSettings.fatigue.log;
-                $('#eventPopupEditor')[0].checked = userSettings.event.popup;
-                $('#eventSoundEditor')[0].checked = userSettings.event.sound;
-                $('#eventLogEditor')[0].checked = userSettings.event.log;
-                $('#eventDiscordWebhookEditor').val(userSettings.event.discordWebhook);
-                $('#eventDiscordMessageEditor').val(userSettings.event.discordMessage);
-                $('#harvestronPopupEditor')[0].checked = userSettings.harvestron.popup;
-                $('#harvestronSoundEditor')[0].checked = userSettings.harvestron.sound;
-                $('#harvestronLogEditor')[0].checked = userSettings.harvestron.log;
-                $('#constructionPopupEditor')[0].checked = userSettings.construction.popup;
-                $('#constructionSoundEditor')[0].checked = userSettings.construction.sound;
-                $('#constructionLogEditor')[0].checked = userSettings.construction.log;
-                $('#whisperPopupEditor')[0].checked = userSettings.whisper.popup;
-                $('#whisperSoundEditor')[0].checked = userSettings.whisper.sound;
-                $('#whisperLogEditor')[0].checked = userSettings.whisper.log;
-                $('#questCompletePopupEditor')[0].checked = userSettings.questComplete.popup;
-                $('#questCompleteSoundEditor')[0].checked = userSettings.questComplete.sound;
-                $('#questCompleteLogEditor')[0].checked = userSettings.questComplete.log;
-                $('#chatSearchPopupEditor')[0].checked = userSettings.chatSearch.popup;
-                $('#chatSearchSoundEditor')[0].checked = userSettings.chatSearch.sound;
-                $('#chatSearchLogEditor')[0].checked = userSettings.chatSearch.log;
+                $('#clanDiscordWebhookEditor').val(userSettings.clanDiscord.webhook);
+                $('#clanDiscordTargetEditor').val(userSettings.clanDiscord.target);
+                $('#personalDiscordWebhookEditor').val(userSettings.personalDiscord.webhook);
+                $('#personalDiscordTargetEditor').val(userSettings.personalDiscord.target);
                 $('#chatSearchTextEditor').val(userSettings.chatSearch.searchText);
-                $('#lootSearchPopupEditor')[0].checked = userSettings.lootSearch.popup;
-                $('#lootSearchSoundEditor')[0].checked = userSettings.lootSearch.sound;
-                $('#lootSearchLogEditor')[0].checked = userSettings.lootSearch.log;
                 $('#lootSearchTextEditor').val(userSettings.lootSearch.searchText);
-                $('#craftingSearchPopupEditor')[0].checked = userSettings.craftingSearch.popup;
-                $('#craftingSearchSoundEditor')[0].checked = userSettings.craftingSearch.sound;
-                $('#craftingSearchLogEditor')[0].checked = userSettings.craftingSearch.log;
                 $('#craftingSearchTextEditor').val(userSettings.craftingSearch.searchText);
+
+                fn.populateSingleNotificationEditor('fatigue', userSettings.fatigue);
+                fn.populateSingleNotificationEditor('eventFiveMinuteCountdown', userSettings.eventFiveMinuteCountdown);
+                fn.populateSingleNotificationEditor('eventThirtySecondCountdown', userSettings.eventThirtySecondCountdown);
+                fn.populateSingleNotificationEditor('eventStarting', userSettings.eventStarting);
+                fn.populateSingleNotificationEditor('eventTenMinutesRemaining', userSettings.eventTenMinutesRemaining);
+                fn.populateSingleNotificationEditor('eventFiveMinutesRemaining', userSettings.eventFiveMinutesRemaining);
+                fn.populateSingleNotificationEditor('eventElimination', userSettings.eventElimination);
+                fn.populateSingleNotificationEditor('construction', userSettings.construction);
+                fn.populateSingleNotificationEditor('whisper', userSettings.whisper);
+                fn.populateSingleNotificationEditor('questComplete', userSettings.questComplete);
+                fn.populateSingleNotificationEditor('chatSearch', userSettings.chatSearch);
+                fn.populateSingleNotificationEditor('lootSearch', userSettings.lootSearch);
+                fn.populateSingleNotificationEditor('craftingSearch', userSettings.craftingSearch);
+            },
+            saveSingleNotificationEditor: function(editorPrefix, notificationSettings) {
+                notificationSettings.popup = $('#' + editorPrefix + 'PopupEditor')[0].checked;
+                notificationSettings.sound = $('#' + editorPrefix + 'SoundEditor')[0].checked;
+                notificationSettings.log = $('#' + editorPrefix + 'LogEditor')[0].checked;
+                notificationSettings.clanDiscord = $('#' + editorPrefix + 'ClanDiscordEditor')[0].checked;
+                notificationSettings.personalDiscord = $('#' + editorPrefix + 'PersonalDiscordEditor')[0].checked;
             },
             saveSettingsEditor: function() {
                 userSettings.recurringNotifications = $('#recurringNotificationsEditor')[0].checked;
                 userSettings.recurringNotificationsTimeout = parseInt($('#recurringNotificationsTimeoutEditor').val(), 10);
                 userSettings.soundVolume = parseInt($('#soundVolumeEditor').val(), 10);
-                userSettings.fatigue.popup = $('#fatiguePopupEditor')[0].checked;
-                userSettings.fatigue.sound = $('#fatigueSoundEditor')[0].checked;
-                userSettings.fatigue.log = $('#fatigueLogEditor')[0].checked;
-                userSettings.event.popup = $('#eventPopupEditor')[0].checked;
-                userSettings.event.sound = $('#eventSoundEditor')[0].checked;
-                userSettings.event.log = $('#eventLogEditor')[0].checked;
-                userSettings.event.discordWebhook = $('#eventDiscordWebhookEditor').val();
-                userSettings.event.discordMessage = $('#eventDiscordMessageEditor').val();
-                userSettings.harvestron.popup = $('#harvestronPopupEditor')[0].checked;
-                userSettings.harvestron.sound = $('#harvestronSoundEditor')[0].checked;
-                userSettings.harvestron.log = $('#harvestronLogEditor')[0].checked;
-                userSettings.construction.popup = $('#constructionPopupEditor')[0].checked;
-                userSettings.construction.sound = $('#constructionSoundEditor')[0].checked;
-                userSettings.construction.log = $('#constructionLogEditor')[0].checked;
-                userSettings.whisper.popup = $('#whisperPopupEditor')[0].checked;
-                userSettings.whisper.sound = $('#whisperSoundEditor')[0].checked;
-                userSettings.whisper.log = $('#whisperLogEditor')[0].checked;
-                userSettings.questComplete.popup = $('#questCompletePopupEditor')[0].checked;
-                userSettings.questComplete.sound = $('#questCompleteSoundEditor')[0].checked;
-                userSettings.questComplete.log = $('#questCompleteLogEditor')[0].checked;
-                userSettings.chatSearch.popup = $('#chatSearchPopupEditor')[0].checked;
-                userSettings.chatSearch.sound = $('#chatSearchSoundEditor')[0].checked;
-                userSettings.chatSearch.log = $('#chatSearchLogEditor')[0].checked;
+                userSettings.clanDiscord.webhook = $('#clanDiscordWebhookEditor').val();
+                userSettings.clanDiscord.target = $('#clanDiscordTargetEditor').val();
+                userSettings.personalDiscord.webhook = $('#personalDiscordWebhookEditor').val();
+                userSettings.personalDiscord.target = $('#personalDiscordTargetEditor').val();
                 userSettings.chatSearch.searchText = $('#chatSearchTextEditor').val();
-                userSettings.lootSearch.popup = $('#lootSearchPopupEditor')[0].checked;
-                userSettings.lootSearch.sound = $('#lootSearchSoundEditor')[0].checked;
-                userSettings.lootSearch.log = $('#lootSearchLogEditor')[0].checked;
                 userSettings.lootSearch.searchText = $('#lootSearchTextEditor').val();
-                userSettings.craftingSearch.popup = $('#craftingSearchPopupEditor')[0].checked;
-                userSettings.craftingSearch.sound = $('#craftingSearchSoundEditor')[0].checked;
-                userSettings.craftingSearch.log = $('#craftingSearchLogEditor')[0].checked;
                 userSettings.craftingSearch.searchText = $('#craftingSearchTextEditor').val();
+
+                fn.saveSingleNotificationEditor('fatigue', userSettings.fatigue);
+                fn.saveSingleNotificationEditor('eventFiveMinuteCountdown', userSettings.eventFiveMinuteCountdown);
+                fn.saveSingleNotificationEditor('eventThirtySecondCountdown', userSettings.eventThirtySecondCountdown);
+                fn.saveSingleNotificationEditor('eventStarting', userSettings.eventStarting);
+                fn.saveSingleNotificationEditor('eventTenMinutesRemaining', userSettings.eventTenMinutesRemaining);
+                fn.saveSingleNotificationEditor('eventFiveMinutesRemaining', userSettings.eventFiveMinutesRemaining);
+                fn.saveSingleNotificationEditor('eventElimination', userSettings.eventElimination);
+                fn.saveSingleNotificationEditor('harvestron', userSettings.harvestron);
+                fn.saveSingleNotificationEditor('construction', userSettings.construction);
+                fn.saveSingleNotificationEditor('whisper', userSettings.whisper);
+                fn.saveSingleNotificationEditor('questComplete', userSettings.questComplete);
+                fn.saveSingleNotificationEditor('chatSearch', userSettings.chatSearch);
+                fn.saveSingleNotificationEditor('lootSearch', userSettings.lootSearch);
+                fn.saveSingleNotificationEditor('craftingSearch', userSettings.craftingSearch);
 
                 fn.storeUserSettings();
             },
@@ -559,36 +615,42 @@ if (typeof(MutationObserver) === "undefined") {
 
                     isEventCountdownActive = true;
                     // First thing's first, figure out how long until the event (in seconds)
-                    var minutesString = countdownBadgeText.slice(0, 2);
-                    var secondsString = countdownBadgeText.slice(3, 5);
+                    /* We handle this a bit odd - if the countdown string doesn't list 'm', then it is displaying
+                    only seconds. This currently only happens on beta when testing events, but NoA shouldn't break on beta.
+                    This could be slightly more elegantly solved with indexof, but I already wrote it this way and it works. */
+                    var minutesString = '0';
+                    var secondsString = '0';
+                    if (countdownBadgeText.includes('m')) {
+                        minutesString = countdownBadgeText.slice(0, 2);
+                        secondsString = countdownBadgeText.slice(3, 5);
+                    } else {
+                        secondsString = countdownBadgeText.slice(0, 2);
+                    }
                     var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
 
-                    if(userSettings.event.discordWebhook && userSettings.event.discordMessage) {
-                        $.post(userSettings.event.discordWebhook, {content: userSettings.event.discordMessage});
-                    }
-                    fn.notification('An event is starting in five minutes!', userSettings.event);
+                    fn.notification('An event is starting in five minutes!', userSettings.eventFiveMinuteCountdown);
 
                     // 30 second warning
                     setTimeout(function() {
-                        fn.notification('An event is starting in thirty seconds!', userSettings.event);
+                        fn.notification('An event is starting in thirty seconds!', userSettings.eventThirtySecondCountdown);
                     }, (secondsUntilEventStart - 30) * 1000);
 
                     // 1 second warning
                     setTimeout(function() {
-                        fn.notification('An event is starting!', userSettings.event);
+                        fn.notification('An event is starting!', userSettings.eventStarting);
                     }, (secondsUntilEventStart - 1) * 1000);
 
                     // 10 minutes remaining
                     setTimeout(function() {
                         if (!fn.checkEventParticipation()) {
-                            fn.notification('Ten minutes remaining in the event!', userSettings.event);
+                            fn.notification('Ten minutes remaining in the event!', userSettings.eventTenMinutesRemaining);
                         }
                     }, (secondsUntilEventStart + (60 * 5)) * 1000);
 
                     // 5 minutes remaining
                     setTimeout(function() {
                         if (!fn.checkEventParticipation()) {
-                            fn.notification('Five minutes remaining in the event!', userSettings.event);
+                            fn.notification('Five minutes remaining in the event!', userSettings.eventFiveMinutesRemaining);
                         }
                     }, (secondsUntilEventStart + (60 * 10)) * 1000);
 
@@ -686,7 +748,7 @@ if (typeof(MutationObserver) === "undefined") {
             bossFailure: new MutationObserver(
                 function(records) {
                     if (fn.checkRecordsVisible(records)) {
-                        fn.notification('You were eliminated from the gauntlet!', userSettings.event);
+                        fn.notification('You were eliminated from the gauntlet!', userSettings.eliminatedFromEvent);
                     }
                 }
             ),
@@ -760,12 +822,23 @@ if (typeof(MutationObserver) === "undefined") {
                     var noaSettingsButton = $('<a id="noaPreferences"><button class="btn btn-primary">NoA Settings</button></a>');
                     var noaSettingsPage = $(SETTINGS_DIALOG_HTML);
                     accountSettingsWrapper.append(noaSettingsPage);
+                    $('#NoANotificationSettingsButton').click(function() {
+                        $('#NoANotificationSettingsButton').addClass('active').siblings().removeClass('active');
+                        $('#NoANotificationSettingsWrapper').css('display', 'block').siblings().css('display', 'none');
+                    });
+
+                    $('#NoAAdvancedSettingsButton').click(function() {
+                        $('#NoAAdvancedSettingsButton').addClass('active').siblings().removeClass('active');
+                        $('#NoAAdvancedSettingsWrapper').css('display', 'block').siblings().css('display', 'none');
+                    });
+
+                    $('#NoANotificationSettingsButton').click();
+
                     $('#NoASettings input').change(fn.saveSettingsEditor);
                     $('#NoASettings textarea').change(fn.saveSettingsEditor);
                     noaSettingsButton.click(function() {
-                        // Remove teh active class from all of the buttons in the settings link wrapper, then set the settings button active
-                        settingsLinksWrapper.children('.active').removeClass('active');
-                        noaSettingsButton.addClass('active');
+                        // Remove the active class from all of the buttons in the settings link wrapper, then set the settings button active
+                        noaSettingsButton.addClass('active').siblings().removeClass('active');
 
                         // Hide all the children of the settings wrapper, then display only the settings link wrapper and the NoA settings page
                         accountSettingsWrapper.children().css('display', 'none');
@@ -774,7 +847,6 @@ if (typeof(MutationObserver) === "undefined") {
 
                         // Load current settings into the dialog
                         fn.populateSettingsEditor();
-
                     });
                     settingsLinksWrapper.append(noaSettingsButton);
 

@@ -6,7 +6,7 @@
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.5.1
+// @version        1.5.1.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -750,7 +750,7 @@ if (typeof(MutationObserver) === "undefined") {
             bossFailure: new MutationObserver(
                 function(records) {
                     if (fn.checkRecordsVisible(records)) {
-                        fn.notification('You were eliminated from the gauntlet!', userSettings.eliminatedFromEvent);
+                        fn.notification('You were eliminated from the gauntlet!', userSettings.eventElimination);
                     }
                 }
             ),

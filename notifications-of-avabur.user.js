@@ -6,7 +6,7 @@
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.5.2
+// @version        1.5.2.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -606,9 +606,9 @@ if (typeof(MutationObserver) === "undefined") {
             },
             findSearchValues: function(text, searchValues) {
                 // Look for any values listed under the given key
-                var searchValues = searchValues.split(/\r?\n/);
-                for (var k = 0; k < searchValues.length; k++) {
-                    if (searchValues[k].length && text.match(new RegExp(searchValues[k], 'i'))) {
+                var searchValuesSplit = searchValues.split(/\r?\n/);
+                for (var k = 0; k < searchValuesSplit.length; k++) {
+                    if (searchValuesSplit[k].length && text.match(new RegExp(searchValuesSplit[k], 'i'))) {
                         return true;
                     }
                 }

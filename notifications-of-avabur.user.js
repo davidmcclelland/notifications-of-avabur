@@ -6,7 +6,7 @@
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.5.1.1
+// @version        1.5.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -20,36 +20,9 @@
 // @noframes
 // ==/UserScript==
 
-const Toast = { //Tampermonkey's scoping won't let this constant be globally visible
-    error: function(msg) {
-        console.error(msg);
-        $().toastmessage('showErrorToast', msg);
-    },
-    notice: function(msg) {
-        $().toastmessage('showNoticeToast', msg);
-    },
-    success: function(msg) {
-        $().toastmessage('showSuccessToast', msg);
-    },
-    warn: function(msg) {
-        console.warn(msg);
-        $().toastmessage('showWarningToast', msg);
-    },
-    incompatibility: function(what) {
-        $().toastmessage('showToast', {
-            text: "Your browser does not support " + what +
-                ". Please <a href='https://www.google.co.uk/chrome/browser/desktop/' target='_blank'>" +
-                "Download the latest version of Google Chrome</a>",
-            sticky: true,
-            position: 'top-center',
-            type: 'error'
-        });
-    }
-};
-
 //Check if the user can even support the bot
 if (typeof(MutationObserver) === "undefined") {
-    log.error("Cannot support mutation observer!");
+    console.log("Cannot support mutation observer!");
 } else {
     (function($, MutationObserver, buzz) {
         'use strict';
@@ -92,17 +65,17 @@ if (typeof(MutationObserver) === "undefined") {
             recurringNotificationsTimeout: 20,
             soundVolume: 80,
             lowStaminaThreshold: 5,
-            fatigue: {popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false},
+            fatigue: {popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false, recur: true},
             eventFiveMinuteCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventThirtySecondCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventStarting: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventTenMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventFiveMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventElimination: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            harvestron: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            construction: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            harvestron: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true},
+            construction: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true},
             whisper: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            questComplete: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            questComplete: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true},
             chatSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: ''},
             lootSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: ''},
             craftingSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: ''},
@@ -154,6 +127,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <th scope="col">Log</th>
                         <th scope="col">Clan</th>
                         <th scope="col">Personal</th>
+                        <th scope="col">Recur</th>
                 </thead>
                 <tbody>
                     <tr>
@@ -163,6 +137,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="fatigueLogEditor" type="checkbox"></td>
                         <td><input id="fatigueClanDiscordEditor" type="checkbox"></td>
                         <td><input id="fatiguePersonalDiscordEditor" type="checkbox"></td>
+                        <td><input id="fatigueRecurEditor" type="checkbox"></td>
                     </tr>
                     <tr>
                         <th scope="row">Harvestron</th>
@@ -171,6 +146,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="harvestronLogEditor" type="checkbox"></td>
                         <td><input id="harvestronClanDiscordEditor" type="checkbox"></td>
                         <td><input id="harvestronPersonalDiscordEditor" type="checkbox"></td>
+                        <td><input id="harvestronRecurEditor" type="checkbox"></td>
                     </tr>
                     <tr>
                         <th scope="row">Construction</th>
@@ -179,14 +155,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="constructionLogEditor" type="checkbox"></td>
                         <td><input id="constructionClanDiscordEditor" type="checkbox"></td>
                         <td><input id="constructionPersonalDiscordEditor" type="checkbox"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Whisper</th>
-                        <td><input id="whisperPopupEditor" type="checkbox"></td>
-                        <td><input id="whisperSoundEditor" type="checkbox"></td>
-                        <td><input id="whisperLogEditor" type="checkbox"></td>
-                        <td><input id="whisperClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="whisperPersonalDiscordEditor" type="checkbox"></td>
+                        <td><input id="constructionRecurEditor" type="checkbox"></td>
                     </tr>
                     <tr>
                         <th scope="row">Quest Complete</th>
@@ -195,6 +164,16 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="questCompleteLogEditor" type="checkbox"></td>
                         <td><input id="questCompleteClanDiscordEditor" type="checkbox"></td>
                         <td><input id="questCompletePersonalDiscordEditor" type="checkbox"></td>
+                        <td><input id="questCompleteRecurEditor" type="checkbox"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Whisper</th>
+                        <td><input id="whisperPopupEditor" type="checkbox"></td>
+                        <td><input id="whisperSoundEditor" type="checkbox"></td>
+                        <td><input id="whisperLogEditor" type="checkbox"></td>
+                        <td><input id="whisperClanDiscordEditor" type="checkbox"></td>
+                        <td><input id="whisperPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th scope="row">Chat Search</th>
@@ -203,6 +182,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="chatSearchLogEditor" type="checkbox"></td>
                         <td><input id="chatSearchClanDiscordEditor" type="checkbox"></td>
                         <td><input id="chatSearchPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th scope="row">Loot Search</th>
@@ -211,6 +191,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="lootSearchLogEditor" type="checkbox"></td>
                         <td><input id="lootSearchClanDiscordEditor" type="checkbox"></td>
                         <td><input id="lootSearchPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th scope="row">Crafting Search</th>
@@ -219,6 +200,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="craftingSearchLogEditor" type="checkbox"></td>
                         <td><input id="craftingSearchClanDiscordEditor" type="checkbox"></td>
                         <td><input id="craftingSearchPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>Event 5 Minute Countdown</th>
@@ -227,6 +209,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventFiveMinuteCountdownLogEditor" type="checkbox"></td>
                         <td><input id="eventFiveMinuteCountdownClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventFiveMinuteCountdownPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>Event 30 Second Countdown</th>
@@ -235,6 +218,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventThirtySecondCountdownLogEditor" type="checkbox"></td>
                         <td><input id="eventThirtySecondCountdownClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventThirtySecondCountdownPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>Event Starting</th>
@@ -243,6 +227,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventStartingLogEditor" type="checkbox"></td>
                         <td><input id="eventStartingClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventStartingPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>Event 10 Minutes Remaining</th>
@@ -251,6 +236,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventTenMinutesRemainingLogEditor" type="checkbox"></td>
                         <td><input id="eventTenMinutesRemainingClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventTenMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>Event 5 Minutes Remaining</th>
@@ -259,6 +245,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventFiveMinutesRemainingLogEditor" type="checkbox"></td>
                         <td><input id="eventFiveMinutesRemainingClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventFiveMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>Event Elimination</th>
@@ -267,6 +254,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventEliminationLogEditor" type="checkbox"></td>
                         <td><input id="eventEliminationClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventEliminationPersonalDiscordEditor" type="checkbox"></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -365,6 +353,7 @@ if (typeof(MutationObserver) === "undefined") {
 
         var counters = {
             lastConstructionNotification: 0,
+            lastFatigueNotification: 0,
             lastHarvestronNotification: 0,
             lastQuestNotification: 0,
         };
@@ -390,12 +379,14 @@ if (typeof(MutationObserver) === "undefined") {
                 recurrenceCounter = _.defaultTo(recurrenceCounter, 0);
 
                 const isFirstRecurrence = (recurrenceCounter === 0);
+
+                const recurrenceEnabled = (userSettings.recurringNotifications && _.defaultTo(settings.recur, false));
                 // It's a good recurrence if it is the first one, or if recurring notifications are on
                 // and it's been long enough since the previous
                 var isGoodRecurrence = isFirstRecurrence ||
-                    (userSettings.recurringNotifications && (recurrenceCounter % userSettings.recurringNotificationsTimeout === 0));
+                    (recurrenceEnabled && (recurrenceCounter % userSettings.recurringNotificationsTimeout === 0));
 
-                // Only ever send to discord and log the first instance of a recurrence,
+                // Only ever send to discord and log the first instance of a recurrence,j
                 // even if it's a good recurrence
                 const doLog = settings.log && isFirstRecurrence;
                 const doClanDiscord = settings.clanDiscord && isFirstRecurrence;
@@ -444,11 +435,15 @@ if (typeof(MutationObserver) === "undefined") {
             },
             displaySettingsSavedLabel: function() {
                 const label = document.getElementById('NoaSettingsSavedLabel');
-                label && (label.style.display = 'block');
+                if (label && label.style) {
+                    label.style.display = 'block';
+                }
             },
             debouncedHideSettingsSavedLabel: _.debounce(function() {
                 const label = document.getElementById('NoaSettingsSavedLabel');
-                label && (label.style.display = 'none');
+                if (label && label.style) {
+                    label.style.display = 'none';
+                }
             }, 3000),
             loadUserSettings: function() {
                 var loadedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
@@ -469,6 +464,10 @@ if (typeof(MutationObserver) === "undefined") {
                 $('#' + editorPrefix + 'LogEditor')[0].checked = notificationSettings.log;
                 $('#' + editorPrefix + 'ClanDiscordEditor')[0].checked = notificationSettings.clanDiscord;
                 $('#' + editorPrefix + 'PersonalDiscordEditor')[0].checked = notificationSettings.personalDiscord;
+
+                if(notificationSettings.hasOwnProperty('recur')) {
+                    $('#' + editorPrefix + 'RecurEditor')[0].checked = notificationSettings.recur;
+                }
             },
             populateSettingsEditor: function() {
                 $('#recurringNotificationsEditor')[0].checked = userSettings.recurringNotifications;
@@ -503,6 +502,10 @@ if (typeof(MutationObserver) === "undefined") {
                 notificationSettings.log = $('#' + editorPrefix + 'LogEditor')[0].checked;
                 notificationSettings.clanDiscord = $('#' + editorPrefix + 'ClanDiscordEditor')[0].checked;
                 notificationSettings.personalDiscord = $('#' + editorPrefix + 'PersonalDiscordEditor')[0].checked;
+
+                if(notificationSettings.hasOwnProperty('recur')) {
+                    notificationSettings.recur = $('#' + editorPrefix + 'RecurEditor')[0].checked;
+                }
             },
             saveSettingsEditor: function() {
                 userSettings.recurringNotifications = $('#recurringNotificationsEditor')[0].checked;
@@ -541,6 +544,24 @@ if (typeof(MutationObserver) === "undefined") {
                     counters.lastConstructionNotification++;
                 } else {
                     counters.lastConstructionNotification = 0;
+                }
+            },
+            checkFatigue: function() {
+                const autosRemainingSpans = document.getElementsByClassName('autosRemaining');
+
+                /* There is one of these spans in each of the main wrappers (battle, tradeskill, crafting, carving).
+                It seems like all of them are currently updated with the same "autosRemaining" value each action,
+                so there's no need to watch all of them. */
+                if (autosRemainingSpans && autosRemainingSpans.length) {
+                    const searchSpan = autosRemainingSpans[0];
+                    const staminaRemainingText = searchSpan.innerText || searchSpan.textContent;
+                    const staminaRemainingNumber = parseInt(staminaRemainingText, 10);
+                    if (staminaRemainingNumber <= 0) {
+                        fn.notification('You are fatigued!', userSettings.fatigue, counters.lastFatigueNotification);
+                        counters.lastFatigueNotification++;
+                    } else {
+                        counters.lastFatigueNotification = 0;
+                    }
                 }
             },
             checkHarvestronVisible: function() {
@@ -715,16 +736,14 @@ if (typeof(MutationObserver) === "undefined") {
                     }
                 }
             ),
-            fatigue: new MutationObserver(
+            lowStamina: new MutationObserver(
                 function(records) {
                     for (var i = 0; i < records.length; i++) {
                         const addedNodes = records[i].addedNodes;
                         if (addedNodes.length) {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
-                                if (text === '0') {
-                                    fn.notification('You are fatigued!', userSettings.fatigue);
-                                } else if (text === userSettings.lowStaminaThreshold.toString()) {
+                                if (text === userSettings.lowStaminaThreshold.toString()) {
                                     fn.notification('Your stamina is low!', userSettings.fatigue);
                                 }
                             }
@@ -786,13 +805,15 @@ if (typeof(MutationObserver) === "undefined") {
                     });
                 },
                 "Starting fatigue monitor": function() {
+                    setInterval(fn.checkFatigue, 1000);
+
                     const autosRemainingSpans = document.getElementsByClassName('autosRemaining');
 
                     /* There is one of these spans in each of the main wrappers (battle, tradeskill, crafting, carving).
                     It seems like all of them are currently updated with the same "autosRemaining" value each action,
                     so there's no need to watch all of them. */
                     if (autosRemainingSpans && autosRemainingSpans.length) {
-                        OBSERVERS.fatigue.observe(autosRemainingSpans[0], {
+                        OBSERVERS.lowStamina.observe(autosRemainingSpans[0], {
                             childList: true
                         });
                     }

@@ -128,6 +128,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <th scope="col">Clan</th>
                         <th scope="col">Personal</th>
                         <th scope="col">Recur</th>
+                        <th scope="col">Sound File URL</th>
                 </thead>
                 <tbody>
                     <tr>
@@ -138,6 +139,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="fatigueClanDiscordEditor" type="checkbox"></td>
                         <td><input id="fatiguePersonalDiscordEditor" type="checkbox"></td>
                         <td><input id="fatigueRecurEditor" type="checkbox"></td>
+                        <td><input id="fatigueSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th scope="row">Harvestron</th>
@@ -147,6 +149,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="harvestronClanDiscordEditor" type="checkbox"></td>
                         <td><input id="harvestronPersonalDiscordEditor" type="checkbox"></td>
                         <td><input id="harvestronRecurEditor" type="checkbox"></td>
+                        <td><input id="harvestronSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th scope="row">Construction</th>
@@ -156,6 +159,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="constructionClanDiscordEditor" type="checkbox"></td>
                         <td><input id="constructionPersonalDiscordEditor" type="checkbox"></td>
                         <td><input id="constructionRecurEditor" type="checkbox"></td>
+                        <td><input id="constructionSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th scope="row">Quest Complete</th>
@@ -165,6 +169,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="questCompleteClanDiscordEditor" type="checkbox"></td>
                         <td><input id="questCompletePersonalDiscordEditor" type="checkbox"></td>
                         <td><input id="questCompleteRecurEditor" type="checkbox"></td>
+                        <td><input id="questCompleteSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th scope="row">Whisper</th>
@@ -174,6 +179,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="whisperClanDiscordEditor" type="checkbox"></td>
                         <td><input id="whisperPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="whisperSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th scope="row">Chat Search</th>
@@ -183,6 +189,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="chatSearchClanDiscordEditor" type="checkbox"></td>
                         <td><input id="chatSearchPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="chatSearchSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th scope="row">Loot Search</th>
@@ -192,6 +199,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="lootSearchClanDiscordEditor" type="checkbox"></td>
                         <td><input id="lootSearchPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="lootSearchSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th scope="row">Crafting Search</th>
@@ -201,6 +209,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="craftingSearchClanDiscordEditor" type="checkbox"></td>
                         <td><input id="craftingSearchPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="craftingSearchSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th>Event 5 Minute Countdown</th>
@@ -210,6 +219,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventFiveMinuteCountdownClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventFiveMinuteCountdownPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="eventFiveMinuteCountdownSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th>Event 30 Second Countdown</th>
@@ -219,6 +229,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventThirtySecondCountdownClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventThirtySecondCountdownPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="eventThirtySecondCountdownSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th>Event Starting</th>
@@ -228,6 +239,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventStartingClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventStartingPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="eventStartingSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th>Event 10 Minutes Remaining</th>
@@ -237,6 +249,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventTenMinutesRemainingClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventTenMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="eventTenMinutesRemainingSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th>Event 5 Minutes Remaining</th>
@@ -246,6 +259,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventFiveMinutesRemainingClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventFiveMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="eventFiveMinutesRemainingSoundFileEditor" type="text"></td>
                     </tr>
                     <tr>
                         <th>Event Elimination</th>
@@ -255,6 +269,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventEliminationClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventEliminationPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
+                        <td><input id="eventEliminationSoundFileEditor" type="text"></td>
                     </tr>
                 </tbody>
             </table>
@@ -346,7 +361,6 @@ if (typeof(MutationObserver) === "undefined") {
 </div>
         `;
 
-        var SFX = null;
         var userSettings = null;
 
         var isEventCountdownActive = false;
@@ -422,7 +436,14 @@ if (typeof(MutationObserver) === "undefined") {
                 }
 
                 if (doSound) {
-                    SFX.msg_ding.play();
+
+                    var soundFileUrl = settings.soundFile;
+                    if (!soundFileUrl.length) {
+                        soundFileUrl = URLS.sfx.message_ding;
+                    }
+                    console.log('sound file url', URLS, text, soundFileUrl);
+                    const buzzFile = new buzz.sound(soundFileUrl, {volume: userSettings.soundVolume});
+                    buzzFile.play();
                 }
 
                 if (doClanDiscord) {
@@ -464,6 +485,7 @@ if (typeof(MutationObserver) === "undefined") {
                 $('#' + editorPrefix + 'LogEditor')[0].checked = notificationSettings.log;
                 $('#' + editorPrefix + 'ClanDiscordEditor')[0].checked = notificationSettings.clanDiscord;
                 $('#' + editorPrefix + 'PersonalDiscordEditor')[0].checked = notificationSettings.personalDiscord;
+                $('#' + editorPrefix + 'SoundFileEditor').val(notificationSettings.soundFile);
 
                 if(notificationSettings.hasOwnProperty('recur')) {
                     $('#' + editorPrefix + 'RecurEditor')[0].checked = notificationSettings.recur;
@@ -503,6 +525,7 @@ if (typeof(MutationObserver) === "undefined") {
                 notificationSettings.log = $('#' + editorPrefix + 'LogEditor')[0].checked;
                 notificationSettings.clanDiscord = $('#' + editorPrefix + 'ClanDiscordEditor')[0].checked;
                 notificationSettings.personalDiscord = $('#' + editorPrefix + 'PersonalDiscordEditor')[0].checked;
+                notificationSettings.soundFile = $('#' + editorPrefix + 'SoundFileEditor').val();
 
                 if(notificationSettings.hasOwnProperty('recur')) {
                     notificationSettings.recur = $('#' + editorPrefix + 'RecurEditor')[0].checked;
@@ -783,11 +806,6 @@ if (typeof(MutationObserver) === "undefined") {
                     GM_addStyle(NOA_STYLES);
 
                     fn.loadUserSettings();
-                    SFX = {
-                        msg_ding: new buzz.sound(URLS.sfx.message_ding, {
-                            volume: userSettings.soundVolume
-                        })
-                    };
                 },
                 "Starting chat monitor": function() {
                     OBSERVERS.chat_search.observe(document.querySelector("#chatMessageList"), {

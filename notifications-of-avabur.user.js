@@ -139,7 +139,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="fatigueClanDiscordEditor" type="checkbox"></td>
                         <td><input id="fatiguePersonalDiscordEditor" type="checkbox"></td>
                         <td><input id="fatigueRecurEditor" type="checkbox"></td>
-                        <td><input id="fatigueSoundFileEditor" type="text"></td>
+                        <td><input id="fatigueSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th scope="row">Harvestron</th>
@@ -149,7 +149,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="harvestronClanDiscordEditor" type="checkbox"></td>
                         <td><input id="harvestronPersonalDiscordEditor" type="checkbox"></td>
                         <td><input id="harvestronRecurEditor" type="checkbox"></td>
-                        <td><input id="harvestronSoundFileEditor" type="text"></td>
+                        <td><input id="harvestronSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th scope="row">Construction</th>
@@ -159,7 +159,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="constructionClanDiscordEditor" type="checkbox"></td>
                         <td><input id="constructionPersonalDiscordEditor" type="checkbox"></td>
                         <td><input id="constructionRecurEditor" type="checkbox"></td>
-                        <td><input id="constructionSoundFileEditor" type="text"></td>
+                        <td><input id="constructionSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th scope="row">Quest Complete</th>
@@ -169,7 +169,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="questCompleteClanDiscordEditor" type="checkbox"></td>
                         <td><input id="questCompletePersonalDiscordEditor" type="checkbox"></td>
                         <td><input id="questCompleteRecurEditor" type="checkbox"></td>
-                        <td><input id="questCompleteSoundFileEditor" type="text"></td>
+                        <td><input id="questCompleteSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th scope="row">Whisper</th>
@@ -179,7 +179,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="whisperClanDiscordEditor" type="checkbox"></td>
                         <td><input id="whisperPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="whisperSoundFileEditor" type="text"></td>
+                        <td><input id="whisperSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th scope="row">Chat Search</th>
@@ -189,7 +189,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="chatSearchClanDiscordEditor" type="checkbox"></td>
                         <td><input id="chatSearchPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="chatSearchSoundFileEditor" type="text"></td>
+                        <td><input id="chatSearchSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th scope="row">Loot Search</th>
@@ -199,7 +199,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="lootSearchClanDiscordEditor" type="checkbox"></td>
                         <td><input id="lootSearchPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="lootSearchSoundFileEditor" type="text"></td>
+                        <td><input id="lootSearchSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th scope="row">Crafting Search</th>
@@ -209,7 +209,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="craftingSearchClanDiscordEditor" type="checkbox"></td>
                         <td><input id="craftingSearchPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="craftingSearchSoundFileEditor" type="text"></td>
+                        <td><input id="craftingSearchSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th>Event 5 Minute Countdown</th>
@@ -219,7 +219,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventFiveMinuteCountdownClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventFiveMinuteCountdownPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="eventFiveMinuteCountdownSoundFileEditor" type="text"></td>
+                        <td><input id="eventFiveMinuteCountdownSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th>Event 30 Second Countdown</th>
@@ -229,7 +229,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventThirtySecondCountdownClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventThirtySecondCountdownPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="eventThirtySecondCountdownSoundFileEditor" type="text"></td>
+                        <td><input id="eventThirtySecondCountdownSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th>Event Starting</th>
@@ -239,7 +239,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventStartingClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventStartingPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="eventStartingSoundFileEditor" type="text"></td>
+                        <td><input id="eventStartingSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th>Event 10 Minutes Remaining</th>
@@ -249,7 +249,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventTenMinutesRemainingClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventTenMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="eventTenMinutesRemainingSoundFileEditor" type="text"></td>
+                        <td><input id="eventTenMinutesRemainingSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th>Event 5 Minutes Remaining</th>
@@ -259,7 +259,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventFiveMinutesRemainingClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventFiveMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="eventFiveMinutesRemainingSoundFileEditor" type="text"></td>
+                        <td><input id="eventFiveMinutesRemainingSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                     <tr>
                         <th>Event Elimination</th>
@@ -269,7 +269,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <td><input id="eventEliminationClanDiscordEditor" type="checkbox"></td>
                         <td><input id="eventEliminationPersonalDiscordEditor" type="checkbox"></td>
                         <td></td>
-                        <td><input id="eventEliminationSoundFileEditor" type="text"></td>
+                        <td><input id="eventEliminationSoundFileEditor" type="text" placeholder="Default"></td>
                     </tr>
                 </tbody>
             </table>

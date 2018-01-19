@@ -438,7 +438,7 @@ if (typeof(MutationObserver) === "undefined") {
                 if (doSound) {
 
                     var soundFileUrl = settings.soundFile;
-                    if (!soundFileUrl.length) {
+                    if (!soundFileUrl || !soundFileUrl.length) {
                         soundFileUrl = URLS.sfx.message_ding;
                     }
                     console.log('sound file url', URLS, text, soundFileUrl);

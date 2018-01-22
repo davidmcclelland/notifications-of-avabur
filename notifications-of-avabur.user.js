@@ -118,7 +118,7 @@ if (typeof(MutationObserver) === "undefined") {
     </div>
     <div id="NoASettingsContentWrapper">
         <div id="NoANotificationSettingsWrapper">
-            <table class="table">
+            <table id="NoASettingsTable" class="table">
                 <thead>
                     <tr>
                         <td></td>
@@ -130,148 +130,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <th scope="col">Recur</th>
                         <th scope="col">Sound File URL</th>
                 </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">Fatigue</th>
-                        <td><input id="fatiguePopupEditor" type="checkbox"></td>
-                        <td><input id="fatigueSoundEditor" type="checkbox"></td>
-                        <td><input id="fatigueLogEditor" type="checkbox"></td>
-                        <td><input id="fatigueClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="fatiguePersonalDiscordEditor" type="checkbox"></td>
-                        <td><input id="fatigueRecurEditor" type="checkbox"></td>
-                        <td><input id="fatigueSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Harvestron</th>
-                        <td><input id="harvestronPopupEditor" type="checkbox"></td>
-                        <td><input id="harvestronSoundEditor" type="checkbox"></td>
-                        <td><input id="harvestronLogEditor" type="checkbox"></td>
-                        <td><input id="harvestronClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="harvestronPersonalDiscordEditor" type="checkbox"></td>
-                        <td><input id="harvestronRecurEditor" type="checkbox"></td>
-                        <td><input id="harvestronSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Construction</th>
-                        <td><input id="constructionPopupEditor" type="checkbox"></td>
-                        <td><input id="constructionSoundEditor" type="checkbox"></td>
-                        <td><input id="constructionLogEditor" type="checkbox"></td>
-                        <td><input id="constructionClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="constructionPersonalDiscordEditor" type="checkbox"></td>
-                        <td><input id="constructionRecurEditor" type="checkbox"></td>
-                        <td><input id="constructionSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Quest Complete</th>
-                        <td><input id="questCompletePopupEditor" type="checkbox"></td>
-                        <td><input id="questCompleteSoundEditor" type="checkbox"></td>
-                        <td><input id="questCompleteLogEditor" type="checkbox"></td>
-                        <td><input id="questCompleteClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="questCompletePersonalDiscordEditor" type="checkbox"></td>
-                        <td><input id="questCompleteRecurEditor" type="checkbox"></td>
-                        <td><input id="questCompleteSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Whisper</th>
-                        <td><input id="whisperPopupEditor" type="checkbox"></td>
-                        <td><input id="whisperSoundEditor" type="checkbox"></td>
-                        <td><input id="whisperLogEditor" type="checkbox"></td>
-                        <td><input id="whisperClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="whisperPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="whisperSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Chat Search</th>
-                        <td><input id="chatSearchPopupEditor" type="checkbox"></td>
-                        <td><input id="chatSearchSoundEditor" type="checkbox"></td>
-                        <td><input id="chatSearchLogEditor" type="checkbox"></td>
-                        <td><input id="chatSearchClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="chatSearchPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="chatSearchSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Loot Search</th>
-                        <td><input id="lootSearchPopupEditor" type="checkbox"></td>
-                        <td><input id="lootSearchSoundEditor" type="checkbox"></td>
-                        <td><input id="lootSearchLogEditor" type="checkbox"></td>
-                        <td><input id="lootSearchClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="lootSearchPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="lootSearchSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">Crafting Search</th>
-                        <td><input id="craftingSearchPopupEditor" type="checkbox"></td>
-                        <td><input id="craftingSearchSoundEditor" type="checkbox"></td>
-                        <td><input id="craftingSearchLogEditor" type="checkbox"></td>
-                        <td><input id="craftingSearchClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="craftingSearchPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="craftingSearchSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th>Event 5 Minute Countdown</th>
-                        <td><input id="eventFiveMinuteCountdownPopupEditor" type="checkbox"></td>
-                        <td><input id="eventFiveMinuteCountdownSoundEditor" type="checkbox"></td>
-                        <td><input id="eventFiveMinuteCountdownLogEditor" type="checkbox"></td>
-                        <td><input id="eventFiveMinuteCountdownClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="eventFiveMinuteCountdownPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="eventFiveMinuteCountdownSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th>Event 30 Second Countdown</th>
-                        <td><input id="eventThirtySecondCountdownPopupEditor" type="checkbox"></td>
-                        <td><input id="eventThirtySecondCountdownSoundEditor" type="checkbox"></td>
-                        <td><input id="eventThirtySecondCountdownLogEditor" type="checkbox"></td>
-                        <td><input id="eventThirtySecondCountdownClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="eventThirtySecondCountdownPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="eventThirtySecondCountdownSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th>Event Starting</th>
-                        <td><input id="eventStartingPopupEditor" type="checkbox"></td>
-                        <td><input id="eventStartingSoundEditor" type="checkbox"></td>
-                        <td><input id="eventStartingLogEditor" type="checkbox"></td>
-                        <td><input id="eventStartingClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="eventStartingPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="eventStartingSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th>Event 10 Minutes Remaining</th>
-                        <td><input id="eventTenMinutesRemainingPopupEditor" type="checkbox"></td>
-                        <td><input id="eventTenMinutesRemainingSoundEditor" type="checkbox"></td>
-                        <td><input id="eventTenMinutesRemainingLogEditor" type="checkbox"></td>
-                        <td><input id="eventTenMinutesRemainingClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="eventTenMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="eventTenMinutesRemainingSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th>Event 5 Minutes Remaining</th>
-                        <td><input id="eventFiveMinutesRemainingPopupEditor" type="checkbox"></td>
-                        <td><input id="eventFiveMinutesRemainingSoundEditor" type="checkbox"></td>
-                        <td><input id="eventFiveMinutesRemainingLogEditor" type="checkbox"></td>
-                        <td><input id="eventFiveMinutesRemainingClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="eventFiveMinutesRemainingPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="eventFiveMinutesRemainingSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                    <tr>
-                        <th>Event Elimination</th>
-                        <td><input id="eventEliminationPopupEditor" type="checkbox"></td>
-                        <td><input id="eventEliminationSoundEditor" type="checkbox"></td>
-                        <td><input id="eventEliminationLogEditor" type="checkbox"></td>
-                        <td><input id="eventEliminationClanDiscordEditor" type="checkbox"></td>
-                        <td><input id="eventEliminationPersonalDiscordEditor" type="checkbox"></td>
-                        <td></td>
-                        <td><input id="eventEliminationSoundFileEditor" type="text" placeholder="Default"></td>
-                    </tr>
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
         <div id="NoAAdvancedSettingsWrapper">
@@ -374,6 +233,15 @@ if (typeof(MutationObserver) === "undefined") {
 
 
         var notificationLogEntries = [];
+
+        if (!String.format) {
+          String.format = function(format) {
+            var args = Array.prototype.slice.call(arguments, 1);
+            return format.replace(/{(\d+)}/g, function(match, number) { 
+              return typeof args[number] != 'undefined' ? args[number] : match;
+            });
+          };
+        }
 
         /** Misc function container */
         const fn = {
@@ -864,6 +732,42 @@ if (typeof(MutationObserver) === "undefined") {
                     var noaSettingsButton = $('<a id="noaPreferences"><button class="btn btn-primary">NoA Settings</button></a>');
                     var noaSettingsPage = $(SETTINGS_DIALOG_HTML);
                     accountSettingsWrapper.append(noaSettingsPage);
+
+                    function appendSettingsRow(title, prefix, canRecur) {
+                        var recurrenceEditor = canRecur ? '<input id="{1}RecurEditor" type="checkbox">' : '';
+                        var rowTemplate = `
+<tr>
+    <th scope="row">{0}</th>
+    <td><input id="{1}PopupEditor" type="checkbox"></td>
+    <td><input id="{1}SoundEditor" type="checkbox"></td>
+    <td><input id="{1}LogEditor" type="checkbox"></td>
+    <td><input id="{1}ClanDiscordEditor" type="checkbox"></td>
+    <td><input id="{1}PersonalDiscordEditor" type="checkbox"></td>
+    <td>{2}</td>
+    <td><input id="{1}SoundFileEditor" type="text" placeholder="Default"></td>
+</tr>`;
+
+                        // This is a bit confusing - we're doing a double replace, so this needs called twice.
+                        constfirstFormat = String.format(rowTemplate, title, prefix, recurrenceEditor);
+                        const rowToAdd = String.format(firstFormat, title, prefix, recurrenceEditor);
+                        const tbody = $('#NoASettingsTable tbody');
+                        tbody.append(rowToAdd);
+                    }
+                    appendSettingsRow('Fatigue', 'fatigue', true);
+                    appendSettingsRow('Harvestron', 'harvestron', true);
+                    appendSettingsRow('Construction', 'construction', true);
+                    appendSettingsRow('Quest Complete', 'questComplete', true);
+                    appendSettingsRow('Whisper', 'whisper', false);
+                    appendSettingsRow('Chat Search', 'chatSearch', false);
+                    appendSettingsRow('Loot Search', 'lootSearch', false);
+                    appendSettingsRow('Crafting Search', 'craftingSearch', false);
+                    appendSettingsRow('Event 5 Minute Countdown', 'eventFiveMinuteCountdown', false);
+                    appendSettingsRow('Event 30 Second Countdown', 'eventThirtySecondCountdown', false);
+                    appendSettingsRow('Event Starting', 'eventStarting', false);
+                    appendSettingsRow('Event 10 Minutes Remaining', 'eventTenMinutesRemaining', false);
+                    appendSettingsRow('Event 5 Minutes Remaining', 'eventFiveMinutesRemaining', false);
+                    appendSettingsRow('Event Elimination', 'eventElimination', false);
+
                     $('#NoANotificationSettingsButton').click(function() {
                         $('#NoANotificationSettingsButton').addClass('active').siblings().removeClass('active');
                         $('#NoANotificationSettingsWrapper').css('display', 'block').siblings().css('display', 'none');

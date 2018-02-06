@@ -6,7 +6,7 @@
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.5.2.3
+// @version        1.6.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -309,7 +309,6 @@ if (typeof(MutationObserver) === "undefined") {
                     if (!soundFileUrl || !soundFileUrl.length) {
                         soundFileUrl = URLS.sfx.message_ding;
                     }
-                    console.log('sound file url', URLS, text, soundFileUrl);
                     const buzzFile = new buzz.sound(soundFileUrl, {volume: userSettings.soundVolume});
                     buzzFile.play();
                 }
@@ -734,24 +733,23 @@ if (typeof(MutationObserver) === "undefined") {
                     accountSettingsWrapper.append(noaSettingsPage);
 
                     function appendSettingsRow(title, prefix, canRecur) {
-                        var recurrenceEditor = canRecur ? '<input id="{1}RecurEditor" type="checkbox">' : '';
-                        var rowTemplate = `
-<tr>
-    <th scope="row">{0}</th>
-    <td><input id="{1}PopupEditor" type="checkbox"></td>
-    <td><input id="{1}SoundEditor" type="checkbox"></td>
-    <td><input id="{1}LogEditor" type="checkbox"></td>
-    <td><input id="{1}ClanDiscordEditor" type="checkbox"></td>
-    <td><input id="{1}PersonalDiscordEditor" type="checkbox"></td>
-    <td>{2}</td>
-    <td><input id="{1}SoundFileEditor" type="text" placeholder="Default"></td>
-</tr>`;
+                        const recurrenceEditor = canRecur ? '<input id="{1}RecurEditor" type="checkbox">' : '';
+                        const rowTemplate = `
+                        <tr>
+                            <th scope="row">{0}</th>
+                            <td><input id="{1}PopupEditor" type="checkbox"></td>
+                            <td><input id="{1}SoundEditor" type="checkbox"></td>
+                            <td><input id="{1}LogEditor" type="checkbox"></td>
+                            <td><input id="{1}ClanDiscordEditor" type="checkbox"></td>
+                            <td><input id="{1}PersonalDiscordEditor" type="checkbox"></td>
+                            <td>{2}</td>
+                            <td><input id="{1}SoundFileEditor" type="text" placeholder="Default"></td>
+                        </tr>`;
 
                         // This is a bit confusing - we're doing a double replace, so this needs called twice.
-                        constfirstFormat = String.format(rowTemplate, title, prefix, recurrenceEditor);
+                        const firstFormat = String.format(rowTemplate, title, prefix, recurrenceEditor);
                         const rowToAdd = String.format(firstFormat, title, prefix, recurrenceEditor);
-                        const tbody = $('#NoASettingsTable tbody');
-                        tbody.append(rowToAdd);
+                        $('#NoASettingsTable tbody').append(rowToAdd);
                     }
                     appendSettingsRow('Fatigue', 'fatigue', true);
                     appendSettingsRow('Harvestron', 'harvestron', true);

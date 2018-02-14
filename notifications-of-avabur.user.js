@@ -263,7 +263,7 @@ if (typeof(MutationObserver) === "undefined") {
                 const isFirstRecurrence = (recurrenceCounter === 0);
 
                 const recurrenceEnabled = _.defaultTo(settings.recur, false);
-                const discordRecurrenceEnabled = _.defaultTo(settings.recurToDiscord);
+                const discordRecurrenceEnabled = _.defaultTo(userSettings.recurToDiscord, false);
                 // It's a good recurrence if it is the first one, or if recurring notifications are on
                 // and it's been long enough since the previous
                 var isGoodRecurrence = isFirstRecurrence ||

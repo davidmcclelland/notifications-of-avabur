@@ -61,7 +61,7 @@ if (typeof(MutationObserver) === "undefined") {
         /////////////////////////////////////////////////////
 
         const DEFAULT_USER_SETTINGS = {
-            recurringNotifications: true,
+            recurToDiscord: false,
             recurringNotificationsTimeout: 20,
             soundVolume: 80,
             lowStaminaThreshold: 5,
@@ -138,7 +138,7 @@ if (typeof(MutationObserver) === "undefined") {
                 <h4 class="nobg">General</h4>
                 <div class="row">
                     <div class="col-xs-3">
-                        <label><input id="recurringNotificationsEditor" type="checkbox">Recurring Notifications</label>
+                        <label><input id="recurToDiscordEditor" type="checkbox">Recur to Discord</label>
                     </div><div class="col-xs-3">
                         <label>Recurrence Time (sec)</label>
                         <input id="recurringNotificationsTimeoutEditor" type="number" min="1" max="100">
@@ -262,7 +262,8 @@ if (typeof(MutationObserver) === "undefined") {
 
                 const isFirstRecurrence = (recurrenceCounter === 0);
 
-                const recurrenceEnabled = (userSettings.recurringNotifications && _.defaultTo(settings.recur, false));
+                const recurrenceEnabled = _.defaultTo(settings.recur, false);
+                const discordRecurrenceEnabled = _.defaultTo(settings.recurToDiscord);
                 // It's a good recurrence if it is the first one, or if recurring notifications are on
                 // and it's been long enough since the previous
                 var isGoodRecurrence = isFirstRecurrence ||
@@ -270,9 +271,12 @@ if (typeof(MutationObserver) === "undefined") {
 
                 // Only ever send to discord and log the first instance of a recurrence,j
                 // even if it's a good recurrence
+                // Only ever log on the first recurrence.
                 const doLog = settings.log && isFirstRecurrence;
-                const doClanDiscord = settings.clanDiscord && isFirstRecurrence;
-                const doPersonalDiscord = settings.personalDiscord && isFirstRecurrence;
+
+                // Only send to discord if discord is enabled and (it's the first recurrence or (it's a good recurrence and recur to discord is enabled))
+                const doClanDiscord = settings.clanDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
+                const doPersonalDiscord = settings.personalDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
 
                 // Recur popup and sound notifications
                 const doPopup = settings.popup && isGoodRecurrence;
@@ -359,7 +363,7 @@ if (typeof(MutationObserver) === "undefined") {
                 }
             },
             populateSettingsEditor: function() {
-                $('#recurringNotificationsEditor')[0].checked = userSettings.recurringNotifications;
+                $('#recurToDiscordEditor')[0].checked = userSettings.recurToDiscord;
                 $('#recurringNotificationsTimeoutEditor').val(userSettings.recurringNotificationsTimeout);
                 $('#soundVolumeEditor').val(userSettings.soundVolume);
                 $('#lowStaminaThresholdEditor').val(userSettings.lowStaminaThreshold);
@@ -399,7 +403,7 @@ if (typeof(MutationObserver) === "undefined") {
                 }
             },
             saveSettingsEditor: function() {
-                userSettings.recurringNotifications = $('#recurringNotificationsEditor')[0].checked;
+                userSettings.recurToDiscord = $('#recurToDiscordEditor')[0].checked;
                 userSettings.recurringNotificationsTimeout = parseInt($('#recurringNotificationsTimeoutEditor').val(), 10);
                 userSettings.soundVolume = parseInt($('#soundVolumeEditor').val(), 10);
                 userSettings.lowStaminaThreshold = parseInt($('#lowStaminaThresholdEditor').val(), 10);

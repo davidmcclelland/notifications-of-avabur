@@ -13,6 +13,7 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
   * Harvestron available
   * Construction available
   * Quest complete
+  * Fatigue
 * One-time Notifications for:
   * Low stamina/fatigued
   * Event countdown started
@@ -27,16 +28,24 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
   * Popup for each event (independent)
   * Sound for each event (independent)
   * Sound volume
+  * Log event
+  * Custom sound file
 * Log for the last 100 notifications displayed
 
 ## Discord Notifications
 Discord notifications are toggled on and off like every other type, but also require some additional configuration.
 
-### Webhook creation
+### Webhook Creation
 On a discord server on which you are an admin: right click a text channel, select webhooks, create webhook, set name/icon as you wish, then copy the webhook url. Enter this as either the personal or clan discord webhook fields.
 
 ### User/Group
 Direct user mentions and group mentions are both accepted. `@everyone` and `@here` work great. If you would like to notify individual users, you must use the format `<@UserId>` where UserId is the ID of the desired user (not username). Information on getting user IDs can be found [here](https://www.reddit.com/r/discordapp/comments/61n0sj/pinging_rolesusers_linking_text_channels_through/dffsiuk/). Multiple user names can be specified, eg `<@FirstUserId> <@SecondUserId>`.
+
+## Custom Sounds
+Custom sounds must be hosted by a fileserver accessible to your browser. This can be an external website if you find a file hosted online.
+
+### Locally Hosted Sounds
+If you would like to host audio files from your computer, the Python HTTP Server can be very easy to set up. See [this page](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/set_up_a_local_testing_server#Running_a_simple_local_HTTP_server) for instructions on setting it up. Assuming you have the file `myaudiofile.wav` hosted locally on port 8000, enter `http://127.0.0.1:800/myaudiofile.wav` into the Sound File URL in NoA.
 
 ## TODOs/Vague Ideas
 * Recurring notifications for

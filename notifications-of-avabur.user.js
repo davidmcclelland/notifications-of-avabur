@@ -231,6 +231,8 @@ if (typeof(MutationObserver) === "undefined") {
             lastQuestNotification: 0,
         };
 
+        var isSoundPlaying = false;
+
 
         var notificationLogEntries = [];
 
@@ -308,13 +310,25 @@ if (typeof(MutationObserver) === "undefined") {
                 }
 
                 if (doSound) {
-
                     var soundFileUrl = settings.soundFile;
                     if (!soundFileUrl || !soundFileUrl.length) {
                         soundFileUrl = URLS.sfx.message_ding;
                     }
-                    const buzzFile = new buzz.sound(soundFileUrl, {volume: userSettings.soundVolume});
-                    buzzFile.play();
+
+                    if (!isSoundPlaying) {
+                        const buzzFile = new buzz.sound(soundFileUrl, {volume: userSettings.soundVolume});
+
+                        buzzFile.bind('ended', function() {
+                            isSoundPlaying = false;
+                        });
+
+                        buzzFile.bind('error', function() {
+                            isSoundPlaying = false;
+                        });
+
+                        buzzFile.play();
+                        isSoundPlaying = true;
+                    }
                 }
 
                 if (doClanDiscord) {

@@ -4,6 +4,7 @@
 // @author         Dave McClelland <davidmcclelland@gmail.com>
 // @homepage       https://github.com/davidmcclelland/notifications-of-avabur
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
+// @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
 // @version        1.6.2

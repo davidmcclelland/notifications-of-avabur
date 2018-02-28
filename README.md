@@ -4,7 +4,7 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
 ## Installation
 * Install TamperMonkey ([Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en)), ([Firefox](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/))
   * GreaseMonkey on FireFox is not recommended, but feel free to test it.
-* After installing TamperMonkey, install [Notifications of Avabur](https://github.com/davidmcclelland/notifications-of-avabur/blob/master/notifications-of-avabur.user.js)
+* After installing TamperMonkey, install [Notifications of Avabur](https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js)
 * Refresh Avabur
 * Settings for NoA are found under `Account Management.`
 

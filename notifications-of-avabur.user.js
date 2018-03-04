@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.6.4
+// @version        1.6.5
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -713,8 +713,9 @@ if (typeof(MutationObserver) === "undefined") {
             ),
             bossFailure: new MutationObserver(
                 function(records) {
+                    console.log('boss failure records:', records);
                     if (fn.checkRecordsVisible(records)) {
-                        fn.notification('You were eliminated from the gauntlet!', userSettings.eventElimination);
+                        fn.notification('You were knocked out of battle!', userSettings.eventElimination);
                     }
                 }
             ),
@@ -779,6 +780,8 @@ if (typeof(MutationObserver) === "undefined") {
                     // There should be only one of these
                     if (bossFailureNotifications && bossFailureNotifications.length) {
                         OBSERVERS.bossFailure.observe(bossFailureNotifications[0], { attributes: true });
+                    } else {
+                        console.log('No boss failure notification divs found!');
                     }
                 },
                 "Adding HTML elements": function() {

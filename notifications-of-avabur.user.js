@@ -6,7 +6,7 @@
 // @supportURL     https://github.com/davidmcclelland/notifications-of-avabur/issues
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.6.2
+// @version        1.6.3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -220,6 +220,8 @@ if (typeof(MutationObserver) === "undefined") {
 </div>
         `;
 
+        const INTERNAL_UPDATE_URL = "https://api.github.com/repos/davidmcclelland/notifications-of-avabur/contents/notifications-of-avabur.user.js";
+
         var userSettings = null;
 
         var isEventCountdownActive = false;
@@ -236,6 +238,8 @@ if (typeof(MutationObserver) === "undefined") {
 
         var notificationLogEntries = [];
 
+        var checkForUpdateTimer = 0;
+
         if (!String.format) {
           String.format = function(format) {
             var args = Array.prototype.slice.call(arguments, 1);
@@ -247,6 +251,37 @@ if (typeof(MutationObserver) === "undefined") {
 
         /** Misc function container */
         const fn = {
+            versionCompare: function(v1, v2) {
+                var regex   = new RegExp("(\.0+)+");
+                v1      = v1.replace(regex, "").split(".");
+                v2      = v2.replace(regex, "").split(".");
+                var min     = Math.min(v1.length, v2.length);
+
+                var diff = 0;
+                for (var i = 0; i < min; i++) {
+                    diff = parseInt(v1[i], 10) - parseInt(v2[i], 10);
+                    if (diff !== 0) {
+                        return diff;
+                    }
+                }
+
+                return v1.length - v2.length;
+            },
+            checkForUpdate: function() {
+                var version = "";
+                $.get(INTERNAL_UPDATE_URL).done(function(res){
+                    var match = atob(res.content).match(/\/\/\s+@version\s+([^\n]+)/);
+                    version = match[1];
+
+                    if (fn.versionCompare(GM_info.script.version, version) < 0) {
+                        var message = "<li class=\"chat_notification\">NotificationsOfAvabur has been updated to version "+version+"! <a href=\"https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js\" target=\"_blank\">Update</a> | <a href=\"https://github.com/davidmcclelland/notifications-of-avabur/commits/master\" target=\"_blank\">Changelog</a></li>";
+                        // TODO: Handle chat direction like ToA does
+                        $("#chatMessageList").prepend(message);
+                    } else {
+                        checkForUpdateTimer = setTimeout(fn.checkForUpdate, 24*60*60*1000);
+                    }
+                });
+            },
             sendDiscordMessage: function(webhook, target, text) {
                 if (webhook && target && text) {
                     const messageContent = target + ' ' + text;
@@ -691,6 +726,9 @@ if (typeof(MutationObserver) === "undefined") {
                     GM_addStyle(NOA_STYLES);
 
                     fn.loadUserSettings();
+                },
+                "Starting script update monitor": function() {
+                    checkForUpdateTimer = setTimeout(fn.checkForUpdate, 10000);
                 },
                 "Starting chat monitor": function() {
                     OBSERVERS.chat_search.observe(document.querySelector("#chatMessageList"), {

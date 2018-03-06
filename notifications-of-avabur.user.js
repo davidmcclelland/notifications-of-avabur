@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.6.5
+// @version        1.6.6
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -542,7 +542,7 @@ if (typeof(MutationObserver) === "undefined") {
             checkRecordsVisible: function(records) {
                 for (var i = 0; i < records.length; i++) {
                     const target = $(records[i].target);
-                    var style = window.getComputedStyle(target.context);
+                    var style = window.getComputedStyle(target[0]);
                     if (style.display !== 'none') {
                         return true;
                     }
@@ -713,7 +713,6 @@ if (typeof(MutationObserver) === "undefined") {
             ),
             bossFailure: new MutationObserver(
                 function(records) {
-                    console.log('boss failure records:', records);
                     if (fn.checkRecordsVisible(records)) {
                         fn.notification('You were knocked out of battle!', userSettings.eventElimination);
                     }

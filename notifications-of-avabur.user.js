@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.6.6
+// @version        1.6.7
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -72,6 +72,7 @@ if (typeof(MutationObserver) === "undefined") {
             eventStarting: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventTenMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventFiveMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
+            eventEnd: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventElimination: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             harvestron: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true},
             construction: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true},
@@ -431,6 +432,7 @@ if (typeof(MutationObserver) === "undefined") {
                 fn.populateSingleNotificationEditor('eventStarting', userSettings.eventStarting);
                 fn.populateSingleNotificationEditor('eventTenMinutesRemaining', userSettings.eventTenMinutesRemaining);
                 fn.populateSingleNotificationEditor('eventFiveMinutesRemaining', userSettings.eventFiveMinutesRemaining);
+                fn.populateSingleNotificationEditor('eventEnd', userSettings.eventEnd);
                 fn.populateSingleNotificationEditor('eventElimination', userSettings.eventElimination);
                 fn.populateSingleNotificationEditor('harvestron', userSettings.harvestron);
                 fn.populateSingleNotificationEditor('construction', userSettings.construction);
@@ -471,6 +473,7 @@ if (typeof(MutationObserver) === "undefined") {
                 fn.saveSingleNotificationEditor('eventStarting', userSettings.eventStarting);
                 fn.saveSingleNotificationEditor('eventTenMinutesRemaining', userSettings.eventTenMinutesRemaining);
                 fn.saveSingleNotificationEditor('eventFiveMinutesRemaining', userSettings.eventFiveMinutesRemaining);
+                fn.saveSingleNotificationEditor('eventEnd', userSettings.eventEnd);
                 fn.saveSingleNotificationEditor('eventElimination', userSettings.eventElimination);
                 fn.saveSingleNotificationEditor('harvestron', userSettings.harvestron);
                 fn.saveSingleNotificationEditor('construction', userSettings.construction);
@@ -625,6 +628,7 @@ if (typeof(MutationObserver) === "undefined") {
                     // End of the event
                     setTimeout(function() {
                         isEventCountdownActive = false;
+                        fn.notification('The event has ended!', userSettings.eventEnd);
                     }, (secondsUntilEventStart + (60 * 15)) * 1000);
                 }
             },            
@@ -823,6 +827,7 @@ if (typeof(MutationObserver) === "undefined") {
                     appendSettingsRow('Event Starting', 'eventStarting', false);
                     appendSettingsRow('Event 10 Minutes Remaining', 'eventTenMinutesRemaining', false);
                     appendSettingsRow('Event 5 Minutes Remaining', 'eventFiveMinutesRemaining', false);
+                    appendSettingsRow('Event End', 'eventEnd', false);
                     appendSettingsRow('Event Elimination', 'eventElimination', false);
 
                     $('#NoANotificationSettingsButton').click(function() {

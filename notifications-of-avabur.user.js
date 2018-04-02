@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.6.7
+// @version        1.7.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -63,6 +63,7 @@ if (typeof(MutationObserver) === "undefined") {
 
         const DEFAULT_USER_SETTINGS = {
             recurToDiscord: false,
+            muteWhileAfk: true,
             recurringNotificationsTimeout: 20,
             soundVolume: 80,
             lowStaminaThreshold: 5,
@@ -150,7 +151,8 @@ if (typeof(MutationObserver) === "undefined") {
                     </div><div class="col-xs-3">
                         <label>Low Stamina Threshold</label>
                         <input id="lowStaminaThresholdEditor"           type="number" min="0" max="9999">
-                    </div>
+                    </div><div class="col-xs-3">
+                        <label><input id="muteWhileAfkEditor" type="checkbox">Mute While AFK</label>
                 </div>
             </div>
             <hr>
@@ -276,7 +278,7 @@ if (typeof(MutationObserver) === "undefined") {
                     version = match[1];
 
                     if (fn.versionCompare(GM_info.script.version, version) < 0) {
-                        var message = "<li class=\"chat_notification\">NotificationsOfAvabur has been updated to version "+version+"! <a href=\"https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js\" target=\"_blank\">Update</a> | <a href=\"https://github.com/davidmcclelland/notifications-of-avabur/commits/master\" target=\"_blank\">Changelog</a></li>";
+                        var message = "<li class=\"chat_notification\">Notifications Of Avabur has been updated to version "+version+"! <a href=\"https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js\" target=\"_blank\">Update</a> | <a href=\"https://github.com/davidmcclelland/notifications-of-avabur/commits/master\" target=\"_blank\">Changelog</a></li>";
                         // TODO: Handle chat direction like ToA does
                         $("#chatMessageList").prepend(message);
                     } else {
@@ -305,8 +307,11 @@ if (typeof(MutationObserver) === "undefined") {
                 const discordRecurrenceEnabled = _.defaultTo(userSettings.recurToDiscord, false);
                 // It's a good recurrence if it is the first one, or if recurring notifications are on
                 // and it's been long enough since the previous
-                var isGoodRecurrence = isFirstRecurrence ||
+                const isGoodRecurrence = isFirstRecurrence ||
                     (recurrenceEnabled && (recurrenceCounter % userSettings.recurringNotificationsTimeout === 0));
+
+                // While muted, only log. No sounds, popups, or discord
+                const isMuted = fn.checkIsMuted();
 
                 // Only ever send to discord and log the first instance of a recurrence,j
                 // even if it's a good recurrence
@@ -314,12 +319,12 @@ if (typeof(MutationObserver) === "undefined") {
                 const doLog = settings.log && isFirstRecurrence;
 
                 // Only send to discord if discord is enabled and (it's the first recurrence or (it's a good recurrence and recur to discord is enabled))
-                const doClanDiscord = settings.clanDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
-                const doPersonalDiscord = settings.personalDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
+                const doClanDiscord = !isMuted && settings.clanDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
+                const doPersonalDiscord = !isMuted && settings.personalDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
 
                 // Recur popup and sound notifications
-                const doPopup = settings.popup && isGoodRecurrence;
-                const doSound = settings.sound && isGoodRecurrence;
+                const doPopup = !isMuted && settings.popup && isGoodRecurrence;
+                const doSound = !isMuted && settings.sound && isGoodRecurrence;
 
                 if (doLog) { 
                     notificationLogEntries.push({
@@ -418,6 +423,7 @@ if (typeof(MutationObserver) === "undefined") {
                 $('#recurringNotificationsTimeoutEditor').val(userSettings.recurringNotificationsTimeout);
                 $('#soundVolumeEditor').val(userSettings.soundVolume);
                 $('#lowStaminaThresholdEditor').val(userSettings.lowStaminaThreshold);
+                $('#muteWhileAfkEditor')[0].checked = userSettings.muteWhileAfk;
                 $('#clanDiscordWebhookEditor').val(userSettings.clanDiscord.webhook);
                 $('#clanDiscordTargetEditor').val(userSettings.clanDiscord.target);
                 $('#personalDiscordWebhookEditor').val(userSettings.personalDiscord.webhook);
@@ -459,6 +465,7 @@ if (typeof(MutationObserver) === "undefined") {
                 userSettings.recurringNotificationsTimeout = parseInt($('#recurringNotificationsTimeoutEditor').val(), 10);
                 userSettings.soundVolume = parseInt($('#soundVolumeEditor').val(), 10);
                 userSettings.lowStaminaThreshold = parseInt($('#lowStaminaThresholdEditor').val(), 10);
+                userSettings.muteWhileAfk = $('#muteWhileAfkEditor')[0].checked;
                 userSettings.clanDiscord.webhook = $('#clanDiscordWebhookEditor').val();
                 userSettings.clanDiscord.target = $('#clanDiscordTargetEditor').val();
                 userSettings.personalDiscord.webhook = $('#personalDiscordWebhookEditor').val();
@@ -484,6 +491,13 @@ if (typeof(MutationObserver) === "undefined") {
                 fn.saveSingleNotificationEditor('craftingSearch', userSettings.craftingSearch);
 
                 fn.storeUserSettings();
+            },
+            checkIsAfk: function() {
+                const element = document.getElementById('iAmAFK');
+                return element && (element.style.display !== 'none');
+            },
+            checkIsMuted: function() {
+                return userSettings.muteWhileAfk && fn.checkIsAfk();
             },
             checkConstructionVisible: function() {
                 var div = document.getElementById('constructionNotifier');

@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.7.2
+// @version        1.7.3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -726,7 +726,7 @@ if (typeof(MutationObserver) === "undefined") {
             bossFailure: new MutationObserver(
                 function(records) {
                     if (fn.checkRecordsVisible(records)) {
-                        fn.notification('You were knocked out of battle!', userSettings.eventElimination);
+                        fn.notification('You are fighting while weakened!', userSettings.eventElimination);
                     }
                 }
             ),
@@ -779,7 +779,7 @@ if (typeof(MutationObserver) === "undefined") {
                     OBSERVERS.event.observe(document.querySelector("#eventCountdown"), { childList: true });
                 },
                 "Starting boss failure monitor": function() {
-                    const bossFailureNotifications = document.getElementsByClassName('boss_failure_notification');
+                    const bossFailureNotifications = document.getElementsByClassName('gauntletWeakened');
 
                     // There should be only one of these
                     if (bossFailureNotifications && bossFailureNotifications.length) {
@@ -829,7 +829,7 @@ if (typeof(MutationObserver) === "undefined") {
                     appendSettingsRow('Event 10 Minutes Remaining', 'eventTenMinutesRemaining', false);
                     appendSettingsRow('Event 5 Minutes Remaining', 'eventFiveMinutesRemaining', false);
                     appendSettingsRow('Event End', 'eventEnd', false);
-                    appendSettingsRow('Event Elimination', 'eventElimination', false);
+                    appendSettingsRow('Event Weakened', 'eventElimination', false);
 
                     $('#NoANotificationSettingsButton').click(function() {
                         $('#NoANotificationSettingsButton').addClass('active').siblings().removeClass('active');

@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.7.1
+// @version        1.7.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -509,21 +509,15 @@ if (typeof(MutationObserver) === "undefined") {
                 }
             },
             checkFatigue: function() {
-                const autosRemainingSpans = document.getElementsByClassName('autosRemaining');
+                const searchSpan = document.getElementById('autosRemaining');
 
-                /* There is one of these spans in each of the main wrappers (battle, tradeskill, crafting, carving).
-                It seems like all of them are currently updated with the same "autosRemaining" value each action,
-                so there's no need to watch all of them. */
-                if (autosRemainingSpans && autosRemainingSpans.length) {
-                    const searchSpan = autosRemainingSpans[0];
-                    const staminaRemainingText = searchSpan.innerText || searchSpan.textContent;
-                    const staminaRemainingNumber = parseInt(staminaRemainingText, 10);
-                    if (staminaRemainingNumber <= 0) {
-                        fn.notification('You are fatigued!', userSettings.fatigue, counters.lastFatigueNotification);
-                        counters.lastFatigueNotification++;
-                    } else {
-                        counters.lastFatigueNotification = 0;
-                    }
+                const staminaRemainingText = searchSpan.innerText || searchSpan.textContent;
+                const staminaRemainingNumber = parseInt(staminaRemainingText, 10);
+                if (staminaRemainingNumber <= 0) {
+                    fn.notification('You are fatigued!', userSettings.fatigue, counters.lastFatigueNotification);
+                    counters.lastFatigueNotification++;
+                } else {
+                    counters.lastFatigueNotification = 0;
                 }
             },
             checkHarvestronVisible: function() {
@@ -768,16 +762,9 @@ if (typeof(MutationObserver) === "undefined") {
                 "Starting fatigue monitor": function() {
                     setInterval(fn.checkFatigue, 1000);
 
-                    const autosRemainingSpans = document.getElementsByClassName('autosRemaining');
-
-                    /* There is one of these spans in each of the main wrappers (battle, tradeskill, crafting, carving).
-                    It seems like all of them are currently updated with the same "autosRemaining" value each action,
-                    so there's no need to watch all of them. */
-                    if (autosRemainingSpans && autosRemainingSpans.length) {
-                        OBSERVERS.lowStamina.observe(autosRemainingSpans[0], {
-                            childList: true
-                        });
-                    }
+                    OBSERVERS.lowStamina.observe(document.querySelector('#autosRemaining'), {
+                        childList: true
+                    });
                 },
                 "Starting harvestron monitor": function() {
                     setInterval(fn.checkHarvestronVisible, 1000);

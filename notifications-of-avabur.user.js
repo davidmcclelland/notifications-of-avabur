@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.7.3
+// @version        1.7.4
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -67,6 +67,7 @@ if (typeof(MutationObserver) === "undefined") {
             recurringNotificationsTimeout: 20,
             soundVolume: 80,
             lowStaminaThreshold: 5,
+            popupDurationSec: 5,
             fatigue: {popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false, recur: true},
             eventFiveMinuteCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
             eventThirtySecondCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
@@ -153,6 +154,10 @@ if (typeof(MutationObserver) === "undefined") {
                         <input id="lowStaminaThresholdEditor"           type="number" min="0" max="9999">
                     </div><div class="col-xs-3">
                         <label><input id="muteWhileAfkEditor" type="checkbox">Mute While AFK</label>
+                    </div><div class="col-xs-3">
+                        <label>Popup Duration (sec)
+                        <input id="popupDurationEditor"                 type="number" min="1" max="60">
+                    </div>
                 </div>
             </div>
             <hr>
@@ -343,7 +348,8 @@ if (typeof(MutationObserver) === "undefined") {
                             icon: URLS.img.icon,
                             body: text
                         });
-                        setTimeout(n.close.bind(n), 5000);
+                        const popupDurationSec = _.defaultTo(userSettings.popupDurationSec, 5);
+                        setTimeout(n.close.bind(n), popupDurationSec * 1000);
                         n.addEventListener('click', function(e) {
                             window.focus();
                             e.target.close();
@@ -424,6 +430,7 @@ if (typeof(MutationObserver) === "undefined") {
                 $('#soundVolumeEditor').val(userSettings.soundVolume);
                 $('#lowStaminaThresholdEditor').val(userSettings.lowStaminaThreshold);
                 $('#muteWhileAfkEditor')[0].checked = userSettings.muteWhileAfk;
+                $('#popupDurationEditor').val(userSettings.popupDurationSec);
                 $('#clanDiscordWebhookEditor').val(userSettings.clanDiscord.webhook);
                 $('#clanDiscordTargetEditor').val(userSettings.clanDiscord.target);
                 $('#personalDiscordWebhookEditor').val(userSettings.personalDiscord.webhook);
@@ -466,6 +473,7 @@ if (typeof(MutationObserver) === "undefined") {
                 userSettings.soundVolume = parseInt($('#soundVolumeEditor').val(), 10);
                 userSettings.lowStaminaThreshold = parseInt($('#lowStaminaThresholdEditor').val(), 10);
                 userSettings.muteWhileAfk = $('#muteWhileAfkEditor')[0].checked;
+                userSettings.popupDurationSec = parseInt($('#popupDurationEditor').val(), 10);
                 userSettings.clanDiscord.webhook = $('#clanDiscordWebhookEditor').val();
                 userSettings.clanDiscord.target = $('#clanDiscordTargetEditor').val();
                 userSettings.personalDiscord.webhook = $('#personalDiscordWebhookEditor').val();

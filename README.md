@@ -24,6 +24,7 @@ Notifies users (with sounds and toasts) of events within Relics of Avabur.
     * Be careful with these - it watches your own chat messages too!
     * Regexes are supported, so go crazy!
 * Discord publishing for all notifications
+* Slack publishing for all notifications
 * Settings
   * Popup for each event (independent)
   * Sound for each event (independent)
@@ -40,6 +41,15 @@ On a discord server on which you are an admin: right click a text channel, selec
 
 ### User/Group
 Direct user mentions and group mentions are both accepted. `@everyone` and `@here` work great. If you would like to notify individual users, you must use the format `<@UserId>` where UserId is the ID of the desired user (not username). Information on getting user IDs can be found [here](https://www.reddit.com/r/discordapp/comments/61n0sj/pinging_rolesusers_linking_text_channels_through/dffsiuk/). Multiple user names can be specified, eg `<@FirstUserId> <@SecondUserId>`.
+
+## Slack Notifications
+Slack notifications are toggled on and off like every other type, but also require some additional configuration.
+
+##Webhook Creation
+On a slack server on which you can add apps: add the app incoming-webhooks and set the channel where the app will live. Copy the webhook url. Enter this in the Slack field.
+
+##User/Group
+Direct user mentions and group mentions are both accepted. '@channel' and '@here" both work. Any mention must be formatted as <!mention>, or <!channel> as an example. UserId's follow the same format. You can get the userId by typing @displayName of the user.
 
 ## Custom Sounds
 Custom sounds must be hosted by a fileserver accessible to your browser. This can be an external website if you find a file hosted online.

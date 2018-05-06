@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.7.4
+// @version        1.8.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -293,8 +293,15 @@ if (typeof(MutationObserver) === "undefined") {
             },
             sendDiscordMessage: function(webhook, target, text) {
                 if (webhook && target && text) {
-                    const messageContent = target + ' ' + text;
-                    $.post(webhook, {content: messageContent});
+                    let messageContent = text;
+                    if (target && target.length) {
+                        messageContent = target + ' ' + text;
+                    }
+                    const payload = {
+                        content: messageContent, // "content" is for discord
+                        text: messageContent, // "text" is for slack
+                    };
+                    $.post(webhook, payload);
                 }
             },
             /**

@@ -41,6 +41,9 @@ On a discord server on which you are an admin: right click a text channel, selec
 ### User/Group
 Direct user mentions and group mentions are both accepted. `@everyone` and `@here` work great. If you would like to notify individual users, you must use the format `<@UserId>` where UserId is the ID of the desired user (not username). Information on getting user IDs can be found [here](https://www.reddit.com/r/discordapp/comments/61n0sj/pinging_rolesusers_linking_text_channels_through/dffsiuk/). Multiple user names can be specified, eg `<@FirstUserId> <@SecondUserId>`.
 
+## Slack Notifications
+The message that goes to discord can also be sent to a slack webhook. It was tested when it was initially added in, but I don't use slack and it may break without me ever realizing. It uses the same settings as the discord notifications, I didn't want to pollute the UI with too many options. If you use a webhook for slack, just pretend it says "Slack" instead.
+
 ## Custom Sounds
 Custom sounds must be hosted by a fileserver accessible to your browser. This can be an external website if you find a file hosted online.
 
@@ -63,10 +66,11 @@ If you need help, you should join the AvaNotifications channel on RoA.
 If you have bugs to report or feature suggestions, file an issue on the github repository.
 
 ## Special Thanks
-Userscript heavily borrows from Avabur Improved by [Alorel](https://github.com/Alorel)
-
-Sound effects from RSilveira and morrisjm on freesound.org
-
-Logo icon designed by Freepik from www.flaticon.com
-
-Thanks to AshenSwift for assistance with styling and cross-browser support, @dang on ava for some PRs and tons of regex help, along with everyone who helped me test early on.
+* Userscript heavily borrows from Avabur Improved by [Alorel](https://github.com/Alorel)
+* Sound effects from RSilveira and morrisjm on freesound.org
+* Logo icon designed by Freepik from www.flaticon.com
+* Thanks to AshenSwift for assistance with styling and cross-browser support
+* @dang on ava for some PRs and tons of regex help
+* @Reltorakii for letting me steal some of his code and giving me some ideas/help along the way
+* @Derdrak for convincing me to sort of support slack
+* Everyone who helped me test early on.

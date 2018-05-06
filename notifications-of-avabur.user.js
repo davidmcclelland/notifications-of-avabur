@@ -68,23 +68,24 @@ if (typeof(MutationObserver) === "undefined") {
             soundVolume: 80,
             lowStaminaThreshold: 5,
             popupDurationSec: 5,
-            fatigue: {popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false, recur: true},
-            eventFiveMinuteCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            eventThirtySecondCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            eventStarting: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            eventTenMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            eventFiveMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            eventEnd: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            eventElimination: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            harvestron: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true},
-            construction: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true},
-            whisper: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false},
-            questComplete: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true},
-            chatSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: ''},
-            lootSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: ''},
-            craftingSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: ''},
+            fatigue: {popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false, slack: false, recur: true},
+            eventFiveMinuteCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false,},
+            eventThirtySecondCountdown: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
+            eventStarting: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
+            eventTenMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
+            eventFiveMinutesRemaining: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
+            eventEnd: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
+            eventElimination: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
+            harvestron: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false, recur: true},
+            construction: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false, recur: true},
+            whisper: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
+            questComplete: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack:false, recur: true},
+            chatSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack:false, searchText: ''},
+            lootSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false, searchText: ''},
+            craftingSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false, searchText: ''},
             clanDiscord: {webhook: '', target: ''},
-            personalDiscord: {webhook: '', target: ''}
+            personalDiscord: {webhook: '', target: ''},
+            slack:{webhook: '',target: ''}
         };
 
         const SETTINGS_KEY = 'NoASettings';
@@ -131,6 +132,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <th scope="col">Log</th>
                         <th scope="col">Clan</th>
                         <th scope="col">Personal</th>
+                        <th scope="col">Slack</th>
                         <th scope="col">Recur</th>
                         <th scope="col">Sound File URL</th>
                 </thead>
@@ -146,7 +148,6 @@ if (typeof(MutationObserver) === "undefined") {
                     </div><div class="col-xs-3">
                         <label>Recurrence Time (sec)</label>
                         <input id="recurringNotificationsTimeoutEditor" type="number" min="1" max="100">
-                    </div><div class="col-xs-3">
                         <label>Sound Volume</label>
                         <input id="soundVolumeEditor"                   type="number" min="1" max="100">
                     </div><div class="col-xs-3">
@@ -189,6 +190,22 @@ if (typeof(MutationObserver) === "undefined") {
                     <label class="col-xs-3">User/Group</label>
                     <div class="col-xs-9">
                         <input id="personalDiscordTargetEditor" type="text" style="width: 80%;">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Slack</h4>
+                <div class="row">
+                    <label class="col-xs-3">Webhook</label>
+                    <div class="col-xs-9">
+                        <input id="slackWebhookEditor" type="text" style="width: 80%;">
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="col-xs-3">User/Group</label>
+                    <div class="col-xs-9">
+                        <input id="slackTargetEditor" type="text" style="width: 80%;">
                     </div>
                 </div>
             </div>
@@ -252,7 +269,7 @@ if (typeof(MutationObserver) === "undefined") {
         if (!String.format) {
           String.format = function(format) {
             var args = Array.prototype.slice.call(arguments, 1);
-            return format.replace(/{(\d+)}/g, function(match, number) { 
+            return format.replace(/{(\d+)}/g, function(match, number) {
               return typeof args[number] != 'undefined' ? args[number] : match;
             });
           };
@@ -297,6 +314,20 @@ if (typeof(MutationObserver) === "undefined") {
                     $.post(webhook, {content: messageContent});
                 }
             },
+
+            sendSlackMessage: function(webhook, target, text) {
+                var message = target + ' ' + text
+                $.ajax({
+                    data: 'payload=' + JSON.stringify({
+                        "text": message
+                    }),
+                    dataType: 'json',
+                    processData: false,
+                    type: 'POST',
+                    url: webhook
+                }
+                     )},
+
             /**
              * Creates a floaty notification and plays a sound, based on preferences
              * @param {String} text Text to display
@@ -326,12 +357,13 @@ if (typeof(MutationObserver) === "undefined") {
                 // Only send to discord if discord is enabled and (it's the first recurrence or (it's a good recurrence and recur to discord is enabled))
                 const doClanDiscord = !isMuted && settings.clanDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
                 const doPersonalDiscord = !isMuted && settings.personalDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
+                const doSlack = !isMuted && settings.slack && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
 
                 // Recur popup and sound notifications
                 const doPopup = !isMuted && settings.popup && isGoodRecurrence;
                 const doSound = !isMuted && settings.sound && isGoodRecurrence;
 
-                if (doLog) { 
+                if (doLog) {
                     notificationLogEntries.push({
                         timestamp: new Date(),
                         text: text
@@ -386,6 +418,10 @@ if (typeof(MutationObserver) === "undefined") {
                 if (doPersonalDiscord) {
                     fn.sendDiscordMessage(userSettings.personalDiscord.webhook, userSettings.personalDiscord.target, text);
                 }
+                
+                if (doSlack) {
+                    fn.sendSlackMessage(userSettings.slack.webhook, userSettings.slack.target, text);
+                }
             },
             displaySettingsSavedLabel: function() {
                 const label = document.getElementById('NoaSettingsSavedLabel');
@@ -418,6 +454,7 @@ if (typeof(MutationObserver) === "undefined") {
                 $('#' + editorPrefix + 'LogEditor')[0].checked = notificationSettings.log;
                 $('#' + editorPrefix + 'ClanDiscordEditor')[0].checked = notificationSettings.clanDiscord;
                 $('#' + editorPrefix + 'PersonalDiscordEditor')[0].checked = notificationSettings.personalDiscord;
+                $('#' + editorPrefix + 'SlackEditor')[0].checked = notificationSettings.slack;
                 $('#' + editorPrefix + 'SoundFileEditor').val(notificationSettings.soundFile);
 
                 if(notificationSettings.hasOwnProperty('recur')) {
@@ -435,6 +472,8 @@ if (typeof(MutationObserver) === "undefined") {
                 $('#clanDiscordTargetEditor').val(userSettings.clanDiscord.target);
                 $('#personalDiscordWebhookEditor').val(userSettings.personalDiscord.webhook);
                 $('#personalDiscordTargetEditor').val(userSettings.personalDiscord.target);
+                $('#slackWebhookEditor').val(userSettings.slack.webhook);
+                $('#slackTargetEditor').val(userSettings.slack.target);
                 $('#chatSearchTextEditor').val(userSettings.chatSearch.searchText);
                 $('#lootSearchTextEditor').val(userSettings.lootSearch.searchText);
                 $('#craftingSearchTextEditor').val(userSettings.craftingSearch.searchText);
@@ -461,6 +500,7 @@ if (typeof(MutationObserver) === "undefined") {
                 notificationSettings.log = $('#' + editorPrefix + 'LogEditor')[0].checked;
                 notificationSettings.clanDiscord = $('#' + editorPrefix + 'ClanDiscordEditor')[0].checked;
                 notificationSettings.personalDiscord = $('#' + editorPrefix + 'PersonalDiscordEditor')[0].checked;
+                notificationSettings.slack =$('#' + editorPrefix + 'SlackEditor')[0].checked;
                 notificationSettings.soundFile = $('#' + editorPrefix + 'SoundFileEditor').val();
 
                 if(notificationSettings.hasOwnProperty('recur')) {
@@ -478,6 +518,8 @@ if (typeof(MutationObserver) === "undefined") {
                 userSettings.clanDiscord.target = $('#clanDiscordTargetEditor').val();
                 userSettings.personalDiscord.webhook = $('#personalDiscordWebhookEditor').val();
                 userSettings.personalDiscord.target = $('#personalDiscordTargetEditor').val();
+                userSettings.slack.webhook= $('#slackWebhookEditor').val();
+                userSettings.slack.target = $('#slackTargetEditor').val();
                 userSettings.chatSearch.searchText = $('#chatSearchTextEditor').val();
                 userSettings.lootSearch.searchText = $('#lootSearchTextEditor').val();
                 userSettings.craftingSearch.searchText = $('#craftingSearchTextEditor').val();
@@ -647,7 +689,7 @@ if (typeof(MutationObserver) === "undefined") {
                         fn.notification('The event has ended!', userSettings.eventEnd);
                     }, (secondsUntilEventStart + (60 * 15)) * 1000);
                 }
-            },            
+            },
         };
 
         /** Collection of mutation observers the script uses */
@@ -814,6 +856,7 @@ if (typeof(MutationObserver) === "undefined") {
                             <td><input id="{1}LogEditor" type="checkbox"></td>
                             <td><input id="{1}ClanDiscordEditor" type="checkbox"></td>
                             <td><input id="{1}PersonalDiscordEditor" type="checkbox"></td>
+                            <td><input id="{1}SlackEditor" type="checkbox"></td>
                             <td>{2}</td>
                             <td><input id="{1}SoundFileEditor" type="text" placeholder="Default"></td>
                         </tr>`;

@@ -77,11 +77,11 @@ if (typeof(MutationObserver) === "undefined") {
             eventEnd: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
             eventElimination: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
             harvestron: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false, recur: true},
-            construction: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false recur: true},
+            construction: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false, recur: true},
             whisper: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false},
-            questComplete: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack:false recur: true},
+            questComplete: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack:false, recur: true},
             chatSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack:false, searchText: ''},
-            lootSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false searchText: ''},
+            lootSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false, searchText: ''},
             craftingSearch: {popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, slack: false, searchText: ''},
             clanDiscord: {webhook: '', target: ''},
             personalDiscord: {webhook: '', target: ''},
@@ -418,7 +418,7 @@ if (typeof(MutationObserver) === "undefined") {
                 if (doPersonalDiscord) {
                     fn.sendDiscordMessage(userSettings.personalDiscord.webhook, userSettings.personalDiscord.target, text);
                 }
-                debugger;
+                
                 if (doSlack) {
                     fn.sendSlackMessage(userSettings.slack.webhook, userSettings.slack.target, text);
                 }

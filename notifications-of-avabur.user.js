@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.8.2
+// @version        1.8.3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -300,17 +300,16 @@ if (typeof(MutationObserver) === "undefined") {
 
                     if(webhook.includes("discordapp")) {
                         $.post(webhook, {content: messageContent});
-                       }
-                    else {
-                       $.ajax({
-                        data: 'payload=' + JSON.stringify({
-                        "text": messageContent
-                    }),
-                    dataType: 'json',
-                    processData: false,
-                    type: 'POST',
-                    url: webhook
-                    })
+                    } else {
+                        $.ajax({
+                            data: 'payload=' + JSON.stringify({
+                                "text": messageContent
+                            }),
+                            dataType: 'json',
+                            processData: false,
+                            type: 'POST',
+                            url: webhook
+                        });
                     }
                 }
             },

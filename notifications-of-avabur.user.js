@@ -303,7 +303,7 @@ if (typeof(MutationObserver) === "undefined") {
                        }
                     else {
                        $.ajax({
-                    data: 'payload=' + JSON.stringify({
+                        data: 'payload=' + JSON.stringify({
                         "text": messageContent
                     }),
                     dataType: 'json',

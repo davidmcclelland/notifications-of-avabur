@@ -301,7 +301,16 @@ if (typeof(MutationObserver) === "undefined") {
                         content: messageContent, // "content" is for discord
                         text: messageContent, // "text" is for slack
                     };
-                    $.post(webhook, payload);
+
+                    const settings = {
+                        method: 'POST',
+                        url: webhook,
+                        dataType: 'json',
+                        processData: false,
+                        data: 'payload=' + JSON.stringify(payload),
+                    };
+
+                    $.ajax(settings);
                 }
             },
             /**

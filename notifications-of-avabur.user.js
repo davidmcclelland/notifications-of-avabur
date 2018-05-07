@@ -593,13 +593,16 @@ if (typeof(MutationObserver) === "undefined") {
                     }
                 }
             },
+            isToAProcessed: function(node) {
+                return $(node).hasClass('processed');
+            },
             findSearchValuesInRecords: function(records, searchValues) {
                 for (var i = 0; i < records.length; i++) {
                     const addedNodes = records[i].addedNodes;
                     if (addedNodes.length) {
                         for (var j = 0; j < addedNodes.length; j++) {
                             const text = $(addedNodes[j]).text();
-                            if (fn.findSearchValues(text, searchValues)) {
+                            if (!fn.isToAProcessed(addedNodes[j]) && fn.findSearchValues(text, searchValues)) {
                                 return text;
                             }
                         }

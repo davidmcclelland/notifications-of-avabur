@@ -297,20 +297,21 @@ if (typeof(MutationObserver) === "undefined") {
                     if (target && target.length) {
                         messageContent = target + ' ' + text;
                     }
-                    const payload = {
-                        content: messageContent, // "content" is for discord
-                        text: messageContent, // "text" is for slack
-                    };
 
-                    const settings = {
-                        method: 'POST',
-                        url: webhook,
-                        dataType: 'json',
-                        processData: false,
-                        data: 'payload=' + JSON.stringify(payload),
-                    };
-
-                    $.ajax(settings);
+                    if(webhook.includes("discordapp")) {
+                        $.post(webhook, {content: messageContent});
+                       }
+                    else {
+                       $.ajax({
+                    data: 'payload=' + JSON.stringify({
+                        "text": messageContent
+                    }),
+                    dataType: 'json',
+                    processData: false,
+                    type: 'POST',
+                    url: webhook
+                    })
+                    }
                 }
             },
             /**

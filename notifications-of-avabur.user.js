@@ -685,7 +685,7 @@ if (typeof(MutationObserver) === "undefined") {
                         if (addedNodes.length) {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
-                                if (!tn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
+                                if (!fn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
                                     fn.notification(text, userSettings.whisper);
                                     return;
                                 }

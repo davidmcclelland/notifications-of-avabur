@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.8.3
+// @version        1.8.4
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -685,7 +685,7 @@ if (typeof(MutationObserver) === "undefined") {
                         if (addedNodes.length) {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
-                                if (text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
+                                if (!fn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
                                     fn.notification(text, userSettings.whisper);
                                     return;
                                 }

@@ -318,8 +318,9 @@ if (typeof(MutationObserver) === "undefined") {
              * @param {String} text Text to display
              * @param {object} settings Settings for this type of notification
              * @param {number} recurrenceCounter The number of seconds this event has recurred for. Optional, defaults to zero
+             * @param {Function} [onPopupClick] An optional function to be called back when/if a popup is clicked
              */
-            notification: function(text, settings, recurrenceCounter) {
+            notification: function(text, settings, recurrenceCounter, onPopupClick) {
                 recurrenceCounter = _.defaultTo(recurrenceCounter, 0);
 
                 const isFirstRecurrence = (recurrenceCounter === 0);
@@ -369,6 +370,11 @@ if (typeof(MutationObserver) === "undefined") {
                         n.addEventListener('click', function(e) {
                             window.focus();
                             e.target.close();
+
+                            if (onPopupClick) {
+                                onPopupClick();
+                            }
+
                         }, false);
                     });
                 }
@@ -526,7 +532,11 @@ if (typeof(MutationObserver) === "undefined") {
             checkConstructionVisible: function() {
                 var div = document.getElementById('constructionNotifier');
                 if (div && (div.style.display !== 'none')) {
-                    fn.notification('Construction available!', userSettings.construction, counters.lastConstructionNotification);
+                    const constructionCallback = function() {
+                        $('#constructionNotifier').click();
+                    };
+
+                    fn.notification('Construction available!', userSettings.construction, counters.lastConstructionNotification, constructionCallback);
                     counters.lastConstructionNotification++;
                 } else {
                     counters.lastConstructionNotification = 0;
@@ -547,7 +557,11 @@ if (typeof(MutationObserver) === "undefined") {
             checkHarvestronVisible: function() {
                 var div = document.getElementById('harvestronNotifier');
                 if (div && (div.style.display !== 'none')) {
-                    fn.notification('Harvestron available!', userSettings.harvestron, counters.lastHarvestronNotification);
+                    const harvestronCallback = function() {
+                        $('#harvestronNotifier').click();
+                    };
+
+                    fn.notification('Harvestron available!', userSettings.harvestron, counters.lastHarvestronNotification, harvestronCallback);
                     counters.lastHarvestronNotification++;
                 } else {
                     counters.lastHarvestronNotification = 0;
@@ -567,8 +581,20 @@ if (typeof(MutationObserver) === "undefined") {
                     }
                 }
 
-                if (visibleQuestDivId && ($('#' + visibleQuestDivId).text().startsWith('You have completed your quest!'))) {
-                    fn.notification('Quest complete!', userSettings.questComplete, counters.lastQuestNotification);
+                if (!visibleQuestDivId) {
+                    return;
+                }
+
+                const visibleQuestDiv = $('#' + visibleQuestDivId);
+
+                if (visibleQuestDivId && (visibleQuestDiv.text().startsWith('You have completed your quest!'))) {
+                    const questCallback = function() {
+                        // Find the first <a> sibling of the vibile questDiv and click it
+                        visibleQuestDiv.siblings('a').first().click();
+                    };
+
+                    const notificationText = visibleQuestDiv.siblings('a').first().text().trim() + ' complete!';
+                    fn.notification(notificationText, userSettings.questComplete, counters.lastQuestNotification, questCallback);
                     counters.lastQuestNotification++;
                 } else {
                     counters.lastQuestNotification = 0;
@@ -634,7 +660,12 @@ if (typeof(MutationObserver) === "undefined") {
                     }
                     var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
 
-                    fn.notification('An event is starting in five minutes!', userSettings.eventFiveMinuteCountdown);
+                    // This callback is only passed in for the five minute countdown. It would get really annoying otherwise.
+                    const eventCallback = function() {
+                        $('#event_start').click();
+                    };
+
+                    fn.notification('An event is starting in five minutes!', userSettings.eventFiveMinuteCountdown, eventCallback);
 
                     // 30 second warning
                     setTimeout(function() {

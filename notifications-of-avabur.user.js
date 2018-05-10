@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.8.4
+// @version        1.9.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -982,7 +982,7 @@ if (typeof(MutationObserver) === "undefined") {
 
             const keys = Object.keys(ON_LOAD);
             for (var i = 0; i < keys.length; i++) {
-                console.log('[' + GM_info.script.name + '] ' + keys[i]);
+                console.log('[' + GM_info.script.name + ' (' + GM_info.script.version + ')] ' + keys[i]);
                 ON_LOAD[keys[i]]();
             }
         })();

@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.9.0
+// @version        1.9.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -665,7 +665,7 @@ if (typeof(MutationObserver) === "undefined") {
                         $('#event_start').click();
                     };
 
-                    fn.notification('An event is starting in five minutes!', userSettings.eventFiveMinuteCountdown, eventCallback);
+                    fn.notification('An event is starting in five minutes!', userSettings.eventFiveMinuteCountdown, null, eventCallback);
 
                     // 30 second warning
                     setTimeout(function() {

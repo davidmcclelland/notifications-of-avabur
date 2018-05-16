@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.10.1
+// @version        1.10.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -51,6 +51,15 @@ if (typeof(MutationObserver) === "undefined") {
             },
             img: {
                 icon: gh_url("res/img/logo-32.png")
+            }
+        };
+
+        const clickToAChannelTab = function(node) {
+            if (typeof node.getToAChannelInfo === 'function') {
+                let {channelID} = node.getToAChannelInfo();
+                if (false !== channelID) {
+                    $(`#channelTab${channelID}`).click();
+                }
             }
         };
 
@@ -321,7 +330,7 @@ if (typeof(MutationObserver) === "undefined") {
              * @param {number} recurrenceCounter The number of seconds this event has recurred for. Optional, defaults to zero
              * @param {Function} [onPopupClick] An optional function to be called back when/if a popup is clicked
              */
-            notification: function(text, settings, recurrenceCounter, onPopupClick) {
+            notification: function(text, settings, recurrenceCounter, onPopupClick, onPopupClickArgs = []) {
                 recurrenceCounter = _.defaultTo(recurrenceCounter, 0);
 
                 const isFirstRecurrence = (recurrenceCounter === 0);
@@ -372,8 +381,11 @@ if (typeof(MutationObserver) === "undefined") {
                             window.focus();
                             e.target.close();
 
-                            if (onPopupClick) {
-                                onPopupClick();
+                            if (typeof onPopupClick === 'function') {
+                                if (!Array.isArray(onPopupClickArgs)) {
+                                    onPopupClickArgs = [onPopupClickArgs];
+                                }
+                                onPopupClick.apply(null, onPopupClickArgs);
                             }
 
                         }, false);
@@ -627,13 +639,16 @@ if (typeof(MutationObserver) === "undefined") {
             isToAProcessed: function(node) {
                 return $(node).hasClass('processed');
             },
-            findSearchValuesInRecords: function(records, searchValues) {
+            findSearchValuesInRecords: function(records, searchValues, returnNode = false) {
                 for (var i = 0; i < records.length; i++) {
                     const addedNodes = records[i].addedNodes;
                     if (addedNodes.length) {
                         for (var j = 0; j < addedNodes.length; j++) {
                             const text = $(addedNodes[j]).text();
                             if (!fn.isToAProcessed(addedNodes[j]) && fn.findSearchValues(text, searchValues)) {
+                                if (true === returnNode) {
+                                    return addedNodes[j];
+                                }
                                 return text;
                             }
                         }
@@ -710,11 +725,12 @@ if (typeof(MutationObserver) === "undefined") {
             chat_search: new MutationObserver(
                 /** @param {MutationRecord[]} records */
                 function(records) {
-                    var text = fn.findSearchValuesInRecords(records, userSettings.chatSearch.searchText);
-                    if (text) {
-                        fn.notification(text, userSettings.chatSearch);
+                    var node = fn.findSearchValuesInRecords(records, userSettings.chatSearch.searchText, true);
+                    if (node) {
+                        fn.notification(node.textContent, userSettings.chatSearch, null, clickToAChannelTab, node);
                         return;
                     }
+
 
                     for (var i = 0; i < records.length; i++) {
                         const addedNodes = records[i].addedNodes;
@@ -722,7 +738,7 @@ if (typeof(MutationObserver) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (!fn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
-                                    fn.notification(text, userSettings.whisper);
+                                    fn.notification(text, userSettings.whisper, null, clickToAChannelTab, addedNodes[j]);
                                     return;
                                 }
                             }

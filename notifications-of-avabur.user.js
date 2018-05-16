@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.9.1
+// @version        1.10.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -133,6 +133,7 @@ if (typeof(MutationObserver) === "undefined") {
                         <th scope="col">Personal</th>
                         <th scope="col">Recur</th>
                         <th scope="col">Sound File URL</th>
+                        <th scope="col">Test Notifications</th>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -445,6 +446,10 @@ if (typeof(MutationObserver) === "undefined") {
                 if(notificationSettings.hasOwnProperty('recur')) {
                     $('#' + editorPrefix + 'RecurEditor')[0].checked = notificationSettings.recur;
                 }
+
+                $('#' + editorPrefix + 'NotificationTest').click(function() {
+                    fn.notification('Testing ' + editorPrefix + ' notifications', notificationSettings);
+                });
             },
             populateSettingsEditor: function() {
                 $('#recurToDiscordEditor')[0].checked = userSettings.recurToDiscord;
@@ -866,6 +871,7 @@ if (typeof(MutationObserver) === "undefined") {
                             <td><input id="{1}PersonalDiscordEditor" type="checkbox"></td>
                             <td>{2}</td>
                             <td><input id="{1}SoundFileEditor" type="text" placeholder="Default"></td>
+                            <td><button id="{1}NotificationTest" class="btn btn-primary" style="margin-top: 0px;">Test</button></td>
                         </tr>`;
 
                         // This is a bit confusing - we're doing a double replace, so this needs called twice.

@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.10.0
+// @version        1.10.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -871,7 +871,7 @@ if (typeof(MutationObserver) === "undefined") {
                             <td><input id="{1}PersonalDiscordEditor" type="checkbox"></td>
                             <td>{2}</td>
                             <td><input id="{1}SoundFileEditor" type="text" placeholder="Default"></td>
-                            <td><button id="{1}NotificationTest" class="btn btn-primary" style="margin-top: 0px;">Test</button></td>
+                            <td><button id="{1}NotificationTest" class="btn btn-primary btn-xs" style="margin-top: 0px;">Test</button></td>
                         </tr>`;
 
                         // This is a bit confusing - we're doing a double replace, so this needs called twice.

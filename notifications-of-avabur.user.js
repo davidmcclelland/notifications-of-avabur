@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.10.2
+// @version        1.10.2.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -406,6 +406,7 @@ if (typeof(MutationObserver) === "undefined") {
                         });
 
                         buzzFile.bind('error', function() {
+                            console.log('[NoA] Error playing audio file: ', this.getErrorMessage());
                             isSoundPlaying = false;
                         });
 

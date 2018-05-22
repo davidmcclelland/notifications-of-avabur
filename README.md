@@ -51,16 +51,13 @@ Custom sounds must be hosted by a fileserver accessible to your browser. This ca
 If you would like to host audio files from your computer, the Python HTTP Server can be very easy to set up. See [this page](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/set_up_a_local_testing_server#Running_a_simple_local_HTTP_server) for instructions on setting it up. Assuming you have the file `myaudiofile.wav` hosted locally on port 8000, enter `http://127.0.0.1:800/myaudiofile.wav` into the Sound File URL in NoA.
 
 ## TODOs/Vague Ideas
-* Recurring notifications for
-  * Fatigue
 * Effect changes (double->triple, rage->fury, etc)
 * Throttle notifications to prevent being spammed
-* Come up with additional features
-* Settings
   * Throttle timer
+* Come up with additional features
 
 ## Help
-If you need help, you should join the AvaNotifications channel on RoA.
+If you need help, you should join the UserScripts channel on RoA.
 
 ## Bugs/Suggestions
 If you have bugs to report or feature suggestions, file an issue on the github repository.

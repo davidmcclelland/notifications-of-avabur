@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.10.2.1
+// @version        1.10.3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -128,6 +128,9 @@ if (typeof(MutationObserver) === "undefined") {
         <a id="NoAAdvancedSettingsButton">
             <button class="btn btn-primary">Advanced</button>
         </a>
+        <a id="NoALogButton">
+            <button class="btn btn-primary">Log</button>
+        </a>
     </div>
     <div id="NoASettingsContentWrapper">
         <div id="NoANotificationSettingsWrapper">
@@ -230,6 +233,10 @@ if (typeof(MutationObserver) === "undefined") {
                 </div>
             </div>
         </div>
+        <div id="NoANotificationLog">
+            <button class="btn btn-primary" id="notificationLogRefresh">Refresh</button>
+            <ul id="notificationLogItems"></ul>
+        </div>
     </div>
     <div class="row" style="display: none;" id="NoaSettingsSavedLabel">
         <strong class="col-xs-12">
@@ -252,12 +259,18 @@ if (typeof(MutationObserver) === "undefined") {
             lastQuestNotification: 0,
         };
 
-        var isSoundPlaying = false;
-
 
         var notificationLogEntries = [];
 
         var checkForUpdateTimer = 0;
+
+        // Obviously no sound is playing, but we need to block audio until the dom is loaded
+        var isSoundPlaying = true;
+
+        // I suspect that this may help fix some issues with Chrome's new auto-playing audio changes
+        window.addEventListener('load', function() {
+            isSoundPlaying = false;
+        });
 
         if (!String.format) {
           String.format = function(format) {
@@ -872,7 +885,7 @@ if (typeof(MutationObserver) === "undefined") {
                     const accountSettingsWrapper = $('#accountSettingsWrapper');
                     var settingsLinksWrapper = $('#settingsLinksWrapper');
 
-                    var noaSettingsButton = $('<a id="noaPreferences"><button class="btn btn-primary">NoA Settings</button></a>');
+                    var noaSettingsButton = $('<a id="noaPreferences"><button class="btn btn-primary">NoA</button></a>');
                     var noaSettingsPage = $(SETTINGS_DIALOG_HTML);
                     accountSettingsWrapper.append(noaSettingsPage);
 
@@ -922,6 +935,13 @@ if (typeof(MutationObserver) === "undefined") {
                         $('#NoAAdvancedSettingsWrapper').css('display', 'block').siblings().css('display', 'none');
                     });
 
+                    $('#NoALogButton').click(function() {
+                        console.log('NoA Log Button clicked');
+                        $('#NoALogButton').addClass('active').siblings().removeClass('active');
+                        $('#NoANotificationLog').css('display', 'block').siblings().css('display', 'none');
+                        populateNotificationLog();
+                    });
+
                     $('#NoANotificationSettingsButton').click();
 
                     $('#NoASettings input').change(fn.saveSettingsEditor);
@@ -940,44 +960,18 @@ if (typeof(MutationObserver) === "undefined") {
                     });
                     settingsLinksWrapper.append(noaSettingsButton);
 
-                    const notificationLogButton = $('<a id="NoALogButton"><button class="btn btn-primary">NoA Log</button></a>');
-                    settingsLinksWrapper.append(notificationLogButton);
-
                     function hideNoaSettings() {
                         noaSettingsPage.css('display', 'none');
+                        $('#notificationLogItems').empty();
                     }
 
                     noaSettingsButton.siblings().each(function() {
                         $(this).click(hideNoaSettings);
                     });
 
-                    const notificationLog = $('<div id="NoANotificationLog"><button class="btn btn-primary" id="notificationLogRefresh">Refresh</button><ul id="notificationLogItems"></ul></div>');
-
-                    accountSettingsWrapper.append(notificationLog);
                     const notificationLogRefreshButton = $('#notificationLogRefresh');
                     const notificationLogItems = $('#notificationLogItems');
-
                     notificationLogRefreshButton.click(populateNotificationLog);
-
-                    notificationLogButton.click(function() {
-                        // Remove the active class from all of the buttons in the settings link wrapper, then set the notification log button active
-                        settingsLinksWrapper.children('.active').removeClass('active');
-                        notificationLogButton.addClass('active');
-
-                        // Hide all the children of the settings wrapper, then display only the settings link wraper and the notification log
-                        accountSettingsWrapper.children().css('display', 'none');
-                        settingsLinksWrapper.css('display', 'block');
-                        notificationLog.css('display', 'block');
-
-                        populateNotificationLog();
-                    });
-
-                    // When hiding the notfication log (from clicking any other button), remove all the list items
-                    function hideNotificationLog() {
-                        notificationLogItems.empty();
-                        notificationLog.css('display', 'none');
-                    }
-
                     function populateNotificationLog() {
                         notificationLogItems.empty();
                         // iterate backwards - display newest first
@@ -996,10 +990,6 @@ if (typeof(MutationObserver) === "undefined") {
                                 entry.text;
                         }
                     }
-
-                    notificationLogButton.siblings().each(function() {
-                        $(this).click(hideNotificationLog);
-                    });
                 },
             };
 

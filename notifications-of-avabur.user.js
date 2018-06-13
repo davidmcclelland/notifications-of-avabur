@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.10.3
+// @version        1.11.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -47,10 +47,20 @@ if (typeof(MutationObserver) === "undefined") {
 
         const URLS = {
             sfx: {
-                message_ding: gh_url("res/sfx/message_ding.wav")
+                message_ding: gh_url('res/sfx/message_ding.wav')
             },
             img: {
-                icon: gh_url("res/img/logo-32.png")
+                icon: gh_url('res/img/logo-32.png'),
+                chatSearch: gh_url('res/img/noa-chat.png'),
+                construction: gh_url('res/img/noa-construction.png'),
+                craftingSearch: gh_url('res/img/noa-crafting.png'),
+                lootSearch: gh_url('res/img/noa-drop.png'),
+                event: gh_url('res/img/noa-event.png'),
+                fatigued: gh_url('res/img/noa-fatigued.png'),
+                harvestron: gh_url('res/img/noa-harvestron.png'),
+                quest: gh_url('res/img/noa-quest.png'),
+                weakened: gh_url('res/img/noa-weakened.png'),
+                whisper: gh_url('res/img/noa-whisper.png')
             }
         };
 
@@ -339,11 +349,12 @@ if (typeof(MutationObserver) === "undefined") {
             /**
              * Creates a floaty notification and plays a sound, based on preferences
              * @param {String} text Text to display
+             * @param {String} iconUrl Icon to display in the popup
              * @param {object} settings Settings for this type of notification
              * @param {number} recurrenceCounter The number of seconds this event has recurred for. Optional, defaults to zero
              * @param {Function} [onPopupClick] An optional function to be called back when/if a popup is clicked
              */
-            notification: function(text, settings, recurrenceCounter, onPopupClick, onPopupClickArgs = []) {
+            notification: function(text, iconUrl, settings, recurrenceCounter, onPopupClick, onPopupClickArgs = []) {
                 recurrenceCounter = _.defaultTo(recurrenceCounter, 0);
 
                 const isFirstRecurrence = (recurrenceCounter === 0);
@@ -474,7 +485,7 @@ if (typeof(MutationObserver) === "undefined") {
                 }
 
                 $('#' + editorPrefix + 'NotificationTest').click(function() {
-                    fn.notification('Testing ' + editorPrefix + ' notifications', notificationSettings);
+                    fn.notification('Testing ' + editorPrefix + ' notifications', URLS.img.icon, notificationSettings);
                 });
             },
             populateSettingsEditor: function() {
@@ -567,7 +578,7 @@ if (typeof(MutationObserver) === "undefined") {
                         $('#constructionNotifier').click();
                     };
 
-                    fn.notification('Construction available!', userSettings.construction, counters.lastConstructionNotification, constructionCallback);
+                    fn.notification('Construction available!', URLS.img.construction, userSettings.construction, counters.lastConstructionNotification, constructionCallback);
                     counters.lastConstructionNotification++;
                 } else {
                     counters.lastConstructionNotification = 0;
@@ -579,7 +590,7 @@ if (typeof(MutationObserver) === "undefined") {
                 const staminaRemainingText = searchSpan.innerText || searchSpan.textContent;
                 const staminaRemainingNumber = parseInt(staminaRemainingText, 10);
                 if (staminaRemainingNumber <= 0) {
-                    fn.notification('You are fatigued!', userSettings.fatigue, counters.lastFatigueNotification);
+                    fn.notification('You are fatigued!', URLS.img.fatigued, userSettings.fatigue, counters.lastFatigueNotification);
                     counters.lastFatigueNotification++;
                 } else {
                     counters.lastFatigueNotification = 0;
@@ -592,7 +603,7 @@ if (typeof(MutationObserver) === "undefined") {
                         $('#harvestronNotifier').click();
                     };
 
-                    fn.notification('Harvestron available!', userSettings.harvestron, counters.lastHarvestronNotification, harvestronCallback);
+                    fn.notification('Harvestron available!', URLS.img.harvestron, userSettings.harvestron, counters.lastHarvestronNotification, harvestronCallback);
                     counters.lastHarvestronNotification++;
                 } else {
                     counters.lastHarvestronNotification = 0;
@@ -625,7 +636,7 @@ if (typeof(MutationObserver) === "undefined") {
                     };
 
                     const notificationText = visibleQuestDiv.siblings('a').first().text().trim() + ' complete!';
-                    fn.notification(notificationText, userSettings.questComplete, counters.lastQuestNotification, questCallback);
+                    fn.notification(notificationText, URLS.img.quest, userSettings.questComplete, counters.lastQuestNotification, questCallback);
                     counters.lastQuestNotification++;
                 } else {
                     counters.lastQuestNotification = 0;
@@ -699,36 +710,36 @@ if (typeof(MutationObserver) === "undefined") {
                         $('#event_start').click();
                     };
 
-                    fn.notification('An event is starting in five minutes!', userSettings.eventFiveMinuteCountdown, null, eventCallback);
+                    fn.notification('An event is starting in five minutes!', URLS.img.event, userSettings.eventFiveMinuteCountdown, null, eventCallback);
 
                     // 30 second warning
                     setTimeout(function() {
-                        fn.notification('An event is starting in thirty seconds!', userSettings.eventThirtySecondCountdown);
+                        fn.notification('An event is starting in thirty seconds!', URLS.img.event, userSettings.eventThirtySecondCountdown);
                     }, (secondsUntilEventStart - 30) * 1000);
 
                     // 1 second warning
                     setTimeout(function() {
-                        fn.notification('An event is starting!', userSettings.eventStarting);
+                        fn.notification('An event is starting!', URLS.img.event, userSettings.eventStarting);
                     }, (secondsUntilEventStart - 1) * 1000);
 
                     // 10 minutes remaining
                     setTimeout(function() {
                         if (!fn.checkEventParticipation()) {
-                            fn.notification('Ten minutes remaining in the event!', userSettings.eventTenMinutesRemaining);
+                            fn.notification('Ten minutes remaining in the event!', URLS.img.event, userSettings.eventTenMinutesRemaining);
                         }
                     }, (secondsUntilEventStart + (60 * 5)) * 1000);
 
                     // 5 minutes remaining
                     setTimeout(function() {
                         if (!fn.checkEventParticipation()) {
-                            fn.notification('Five minutes remaining in the event!', userSettings.eventFiveMinutesRemaining);
+                            fn.notification('Five minutes remaining in the event!', URLS.img.event, userSettings.eventFiveMinutesRemaining);
                         }
                     }, (secondsUntilEventStart + (60 * 10)) * 1000);
 
                     // End of the event
                     setTimeout(function() {
                         isEventCountdownActive = false;
-                        fn.notification('The event has ended!', userSettings.eventEnd);
+                        fn.notification('The event has ended!', URLS.img.event, userSettings.eventEnd);
                     }, (secondsUntilEventStart + (60 * 15)) * 1000);
                 }
             },            
@@ -741,7 +752,7 @@ if (typeof(MutationObserver) === "undefined") {
                 function(records) {
                     var node = fn.findSearchValuesInRecords(records, userSettings.chatSearch.searchText, true);
                     if (node) {
-                        fn.notification(node.textContent, userSettings.chatSearch, null, clickToAChannelTab, node);
+                        fn.notification(node.textContent, URLS.img.chatSearch, userSettings.chatSearch, null, clickToAChannelTab, node);
                         return;
                     }
 
@@ -752,7 +763,7 @@ if (typeof(MutationObserver) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (!fn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
-                                    fn.notification(text, userSettings.whisper, null, clickToAChannelTab, addedNodes[j]);
+                                    fn.notification(text, URLS.img.whisper, userSettings.whisper, null, clickToAChannelTab, addedNodes[j]);
                                     return;
                                 }
                             }
@@ -765,7 +776,7 @@ if (typeof(MutationObserver) === "undefined") {
                 function(records) {
                     var text = fn.findSearchValuesInRecords(records, userSettings.lootSearch.searchText);
                     if (text) {
-                        fn.notification(text, userSettings.lootSearch);
+                        fn.notification(text, URLS.img.lootSearch, userSettings.lootSearch);
                         return;
                     }
                 }
@@ -782,7 +793,7 @@ if (typeof(MutationObserver) === "undefined") {
                         }
                     }
                     if (text) {
-                        fn.notification(text, userSettings.craftingSearch);
+                        fn.notification(text, URLS.img.craftingSearch, userSettings.craftingSearch);
                     }
                 }
             ),
@@ -794,7 +805,7 @@ if (typeof(MutationObserver) === "undefined") {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
                                 if (text === userSettings.lowStaminaThreshold.toString()) {
-                                    fn.notification('Your stamina is low!', userSettings.fatigue);
+                                    fn.notification('Your stamina is low!', URLS.img.fatigued, userSettings.fatigue);
                                 }
                             }
                         }
@@ -819,7 +830,7 @@ if (typeof(MutationObserver) === "undefined") {
             bossFailure: new MutationObserver(
                 function(records) {
                     if (fn.checkRecordsVisible(records)) {
-                        fn.notification('You are fighting while weakened!', userSettings.eventElimination);
+                        fn.notification('You are fighting while weakened!', URLS.img.weakened, userSettings.eventElimination);
                     }
                 }
             ),

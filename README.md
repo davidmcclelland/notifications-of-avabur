@@ -67,6 +67,7 @@ If you have bugs to report or feature suggestions, file an issue on the github r
 * Sound effects from RSilveira and morrisjm on freesound.org
 * Logo icon designed by Freepik from www.flaticon.com
 * Thanks to AshenSwift for assistance with styling and cross-browser support
+* @Lotusenta for designing the non-logo icons just for NoA!
 * @dang on ava for some PRs and tons of regex help
 * @Reltorakii for letting me steal some of his code and giving me some ideas/help along the way
 * @Derdrak for convincing me to sort of support slack

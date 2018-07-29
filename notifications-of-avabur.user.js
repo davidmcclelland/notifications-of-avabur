@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.11.1
+// @version        1.12.0-beta1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -129,10 +129,6 @@ if (typeof (MutationObserver) === "undefined") {
     margin-top: 10px;
 }
         `;
-
-
-
-
 
         const SETTINGS_DIALOG_HTML = `
 <div id="NoASettings" style="display: none; margin: 10px;">

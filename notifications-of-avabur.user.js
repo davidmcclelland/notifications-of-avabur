@@ -318,6 +318,7 @@ if (typeof (MutationObserver) === "undefined") {
             lastFatigueNotification: 0,
             lastHarvestronNotification: 0,
             lastQuestNotification: 0,
+            lastGauntletQueueNotification: 0,
         };
 
 
@@ -681,9 +682,10 @@ if (typeof (MutationObserver) === "undefined") {
                     $('#event_start').click();
                 };
 
-                fn.notification('An event is starting soon!', URLS.img.event, userSettings.eventFiveMinuteCountdown, null, eventCallback);
+                fn.notification('An event is starting soon!', URLS.img.event, userSettings.eventFiveMinuteCountdown, counters.lastGauntletQueueNotification, eventCallback);
                 
                 if(userSettings.eventFiveMinuteCountdown.recur) {
+                    counters.lastGauntletQueueNotification++;
                     setTimeout(fn.checkQueuedForGauntlet, userSettings.recurringNotificationsTimeout * 1000);
                 }
             },
@@ -709,6 +711,7 @@ if (typeof (MutationObserver) === "undefined") {
                     var secondsUntilEventEnd = secondsUntilEventStart + (60*15);
 
                     hasQueuedForGauntlet = false;
+                    counters.lastGauntletQueueNotification = 0;
                     fn.checkQueuedForGauntlet();
 
                     userSettings.eventTimeRemaining.forEach(function(timeSetting) {

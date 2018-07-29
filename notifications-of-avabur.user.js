@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.12.0-beta2
+// @version        1.12.0-beta3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -89,7 +89,7 @@ if (typeof (MutationObserver) === "undefined") {
             lowStaminaThreshold: 5,
             popupDurationSec: 5,
             fatigue: { popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false, recur: true },
-            eventFiveMinuteCountdown: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },
+            eventFiveMinuteCountdown: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
             eventTimeRemaining: [{popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, timeMinutes: 7.5}],
             harvestron: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
             construction: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
@@ -227,7 +227,7 @@ if (typeof (MutationObserver) === "undefined") {
                     <tr is="settings-entry" name="Construction" :setting="userSettings.construction"></tr>
                     <tr is="settings-entry" name="Quest Complete" :setting="userSettings.questComplete"></tr>
                     <tr is="settings-entry" name="Whisper" :setting="userSettings.whisper"></tr>
-                    <tr is="settings-entry" name="Event 5 Minute Countdown" :setting="userSettings.eventFiveMinuteCountdown"></tr>
+                    <tr is="settings-entry" name="Gauntlet Queue Reminder" :setting="userSettings.eventFiveMinuteCountdown"></tr>
                 </tbody>
             </table>
         </div>
@@ -262,7 +262,7 @@ if (typeof (MutationObserver) === "undefined") {
                     <tr class="header">
                         <th colspan="3" scope="col">
                             <h3 class="nobg">
-                                <span>Crafting Search (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Loot-search" target="_blank">Help</a>)</span>
+                                <span>Crafting Search (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Crafting-search" target="_blank">Help</a>)</span>
                                 <button type="button" class="btn btn-primary btn-sm" v-on:click="addCraftingSearch()" style="margin-top: 0;">Add</button>
                             </h3>
                         </th>
@@ -273,7 +273,7 @@ if (typeof (MutationObserver) === "undefined") {
                     <tr class="header">
                         <th colspan="3" scope="col">
                             <h3 class="nobg">
-                                <span>Loot Search (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Crafting-search" target="_blank">Help</a>)</span>
+                                <span>Loot Search (<a href="https://github.com/davidmcclelland/notifications-of-avabur/wiki/Loot-search" target="_blank">Help</a>)</span>
                                 <button type="button" class="btn btn-primary btn-sm" v-on:click="addLootSearch()" style="margin-top: 0;">Add</button>
                             </h3>
                         </th>
@@ -311,6 +311,7 @@ if (typeof (MutationObserver) === "undefined") {
         var userSettings = null;
 
         var isEventCountdownActive = false;
+        var hasQueuedForGauntlet = false;
 
         var counters = {
             lastConstructionNotification: 0,
@@ -664,6 +665,28 @@ if (typeof (MutationObserver) === "undefined") {
             checkEventParticipation: function () {
                 return document.querySelector('#bossWrapper').style.display !== 'none';
             },
+            checkQueuedForGauntlet: function () {
+                // If they've already queued then we don't need to do anything else
+                if(hasQueuedForGauntlet) {
+                    return;
+                }
+
+                // If the gauntlet is over, there's no point in continuing
+                if ($('#eventCountdown').css('display') === 'none') {
+                    return;
+                }
+
+                // Actually display the notification
+                const eventCallback = function () {
+                    $('#event_start').click();
+                };
+
+                fn.notification('An event is starting soon!', URLS.img.event, userSettings.eventFiveMinuteCountdown, null, eventCallback);
+                
+                if(userSettings.eventFiveMinuteCountdown.recur) {
+                    setTimeout(fn.checkQueuedForGauntlet, userSettings.recurringNotificationsTimeout * 1000);
+                }
+            },
             setupEventNotifications: function (countdownBadgeText) {
                 if (!isEventCountdownActive) {
                     if (countdownBadgeText === '!' || countdownBadgeText.startsWith('*')) {
@@ -685,12 +708,8 @@ if (typeof (MutationObserver) === "undefined") {
                     var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
                     var secondsUntilEventEnd = secondsUntilEventStart + (60*15);
 
-                    // This callback is only passed in for the five minute countdown. It would get really annoying otherwise.
-                    const eventCallback = function () {
-                        $('#event_start').click();
-                    };
-
-                    fn.notification('An event is starting in five minutes!', URLS.img.event, userSettings.eventFiveMinuteCountdown, null, eventCallback);
+                    hasQueuedForGauntlet = false;
+                    fn.checkQueuedForGauntlet();
 
                     userSettings.eventTimeRemaining.forEach(function(timeSetting) {
                         var notificationSeconds = timeSetting.timeMinutes * 60; // This is seconds from the end of the event
@@ -719,8 +738,21 @@ if (typeof (MutationObserver) === "undefined") {
                         if (addedNodes.length) {
                             for (var j = 0; j < addedNodes.length; j++) {
                                 const text = $(addedNodes[j]).text();
-                                if (!fn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+]\s*Whisper from/)) {
+                                if (!fn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+\]\s*Whisper from/)) {
                                     fn.notification(text, URLS.img.whisper, userSettings.whisper, null, clickToAChannelTab, addedNodes[j]);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    for (var i = 0; i < records.length; i++) {
+                        const addedNodes = records[i].addedNodes;
+                        if (addedNodes.length) {
+                            for (var j = 0; j < addedNodes.length; j++) {
+                                const text = $(addedNodes[j]).text();
+                                if (!fn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+\]\s*The event begins in/)) {
+                                    hasQueuedForGauntlet = true;
                                     return;
                                 }
                             }

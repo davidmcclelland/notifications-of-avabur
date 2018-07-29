@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.12.0-beta1
+// @version        1.12.0-beta2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -90,12 +90,7 @@ if (typeof (MutationObserver) === "undefined") {
             popupDurationSec: 5,
             fatigue: { popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false, recur: true },
             eventFiveMinuteCountdown: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },
-            eventThirtySecondCountdown: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },
-            eventStarting: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },
-            eventTenMinutesRemaining: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },
-            eventFiveMinutesRemaining: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },
-            eventEnd: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },
-            eventElimination: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },
+            eventTimeRemaining: [{popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, timeMinutes: 7.5}],
             harvestron: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
             construction: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
             whisper: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },
@@ -212,7 +207,7 @@ if (typeof (MutationObserver) === "undefined") {
                 </div>
             </div>
             <hr>
-            <table id="NoASettingsTable" class="table">
+            <table id="NoASettingsTable" class="table table-condensed">
                 <thead>
                     <tr>
                         <td></td>
@@ -233,17 +228,11 @@ if (typeof (MutationObserver) === "undefined") {
                     <tr is="settings-entry" name="Quest Complete" :setting="userSettings.questComplete"></tr>
                     <tr is="settings-entry" name="Whisper" :setting="userSettings.whisper"></tr>
                     <tr is="settings-entry" name="Event 5 Minute Countdown" :setting="userSettings.eventFiveMinuteCountdown"></tr>
-                    <tr is="settings-entry" name="Event 30 Second Countdown" :setting="userSettings.eventThirtySecondCountdown"></tr>
-                    <tr is="settings-entry" name="Event Starting" :setting="userSettings.eventStarting"></tr>
-                    <tr is="settings-entry" name="Event 10 Minutes Remaining" :setting="userSettings.eventTenMinutesRemaining"></tr>
-                    <tr is="settings-entry" name="Event 5 Minutes Remaining" :setting="userSettings.eventFiveMinutesRemaining"></tr>
-                    <tr is="settings-entry" name="Event End" :setting="userSettings.eventEnd"></tr>
-                    <tr is="settings-entry" name="Event Weakened" :setting="userSettings.eventElimination"></tr>
                 </tbody>
             </table>
         </div>
         <div id="NoAAdvancedSettingsWrapper">
-            <table class="table">
+            <table class="table table-condensed">
                 <thead>
                     <tr>
                         <td></td>
@@ -267,7 +256,7 @@ if (typeof (MutationObserver) === "undefined") {
                             </h3>
                         </th>
                     </tr>
-                    <tr v-for="(chatSearch, index) in userSettings.chatSearch" is="settings-entry" :setting="chatSearch" :collection="userSettings.chatSearch" :index="index"></tr>
+                    <tr v-for="(chatSearch, index) in userSettings.chatSearch" is="settings-entry" :setting="chatSearch" type="regex" :collection="userSettings.chatSearch" :index="index"></tr>
                 </tbody>
                 <tbody>
                     <tr class="header">
@@ -278,7 +267,7 @@ if (typeof (MutationObserver) === "undefined") {
                             </h3>
                         </th>
                     </tr>
-                    <tr v-for="(craftingSearch, index) in userSettings.craftingSearch" is="settings-entry" :setting="craftingSearch" :collection="userSettings.craftingSearch" :index="index"></tr>
+                    <tr v-for="(craftingSearch, index) in userSettings.craftingSearch" is="settings-entry" :setting="craftingSearch" type="regex" :collection="userSettings.craftingSearch" :index="index"></tr>
                 </tbody>
                 <tbody>
                     <tr class="header">
@@ -289,7 +278,18 @@ if (typeof (MutationObserver) === "undefined") {
                             </h3>
                         </th>
                     </tr>
-                    <tr v-for="(lootSearch, index) in userSettings.lootSearch" is="settings-entry" :setting="lootSearch" :collection="userSettings.lootSearch" :index="index"></tr>
+                    <tr v-for="(lootSearch, index) in userSettings.lootSearch" is="settings-entry" :setting="lootSearch" type="regex" :collection="userSettings.lootSearch" :index="index"></tr>
+                </tbody>
+                <tbody>
+                    <tr class="header">
+                        <th colspan="3" scope="col">
+                            <h3 class="nobg">
+                                <span>Event Time Remaining</span>
+                                <button type="button" class="btn btn-primary btn-sm" v-on:click="addEventTime()" style="margin-top: 0;">Add</button>
+                            </h3>
+                        </th>
+                    </tr>
+                    <tr v-for="(eventTime, index) in userSettings.eventTimeRemaining" is="settings-entry" :setting="eventTime" type="eventTime" :collection="userSettings.eventTimeRemaining" :index="index"></tr>
                 </tbody>
             </table>
         </div>
@@ -673,8 +673,7 @@ if (typeof (MutationObserver) === "undefined") {
                     isEventCountdownActive = true;
                     // First thing's first, figure out how long until the event (in seconds)
                     /* We handle this a bit odd - if the countdown string doesn't list 'm', then it is displaying
-                    only seconds. This currently only happens on beta when testing events, but NoA shouldn't break on beta.
-                    This could be slightly more elegantly solved with indexof, but I already wrote it this way and it works. */
+                    only seconds. This could be slightly more elegantly solved with indexof, but I already wrote it this way and it works. */
                     var minutesString = '0';
                     var secondsString = '0';
                     if (countdownBadgeText.includes('m')) {
@@ -684,6 +683,7 @@ if (typeof (MutationObserver) === "undefined") {
                         secondsString = countdownBadgeText.slice(0, 2);
                     }
                     var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
+                    var secondsUntilEventEnd = secondsUntilEventStart + (60*15);
 
                     // This callback is only passed in for the five minute countdown. It would get really annoying otherwise.
                     const eventCallback = function () {
@@ -692,35 +692,12 @@ if (typeof (MutationObserver) === "undefined") {
 
                     fn.notification('An event is starting in five minutes!', URLS.img.event, userSettings.eventFiveMinuteCountdown, null, eventCallback);
 
-                    // 30 second warning
-                    setTimeout(function () {
-                        fn.notification('An event is starting in thirty seconds!', URLS.img.event, userSettings.eventThirtySecondCountdown);
-                    }, (secondsUntilEventStart - 30) * 1000);
-
-                    // 1 second warning
-                    setTimeout(function () {
-                        fn.notification('An event is starting!', URLS.img.event, userSettings.eventStarting);
-                    }, (secondsUntilEventStart - 1) * 1000);
-
-                    // 10 minutes remaining
-                    setTimeout(function () {
-                        if (!fn.checkEventParticipation()) {
-                            fn.notification('Ten minutes remaining in the event!', URLS.img.event, userSettings.eventTenMinutesRemaining);
-                        }
-                    }, (secondsUntilEventStart + (60 * 5)) * 1000);
-
-                    // 5 minutes remaining
-                    setTimeout(function () {
-                        if (!fn.checkEventParticipation()) {
-                            fn.notification('Five minutes remaining in the event!', URLS.img.event, userSettings.eventFiveMinutesRemaining);
-                        }
-                    }, (secondsUntilEventStart + (60 * 10)) * 1000);
-
-                    // End of the event
-                    setTimeout(function () {
-                        isEventCountdownActive = false;
-                        fn.notification('The event has ended!', URLS.img.event, userSettings.eventEnd);
-                    }, (secondsUntilEventStart + (60 * 15)) * 1000);
+                    userSettings.eventTimeRemaining.forEach(function(timeSetting) {
+                        var notificationSeconds = timeSetting.timeMinutes * 60; // This is seconds from the end of the event
+                        setTimeout(function() {
+                            fn.notification(timeSetting.timeMinutes + ' minute(s) left in the event!', URLS.img.event, timeSetting);
+                        }, (secondsUntilEventEnd - notificationSeconds) * 1000);
+                    });
                 }
             },
         };
@@ -880,7 +857,19 @@ if (typeof (MutationObserver) === "undefined") {
 
                     Object.defineProperty(Vue.prototype, '$lodash', { value: _ });
                     Vue.component('settings-entry', {
-                        props: ['setting', 'name', 'collection', 'index'],
+                        props: {
+                            setting: Object,
+                            name: String,
+                            type: {
+                                type: String,
+                                default: 'normal',
+                                validator: function(value) {
+                                    return ['normal', 'regex', 'eventTime'].indexOf(value) !== -1;
+                                },
+                            },
+                            collection: Array,
+                            index: Number,
+                        },
                         methods: {
                             notificationTest: function () {
                                 const description = this.name || this.setting.searchText || 'Setting';
@@ -892,8 +881,9 @@ if (typeof (MutationObserver) === "undefined") {
                         },
                         template: `
                         <tr>
-                            <th scope="row" v-if="name">{{name}}</th>
-                            <td v-if="!name"><input type="text" v-model="setting.searchText"></td>
+                            <th scope="row" v-if="type === 'normal'">{{name}}</th>
+                            <td v-if="type === 'regex'"><input type="text" v-model="setting.searchText"></td>
+                            <td v-if="type === 'eventTime'"><input type="number" v-model="setting.timeMinutes" step="0.5"></td>
                             <td><input type="checkbox" v-model="setting.popup"></td>
                             <td><input type="checkbox" v-model="setting.sound"></td>
                             <td><input type="checkbox" v-model="setting.log"></td>
@@ -918,21 +908,15 @@ if (typeof (MutationObserver) === "undefined") {
                             addChatSearch: function () {
                                 userSettings.chatSearch.push({ popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: '', });
                             },
-                            removeChatSearch: function (toRemove) {
-                                _.pull(userSettings.chatSearch, toRemove);
-                            },
                             addCraftingSearch: function () {
                                 userSettings.craftingSearch.push({ popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: '', });
-                            },
-                            removeCraftingSearch: function (toRemove) {
-                                _.pull(userSettings.craftingSearch, toRemove);
                             },
                             addLootSearch: function () {
                                 userSettings.lootSearch.push({ popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, searchText: '', });
                             },
-                            removeLootSearch: function (toRemove) {
-                                _.pull(userSettings.lootSearch, toRemove);
-                            },
+                            addEventTime: function() {
+                                userSettings.eventTimeRemaining.push({popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, timeMinutes: 1, });
+                            }
                         },
                         watch: {
                             userSettings: {

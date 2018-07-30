@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.12.0-beta3
+// @version        1.12.0-beta4
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -133,6 +133,9 @@ if (typeof (MutationObserver) === "undefined") {
         </a>
         <a id="NoAAdvancedSettingsButton">
             <button class="btn btn-primary">Advanced</button>
+        </a>
+        <a id="NoAImportExportButton">
+            <button class="btn btn-primary">Import/Export</button>
         </a>
         <a id="NoALogButton">
             <button class="btn btn-primary">Log</button>
@@ -293,6 +296,15 @@ if (typeof (MutationObserver) === "undefined") {
                 </tbody>
             </table>
         </div>
+        <div id="NoASettingsImportExportWrapper">
+            <div class="row" style="margin-top: 5px;">
+                <textarea onfocus="this.select()" v-model="importExportValue"></textarea>
+            </div>
+            <div class="row">
+                <button type="button" class="btn btn-primary" v-on:click="tryImportSettings">Import Displayed</button>
+                <button type="button" class="btn btn-primary" v-on:click="displayCurrentSettings">Display Current</button>
+            </div>
+        </div>
         <div id="NoANotificationLog">
             <button class="btn btn-primary" id="notificationLogRefresh">Refresh</button>
             <ul id="notificationLogItems"></ul>
@@ -309,6 +321,7 @@ if (typeof (MutationObserver) === "undefined") {
         const INTERNAL_UPDATE_URL = "https://api.github.com/repos/davidmcclelland/notifications-of-avabur/contents/notifications-of-avabur.user.js";
 
         var userSettings = null;
+        var importExportValue = null;
 
         var isEventCountdownActive = false;
         var hasQueuedForGauntlet = false;
@@ -937,6 +950,7 @@ if (typeof (MutationObserver) === "undefined") {
                         data:
                         {
                             userSettings: userSettings,
+                            importExportValue: importExportValue,
                         },
                         methods:
                         {
@@ -951,7 +965,21 @@ if (typeof (MutationObserver) === "undefined") {
                             },
                             addEventTime: function() {
                                 userSettings.eventTimeRemaining.push({popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, timeMinutes: 1, });
-                            }
+                            },
+                            tryImportSettings: function () {
+                                try {
+                                    const parsed = JSON.parse(this.importExportValue);
+                                    // TODO - I'm not sure if both of these need updated
+                                    userSettings = parsed;
+                                    this.userSettings = parsed;
+                                    fn.storeUserSettings();
+                                } catch (e) {
+                                    console.log('Failed to parse settings import', this.importExportValue);
+                                }
+                            },
+                            displayCurrentSettings: function() {
+                                this.importExportValue = JSON.stringify(userSettings);
+                            },
                         },
                         watch: {
                             userSettings: {
@@ -969,6 +997,11 @@ if (typeof (MutationObserver) === "undefined") {
                     $('#NoAAdvancedSettingsButton').click(function () {
                         $('#NoAAdvancedSettingsButton').addClass('active').siblings().removeClass('active');
                         $('#NoAAdvancedSettingsWrapper').css('display', 'block').siblings().css('display', 'none');
+                    });
+
+                    $('#NoAImportExportButton').click(function () {
+                        $('#NoAImportExportButton').addClass('active').siblings().removeClass('active');
+                        $('#NoASettingsImportExportWrapper').css('display', 'block').siblings().css('display', 'none');
                     });
 
                     $('#NoALogButton').click(function () {

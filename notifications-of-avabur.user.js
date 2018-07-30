@@ -685,8 +685,8 @@ if (typeof (MutationObserver) === "undefined") {
                 fn.notification('An event is starting soon!', URLS.img.event, userSettings.eventFiveMinuteCountdown, counters.lastGauntletQueueNotification, eventCallback);
                 
                 if(userSettings.eventFiveMinuteCountdown.recur) {
-                    counters.lastGauntletQueueNotification += userSettings.recurringNotificationsTimeout; // We want every recurrence of this to force a notification
-                    setTimeout(fn.checkQueuedForGauntlet, userSettings.recurringNotificationsTimeout * 1000);
+                    counters.lastGauntletQueueNotification ++; // We want every recurrence of this to force a notification
+                    setTimeout(fn.checkQueuedForGauntlet, 1000);
                 }
             },
             setupEventNotifications: function (countdownBadgeText) {

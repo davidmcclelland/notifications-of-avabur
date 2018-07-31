@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.12.0-beta4
+// @version        1.12.0-beta5
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -90,6 +90,7 @@ if (typeof (MutationObserver) === "undefined") {
             popupDurationSec: 5,
             fatigue: { popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false, recur: true },
             eventFiveMinuteCountdown: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
+            eventElimination: { popup: false, sound: false, log: false, clanDiscord: false, personalDiscord: false },
             eventTimeRemaining: [{popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, timeMinutes: 7.5}],
             harvestron: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
             construction: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
@@ -231,6 +232,7 @@ if (typeof (MutationObserver) === "undefined") {
                     <tr is="settings-entry" name="Quest Complete" :setting="userSettings.questComplete"></tr>
                     <tr is="settings-entry" name="Whisper" :setting="userSettings.whisper"></tr>
                     <tr is="settings-entry" name="Gauntlet Queue Reminder" :setting="userSettings.eventFiveMinuteCountdown"></tr>
+                    <tr is="settings-entry" name="Event Weakened" :setting="userSettings.eventElimination"></tr>
                 </tbody>
             </table>
         </div>
@@ -685,6 +687,11 @@ if (typeof (MutationObserver) === "undefined") {
                     return;
                 }
 
+                // If they're in the gauntlet, stop alerting
+                if (fn.checkEventParticipation()) {
+                    return;
+                }
+
                 // If the gauntlet is over, there's no point in continuing
                 if ($('#eventCountdown').css('display') === 'none') {
                     return;
@@ -745,7 +752,6 @@ if (typeof (MutationObserver) === "undefined") {
                     var searchResults = fn.findSearchValuesInRecords(records, userSettings.chatSearch);
                     if (searchResults && searchResults.node) {
                         fn.notification(searchResults.node.textContent, URLS.img.chatSearch, searchResults.searchValue, null, clickToAChannelTab, searchResults.node);
-                        return;
                     }
 
 
@@ -756,7 +762,7 @@ if (typeof (MutationObserver) === "undefined") {
                                 const text = $(addedNodes[j]).text();
                                 if (!fn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+\]\s*Whisper from/)) {
                                     fn.notification(text, URLS.img.whisper, userSettings.whisper, null, clickToAChannelTab, addedNodes[j]);
-                                    return;
+                                    break;
                                 }
                             }
                         }
@@ -769,7 +775,7 @@ if (typeof (MutationObserver) === "undefined") {
                                 const text = $(addedNodes[j]).text();
                                 if (!fn.isToAProcessed(addedNodes[j]) && text.match(/^\[[0-9]+:[0-9]+:[0-9]+\]\s*The event begins in/)) {
                                     hasQueuedForGauntlet = true;
-                                    return;
+                                    break;
                                 }
                             }
                         }

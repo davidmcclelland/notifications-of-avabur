@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.12.0-beta5
+// @version        1.12.0-beta6
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -740,6 +740,11 @@ if (typeof (MutationObserver) === "undefined") {
                             fn.notification(timeSetting.timeMinutes + ' minute(s) left in the event!', URLS.img.event, timeSetting);
                         }, (secondsUntilEventEnd - notificationSeconds) * 1000);
                     });
+
+                    // End of the event, set the flag back to false
+                    setTimeout(function() {
+                        isEventCountdownActive = false;
+                    }, secondsUntilEventEnd * 1000);
                 }
             },
         };

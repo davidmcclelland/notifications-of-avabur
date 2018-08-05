@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.12.0
+// @version        1.13.0-beta1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -221,6 +221,7 @@ if (typeof (MutationObserver) === "undefined") {
                         <th scope="col">Clan</th>
                         <th scope="col">Personal</th>
                         <th scope="col">Recur</th>
+                        <th scope="col">Popup Icon URL</th>
                         <th scope="col">Sound File URL</th>
                         <th scope="col">Test Notifications</th>
                     </tr>
@@ -247,6 +248,7 @@ if (typeof (MutationObserver) === "undefined") {
                         <th scope="col">Clan</th>
                         <th scope="col">Personal</th>
                         <th scope="col">Recur</th>
+                        <th scope="col">Popup Icon URL</th>
                         <th scope="col">Sound File URL</th>
                         <th scope="col">Test Notifications</th>
                         <th scope="col">Remove</th>
@@ -421,7 +423,7 @@ if (typeof (MutationObserver) === "undefined") {
              * @param {number} recurrenceCounter The number of seconds this event has recurred for. Optional, defaults to zero
              * @param {Function} [onPopupClick] An optional function to be called back when/if a popup is clicked
              */
-            notification: function (text, iconUrl, settings, recurrenceCounter, onPopupClick, onPopupClickArgs = []) {
+            notification: function (text, defaultPopupIcon, settings, recurrenceCounter, onPopupClick, onPopupClickArgs = []) {
                 recurrenceCounter = _.defaultTo(recurrenceCounter, 0);
 
                 const isFirstRecurrence = (recurrenceCounter === 0);
@@ -461,9 +463,14 @@ if (typeof (MutationObserver) === "undefined") {
                 }
 
                 if (doPopup) {
+                    var popupIconUrl = settings.popupIcon;
+                    if (!popupIconUrl || !popupIconUrl.length) {
+                        popupIconUrl = defaultPopupIcon;
+                    }
+
                     Notification.requestPermission().then(function () {
                         var n = new Notification(GM_info.script.name, {
-                            icon: iconUrl,
+                            icon: popupIconUrl,
                             body: text
                         });
                         const popupDurationSec = _.defaultTo(userSettings.popupDurationSec, 5);
@@ -949,6 +956,7 @@ if (typeof (MutationObserver) === "undefined") {
                             <td><input type="checkbox" v-model="setting.clanDiscord"></td>
                             <td><input type="checkbox" v-model="setting.personalDiscord"></td>
                             <td><input type="checkbox" v-model="setting.recur" v-if="!$lodash.isNil(setting.recur)"></td>
+                            <td><input type="text" v-model="setting.popupIcon"></td>
                             <td><input type="text" v-model="setting.soundFile"></td>
                             <td><button class="btn btn-primary btn-xs" style="margin-top: 0px;" v-on:click="notificationTest()">Test</button></td>
                             <td><button class="btn btn-primary btn-xs" style="margin-top: 0px;" v-if="collection" v-on:click="remove()">Remove</button></td>

@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.12.0
+// @version        1.12.0.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -91,7 +91,7 @@ if (typeof (MutationObserver) === "undefined") {
             fatigue: { popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false, recur: true },
             eventFiveMinuteCountdown: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
             eventElimination: { popup: false, sound: false, log: false, clanDiscord: false, personalDiscord: false },
-            eventTimeRemaining: [{popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, timeMinutes: 7.5}],
+            eventTimeRemaining: [],
             harvestron: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
             construction: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
             whisper: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false },

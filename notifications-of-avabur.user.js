@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.13.0-beta1
+// @version        1.13.0-beta2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -718,24 +718,28 @@ if (typeof (MutationObserver) === "undefined") {
             },
             setupEventNotifications: function (countdownBadgeText) {
                 if (!isEventCountdownActive) {
-                    if (countdownBadgeText === '!' || countdownBadgeText.startsWith('*')) {
-                        return;
+                    let secondsToAdd = 0;
+                    // If we're still in the pre-event countdown, we want to add the entire gauntlet duration (15 minutes) to the countdown time
+                    if (!countdownBadgeText.startsWith('*')) {
+                        secondsToAdd = 15 * 60;
                     }
 
+                    const textToParse = countdownBadgeText.replace(/\*/g, '');
+
                     isEventCountdownActive = true;
-                    // First thing's first, figure out how long until the event (in seconds)
+                    // First thing's first, figure out how long until the event ends (in seconds)
                     /* We handle this a bit odd - if the countdown string doesn't list 'm', then it is displaying
                     only seconds. This could be slightly more elegantly solved with indexof, but I already wrote it this way and it works. */
                     var minutesString = '0';
                     var secondsString = '0';
-                    if (countdownBadgeText.includes('m')) {
-                        minutesString = countdownBadgeText.slice(0, 2);
-                        secondsString = countdownBadgeText.slice(3, 5);
+                    if (textToParse.includes('m')) {
+                        minutesString = textToParse.slice(0, 2);
+                        secondsString = textToParse.slice(3, 5);
                     } else {
-                        secondsString = countdownBadgeText.slice(0, 2);
+                        secondsString = textToParse.slice(0, 2);
                     }
-                    var secondsUntilEventStart = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
-                    var secondsUntilEventEnd = secondsUntilEventStart + (60*15);
+                    var secondsUntilCountdownEnd = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
+                    var secondsUntilEventEnd = secondsUntilCountdownEnd + secondsToAdd;
 
                     hasQueuedForGauntlet = false;
                     counters.lastGauntletQueueNotification = 0;

@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.13.0-beta2
+// @version        1.13.0-beta3
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -496,6 +496,10 @@ if (typeof (MutationObserver) === "undefined") {
                         soundFileUrl = URLS.sfx.message_ding;
                     }
 
+                    if (isSoundPlaying) {
+                        console.warn('Wanted to play audio, but audio is already playing. Skipping sound for notification with text', text);
+                    }
+
                     if (!isSoundPlaying) {
                         const buzzFile = new buzz.sound(soundFileUrl, { volume: userSettings.soundVolume });
 
@@ -504,8 +508,14 @@ if (typeof (MutationObserver) === "undefined") {
                         });
 
                         buzzFile.bind('error', function () {
-                            console.log('[NoA] Error playing audio file: ', this.getErrorMessage());
+                            console.error('[NoA] Error playing audio file: ', this.getErrorMessage());
                             isSoundPlaying = false;
+                        });
+
+                        buzzFile.bind('sourceerror', function () {
+                            console.error('[NoA] Caught a source error trying to play sound. Maybe a custom sound is unavailable? Defaulting sound. Attempted sound file URL: ', soundFileUrl);
+                            const defaultSound = new buzz.sound(URLS.sfx.message_ding, {volume: userSettings.soundVolume});
+                            defaultSound.play();
                         });
 
                         buzzFile.play();

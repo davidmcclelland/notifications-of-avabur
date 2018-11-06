@@ -765,7 +765,7 @@ if (typeof (MutationObserver) === "undefined") {
                     // End of the event, set the flag back to false
                     setTimeout(function() {
                         isEventCountdownActive = false;
-                    }, secondsUntilEventEnd * 1000);
+                    }, (secondsUntilEventEnd * 1000) + 10);
                 }
             },
         };

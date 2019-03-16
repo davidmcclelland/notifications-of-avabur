@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.13.0-beta4
+// @version        1.13.0-beta5
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -362,7 +362,6 @@ if (typeof (MutationObserver) === "undefined") {
             lastFatigueNotification: 0,
             lastHarvestronNotification: 0,
             lastQuestNotification: 0,
-            lastCaptchaFailedNotification: 0,
             lastGauntletQueueNotification: 0,
         };
 
@@ -684,32 +683,6 @@ if (typeof (MutationObserver) === "undefined") {
                     counters.lastQuestNotification = 0;
                 }
             },
-            checkCaptchaFailed: function() {
-                var visibleResultDivId;
-                const possibleResultDivIds = ['battleResult', 'tradeResult', 'craftResult', 'carveResult'];
-                const ancestorDivIds = ['battleWrapper', 'tradeskillWrapper', 'craftingWrapper', 'carvingWrapper'];
-                for (var i = 0; i < possibleResultDivIds.length; i++) {
-                    var resultDiv = document.getElementById(possibleResultDivIds[i]);
-                    var ancestorDiv = document.getElementById(ancestorDivIds[i]);
-                    if (resultDiv && ancestorDiv && (ancestorDiv.style.display !== 'none')) {
-                        // We've found the visible div
-                        visibleResultDivId = possibleResultDivIds[0];
-                    }
-                }
-
-                if(!visibleResultDivId) {
-                    return;
-                }
-
-                const visibleResultDiv = ('#' + visibleResultDivId);
-
-                if (visibleResultDivId && (visibleResultDiv.text().startsWith('You failed to complete your captcha for 3+ minutes.'))) {
-                    const notificationText = visibleResultDiv.text().trim();
-                    fn.notification(notificationText, URLS.img.fatigued, userSettings.fatigue, counters.lastCaptchaFailedNotification);
-                } else {
-                    counters.lastCaptchaFailedNotification = 0;
-                }
-            },
             checkRecordsVisible: function (records) {
                 for (var i = 0; i < records.length; i++) {
                     const target = $(records[i].target);
@@ -967,9 +940,6 @@ if (typeof (MutationObserver) === "undefined") {
                 },
                 "Starting quest monitor": function () {
                     setInterval(fn.checkQuestComplete, 1000);
-                },
-                "Starting captcha failed monitor": function () {
-                    setInterval(fn.checkCaptchaFailed, 1000);
                 },
                 "Starting event monitor": function () {
                     OBSERVERS.event.observe(document.querySelector("#eventCountdown"), { childList: true });

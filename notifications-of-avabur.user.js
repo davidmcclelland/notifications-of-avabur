@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.13.0-beta3
+// @version        1.13.0-beta4
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -100,7 +100,8 @@ if (typeof (MutationObserver) === "undefined") {
             craftingSearch: [],
             lootSearch: [],
             clanDiscord: { webhook: '', target: '' },
-            personalDiscord: { webhook: '', target: '' }
+            personalDiscord: { webhook: '', target: '' },
+            overrides: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true }
         };
 
         const SETTINGS_KEY = 'NoASettings';
@@ -172,6 +173,32 @@ if (typeof (MutationObserver) === "undefined") {
                         <label>Popup Duration (sec)
                             <input id="popupDurationEditor" type="number" min="1" max="60" v-model="userSettings.popupDurationSec">
                     </div>
+                </div>
+            </div>
+            <hr>
+            <div>
+                <h4 class="nobg">Global overrides</h4>
+                <div class="row">
+                    <label class="col-xs-3">
+                        <input id="overridesPopupEditor" type="checkbox" v-model="userSettings.overrides.popup">Popup
+                    </label>
+                    <label class="col-xs-3">
+                        <input id="overridesSoundEditor" type="checkbox" v-model="userSettings.overrides.sound">Sound
+                    </label>
+                    <label class="col-xs-3">
+                        <input id="overridesLogEditor" type="checkbox" v-model="userSettings.overrides.log">Log
+                    </label>
+                </div>
+                <div class="row">
+                    <label class="col-xs-3">
+                        <input id="overridesClanDiscordEditor" type="checkbox" v-model="userSettings.overrides.clanDiscord">Clan
+                    </label>
+                    <label class="col-xs-3">
+                        <input id="overridesPersonalDiscordEditor" type="checkbox" v-model="userSettings.overrides.personalDiscord">Personal
+                    </label>
+                    <label class="col-xs-3">
+                        <input id="overridesRecurEditor" type="checkbox" v-model="userSettings.overrides.recur">Recur
+                    </label>
                 </div>
             </div>
             <hr>
@@ -434,7 +461,7 @@ if (typeof (MutationObserver) === "undefined") {
                 // It's a good recurrence if it is the first one, or if recurring notifications are on
                 // and it's been long enough since the previous
                 const isGoodRecurrence = isFirstRecurrence ||
-                    (recurrenceEnabled && (recurrenceCounter % userSettings.recurringNotificationsTimeout === 0));
+                    (recurrenceEnabled && userSettings.overrides.recur && (recurrenceCounter % userSettings.recurringNotificationsTimeout === 0));
 
                 // While muted, only log. No sounds, popups, or discord
                 const isMuted = fn.checkIsMuted();
@@ -442,15 +469,15 @@ if (typeof (MutationObserver) === "undefined") {
                 // Only ever send to discord and log the first instance of a recurrence,j
                 // even if it's a good recurrence
                 // Only ever log on the first recurrence.
-                const doLog = settings.log && isFirstRecurrence;
+                const doLog = settings.log && userSettings.overrides.log && isFirstRecurrence;
 
                 // Only send to discord if discord is enabled and (it's the first recurrence or (it's a good recurrence and recur to discord is enabled))
-                const doClanDiscord = !isMuted && settings.clanDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
-                const doPersonalDiscord = !isMuted && settings.personalDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
+                const doClanDiscord = !isMuted && settings.clanDiscord && userSettings.overrides.clanDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
+                const doPersonalDiscord = !isMuted && settings.personalDiscord && userSettings.overrides.personalDiscord && (isFirstRecurrence || (isGoodRecurrence && discordRecurrenceEnabled));
 
                 // Recur popup and sound notifications
-                const doPopup = !isMuted && settings.popup && isGoodRecurrence;
-                const doSound = !isMuted && settings.sound && isGoodRecurrence;
+                const doPopup = !isMuted && settings.popup && userSettings.overrides.popup && isGoodRecurrence;
+                const doSound = !isMuted && settings.sound && userSettings.overrides.sound && isGoodRecurrence;
 
                 if (doLog) {
                     notificationLogEntries.push({

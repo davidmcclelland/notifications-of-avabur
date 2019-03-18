@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.13.1
+// @version        1.13.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -191,10 +191,10 @@ if (typeof (MutationObserver) === "undefined") {
                 </div>
                 <div class="row">
                     <label class="col-xs-3">
-                        <input id="overridesClanDiscordEditor" type="checkbox" v-model="userSettings.overrides.clanDiscord">Clan
+                        <input id="overridesClanDiscordEditor" type="checkbox" v-model="userSettings.overrides.clanDiscord">Clan Discord
                     </label>
                     <label class="col-xs-3">
-                        <input id="overridesPersonalDiscordEditor" type="checkbox" v-model="userSettings.overrides.personalDiscord">Personal
+                        <input id="overridesPersonalDiscordEditor" type="checkbox" v-model="userSettings.overrides.personalDiscord">Personal Discord
                     </label>
                     <label class="col-xs-3">
                         <input id="overridesRecurEditor" type="checkbox" v-model="userSettings.overrides.recur">Recur

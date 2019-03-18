@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.13.0
+// @version        1.13.1
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -101,7 +101,7 @@ if (typeof (MutationObserver) === "undefined") {
             lootSearch: [],
             clanDiscord: { webhook: '', target: '' },
             personalDiscord: { webhook: '', target: '' },
-            overrides: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true }
+            overrides: { popup: true, sound: true, log: true, clanDiscord: true, personalDiscord: true, recur: true }
         };
 
         const SETTINGS_KEY = 'NoASettings';

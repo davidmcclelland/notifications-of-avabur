@@ -125,6 +125,10 @@ if (typeof (MutationObserver) === "undefined") {
 #notificationLogItems {
     margin-top: 10px;
 }
+#NoAAdvancedSettingsWrapper th:nth-child(7),
+#NoAAdvancedSettingsWrapper td:nth-child(7){
+    display: none;
+}
         `;
 
         const SETTINGS_DIALOG_HTML = `

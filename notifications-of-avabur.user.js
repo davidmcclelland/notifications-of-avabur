@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.13.4
+// @version        1.14.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -350,6 +350,7 @@ if (typeof (MutationObserver) === "undefined") {
         `;
 
         const INTERNAL_UPDATE_URL = "https://api.github.com/repos/davidmcclelland/notifications-of-avabur/contents/notifications-of-avabur.user.js";
+        const CONSTRUCTION_FREE_BUILD_WINDOW_SEC = 30 * 60; // 30 minutes
 
         var userSettings = null;
         var importExportValue = null;
@@ -359,6 +360,7 @@ if (typeof (MutationObserver) === "undefined") {
 
         var counters = {
             lastConstructionNotification: 0,
+            lastConstructionTimeRemaining: Number.MAX_VALUE,
             lastFatigueNotification: 0,
             lastHarvestronNotification: 0,
             lastQuestNotification: 0,
@@ -625,6 +627,18 @@ if (typeof (MutationObserver) === "undefined") {
                     counters.lastConstructionNotification = 0;
                 }
             },
+            checkConstructionTimer: () => {
+                const timerElement = $('#houseTimerTable > div[data-typeid="Construction"] > div > div:last-child');
+                if(timerElement && timerElement.text()) {
+                    const timeRemaining = fn.parseCountdown(timerElement.text());
+                    if ((counters.lastConstructionTimeRemaining > CONSTRUCTION_FREE_BUILD_WINDOW_SEC) && (timeRemaining <= CONSTRUCTION_FREE_BUILD_WINDOW_SEC)) {
+                        fn.notification('Construction completing soon!', URLS.img.construction, userSettings.construction, null);
+                    }
+                    counters.lastConstructionTimeRemaining = timeRemaining;
+                } else {
+                    counters.lastConstructionTimeRemaining = Number.MAX_VALUE;
+                }
+            },
             checkFatigue: function () {
                 const searchSpan = document.getElementById('autosRemaining');
 
@@ -753,7 +767,7 @@ if (typeof (MutationObserver) === "undefined") {
                 };
 
                 fn.notification('An event is starting soon!', URLS.img.event, userSettings.eventFiveMinuteCountdown, counters.lastGauntletQueueNotification, eventCallback);
-                
+
                 if(userSettings.eventFiveMinuteCountdown.recur) {
                     counters.lastGauntletQueueNotification ++; // We want every recurrence of this to force a notification
                     setTimeout(fn.checkQueuedForGauntlet, 1000);
@@ -771,25 +785,15 @@ if (typeof (MutationObserver) === "undefined") {
 
                     isEventCountdownActive = true;
                     // First thing's first, figure out how long until the event ends (in seconds)
-                    /* We handle this a bit odd - if the countdown string doesn't list 'm', then it is displaying
-                    only seconds. This could be slightly more elegantly solved with indexof, but I already wrote it this way and it works. */
-                    var minutesString = '0';
-                    var secondsString = '0';
-                    if (textToParse.includes('m')) {
-                        minutesString = textToParse.slice(0, 2);
-                        secondsString = textToParse.slice(3, 5);
-                    } else {
-                        secondsString = textToParse.slice(0, 2);
-                    }
-                    var secondsUntilCountdownEnd = (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
-                    var secondsUntilEventEnd = secondsUntilCountdownEnd + secondsToAdd;
+                    const secondsUntilCountdownEnd = fn.parseCountdown(textToParse);
+                    const secondsUntilEventEnd = secondsUntilCountdownEnd + secondsToAdd;
 
                     hasQueuedForGauntlet = false;
                     counters.lastGauntletQueueNotification = 0;
                     fn.checkQueuedForGauntlet();
 
                     userSettings.eventTimeRemaining.forEach(function(timeSetting) {
-                        var notificationSeconds = timeSetting.timeMinutes * 60; // This is seconds from the end of the event
+                        const notificationSeconds = timeSetting.timeMinutes * 60; // This is seconds from the end of the event
                         setTimeout(function() {
                             fn.notification(timeSetting.timeMinutes + ' minute(s) left in the event!', URLS.img.event, timeSetting);
                         }, (secondsUntilEventEnd - notificationSeconds) * 1000);
@@ -801,6 +805,25 @@ if (typeof (MutationObserver) === "undefined") {
                     }, (secondsUntilEventEnd * 1000) + 10000);
                 }
             },
+            parseCountdown: (countdownStr) => {
+                /* We handle this a bit odd - if the countdown string doesn't list 'm', then it is displaying
+                only seconds. This could be slightly more elegantly solved with indexof, but I already wrote it this way and it works.
+                NB: It *will* break if someone ever has an alarm clock that goes longer than 10 hours. I'll fix it then, I guess. */
+                let hoursString = '0';
+                var minutesString = '0';
+                var secondsString = '0';
+                if (countdownStr.includes('h')) {
+                    hoursString = countdownStr.slice(0, 1);
+                    minutesString = countdownStr.slice(2, 4);
+                    secondsString = countdownStr.slice(5, 7);
+                } else if (countdownStr.includes('m')) {
+                    minutesString = countdownStr.slice(0, 2);
+                    secondsString = countdownStr.slice(3, 5);
+                } else {
+                    secondsString = countdownStr.slice(0, 2);
+                }
+                return (parseInt(hoursString, 10) * 3600) + (parseInt(minutesString, 10) * 60) + parseInt(secondsString, 10);
+            }
         };
 
         /** Collection of mutation observers the script uses */
@@ -943,6 +966,7 @@ if (typeof (MutationObserver) === "undefined") {
                 },
                 "Starting construction monitor": function () {
                     setInterval(fn.checkConstructionVisible, 1000);
+                    setInterval(fn.checkConstructionTimer, 1000);
                 },
                 "Starting quest monitor": function () {
                     setInterval(fn.checkQuestComplete, 1000);

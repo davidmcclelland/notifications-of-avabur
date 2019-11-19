@@ -48,7 +48,7 @@ The message that goes to discord can also be sent to a slack webhook. It was tes
 Custom sounds must be hosted by a fileserver accessible to your browser. This can be an external website if you find a file hosted online.
 
 ### Locally Hosted Sounds
-If you would like to host audio files from your computer, the Python HTTP Server can be very easy to set up. See [this page](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/set_up_a_local_testing_server#Running_a_simple_local_HTTP_server) for instructions on setting it up. Assuming you have the file `myaudiofile.wav` hosted locally on port 8000, enter `http://127.0.0.1:800/myaudiofile.wav` into the Sound File URL in NoA.
+If you would like to host audio files from your computer, the Python HTTP Server can be very easy to set up. See [this page](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/set_up_a_local_testing_server#Running_a_simple_local_HTTP_server) for instructions on setting it up. Assuming you have the file `myaudiofile.wav` hosted locally on port 8000, enter `http://127.0.0.1:8000/myaudiofile.wav` into the Sound File URL in NoA.
 
 ## TODOs/Vague Ideas
 * Effect changes (double->triple, rage->fury, etc)

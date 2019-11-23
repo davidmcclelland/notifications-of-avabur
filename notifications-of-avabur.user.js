@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.14.0
+// @version        1.15.0
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -88,6 +88,7 @@ if (typeof (MutationObserver) === "undefined") {
             soundVolume: 80,
             lowStaminaThreshold: 5,
             popupDurationSec: 5,
+            quietHours: { start: '00:00', stop: '00:00' },
             fatigue: { popup: true, sound: true, log: false, clanDiscord: false, personalDiscord: false, recur: true },
             eventFiveMinuteCountdown: { popup: true, sound: true, log: true, clanDiscord: false, personalDiscord: false, recur: true },
             eventElimination: { popup: false, sound: false, log: false, clanDiscord: false, personalDiscord: false },
@@ -124,6 +125,11 @@ if (typeof (MutationObserver) === "undefined") {
 }
 #notificationLogItems {
     margin-top: 10px;
+}
+input[type=time] {
+    border: 1px solid var(--border-color);
+    background-color: var(--input-background-color);
+    color: #fff;
 }
         `;
 
@@ -172,6 +178,17 @@ if (typeof (MutationObserver) === "undefined") {
                     <div class="col-xs-3">
                         <label>Popup Duration (sec)
                             <input id="popupDurationEditor" type="number" min="1" max="60" v-model="userSettings.popupDurationSec">
+                        </label>
+                    </div>
+                    <div class="col-xs-3">
+                        <label>Quiet Hour Start
+                            <input id="quietHourStartEditor" type="time" v-model="userSettings.quietHours.start">
+                        </label>
+                    </div>
+                    <div class="col-xs-3">
+                        <label>Quiet Hour Stop
+                            <input id="quietHourStartEditor" type="time" v-model="userSettings.quietHours.stop">
+                        </label>
                     </div>
                 </div>
             </div>
@@ -389,6 +406,33 @@ if (typeof (MutationObserver) === "undefined") {
             };
         }
 
+        const isQuietHours = (quietHourStart, quietHourStop, currentDate) => {
+            if(quietHourStart === quietHourStop) {
+                return false;
+            }
+
+            const quietHourStartSplit = quietHourStart.split(':');
+            const quietHourStartHour = parseInt(quietHourStartSplit[0]);
+            const quietHourStartMinute = parseInt(quietHourStartSplit[1]);
+            const quietHourStartFloat = quietHourStartHour + (quietHourStartMinute/60);
+
+            const quietHourStopSplit = quietHourStop.split(':');
+            const quietHourStopHour = parseInt(quietHourStopSplit[0]);
+            const quietHourStopMinute = parseInt(quietHourStopSplit[1]);
+            const quietHourStopFloat = quietHourStopHour + (quietHourStopMinute/60);
+            
+            const currentHour = currentDate.getHours();
+            const currentMinute = currentDate.getMinutes();
+            const currentFloat = currentHour + (currentMinute / 60);
+
+            // Overnight range
+            if(quietHourStartFloat > quietHourStopFloat) {
+                return (quietHourStartFloat <= currentFloat) || (quietHourStopFloat >= currentFloat); 
+            } else {
+                return (quietHourStartFloat <= currentFloat) && (quietHourStopFloat >= currentFloat); 
+            }
+        }
+
         /** Misc function container */
         const fn = {
             versionCompare: function (v1, v2) {
@@ -465,7 +509,8 @@ if (typeof (MutationObserver) === "undefined") {
                     (recurrenceEnabled && userSettings.overrides.recur && (recurrenceCounter % userSettings.recurringNotificationsTimeout === 0));
 
                 // While muted, only log. No sounds, popups, or discord
-                const isMuted = fn.checkIsMuted();
+                // Quiet hours also effectively mute, so check that as well.
+                const isMuted = fn.checkIsMuted() || isQuietHours(userSettings.quietHours.start, userSettings.quietHours.stop, new Date());
 
                 // Only ever send to discord and log the first instance of a recurrence,j
                 // even if it's a good recurrence

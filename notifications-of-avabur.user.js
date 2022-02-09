@@ -7,7 +7,7 @@
 // @downloadURL    https://github.com/davidmcclelland/notifications-of-avabur/raw/master/notifications-of-avabur.user.js
 // @description    Never miss another gauntlet again!
 // @match          https://*.avabur.com/game*
-// @version        1.15.1
+// @version        1.15.2
 // @icon           https://rawgit.com/davidmcclelland/notifications-of-avabur/master/res/img/logo-32.png
 // @run-at         document-end
 // @connect        githubusercontent.com
@@ -17,7 +17,7 @@
 // @require        https://rawgit.com/davidmcclelland/notifications-of-avabur/master/lib/toastmessage/javascript/jquery.toastmessage.js
 // @require        https://cdnjs.cloudflare.com/ajax/libs/buzz/1.2.0/buzz.min.js
 // @require        https://raw.githubusercontent.com/lodash/lodash/4.17.4/dist/lodash.min.js
-// @require        https://cdn.jsdelivr.net/npm/vue
+// @require        https://cdn.jsdelivr.net/npm/vue@2.6.14
 // @license        LGPL-2.1
 // @noframes
 // ==/UserScript==

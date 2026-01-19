@@ -42,8 +42,7 @@ if (typeof (MutationObserver) === "undefined") {
 
             // return "https://cdn.rawgit.com/" + author + "/" + repo + "/" +
             //     GM_info.script.version + "/" + path;
-            return "https://rawgit.com/" + author + "/" + repo + "/raw/" +
-                'master' + "/" + path;
+            return "https://github.com/" + author + "/" + repo + "/raw/master/" + path;
         };
 
         const URLS = {
